@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+
+<html class="" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DCR 2.0 | Tech Catalog</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">tailwind.config = {darkMode: "class", theme: {extend: {colors: {"on-tertiary-fixed-variant": "#6d104e", "on-tertiary": "#ffeff4", "on-primary-fixed": "#000000", "primary-container": "#9795ff", "secondary-container": "#d8caff", "on-error": "#ffefef", "surface-container-low": "#eef1f3", "on-tertiary-container": "#610244", error: "#b41340", "on-secondary-fixed-variant": "#573da6", "on-secondary": "#f7f0ff", "tertiary-fixed": "#fd8bca", surface: "#f5f7f9", "primary-fixed": "#9795ff", "surface-tint": "#4a40e0", "surface-container-highest": "#d9dde0", "surface-bright": "#f5f7f9", "on-background": "#2c2f31", "on-surface-variant": "#595c5e", "on-primary-container": "#14007e", "inverse-surface": "#0b0f10", "on-primary-fixed-variant": "#1a0099", tertiary: "#983772", "surface-container-lowest": "#ffffff", "surface-dim": "#d0d5d8", "secondary-fixed": "#d8caff", "surface-variant": "#d9dde0", "inverse-primary": "#8582ff", "error-container": "#f74b6d", "tertiary-fixed-dim": "#ee7ebc", "on-secondary-container": "#4e339c", outline: "#747779", "primary-fixed-dim": "#8885ff", "secondary-fixed-dim": "#cbbaff", "on-surface": "#2c2f31", "on-primary": "#f4f1ff", "on-error-container": "#510017", primary: "#4a40e0", "surface-container": "#e5e9eb", background: "#f5f7f9", secondary: "#6249b2", "tertiary-container": "#fd8bca", "outline-variant": "#abadaf", "on-tertiary-fixed": "#360024", "on-secondary-fixed": "#3a1b88", "surface-container-high": "#dfe3e6", "inverse-on-surface": "#9a9d9f", "error-dim": "#a70138", "secondary-dim": "#563ca5", "tertiary-dim": "#892a65", "primary-dim": "#3d30d4"}, fontFamily: {headline: ["Inter"], body: ["Inter"], label: ["Inter"], display: "Inter"}, borderRadius: {DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px"}}}};</script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(45, 52, 73, 0.4);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .refractive-edge {
+            box-shadow: inset 0 1px 0 0 rgba(192, 193, 255, 0.1);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #464555;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container min-h-screen flex overflow-hidden">
+<!-- SideNavBar Component -->
+<aside class="h-screen sticky left-0 top-0 border-r border-white/5 bg-slate-900/40 backdrop-blur-xl flex flex-col w-64 p-4 font-inter antialiased text-sm font-medium tracking-wide shadow-[0px_20px_40px_rgba(75,77,216,0.08)] z-50">
+<div class="mb-10 px-2">
+<h1 class="text-xl font-bold tracking-tighter text-indigo-200">Develeap DCR</h1>
+<p class="text-[10px] text-slate-400 uppercase tracking-widest mt-1">Professional Growth</p>
+</div>
+<nav class="flex-1 space-y-1">
+<div class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-300 hover:bg-white/5 text-slate-400 hover:text-slate-200 cursor-pointer group">
+<span class="material-symbols-outlined text-indigo-400 group-hover:scale-110 transition-transform" data-icon="dashboard">dashboard</span>
+<span>Dashboard</span>
+</div>
+<div class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-300 hover:bg-white/5 text-slate-400 hover:text-slate-200 cursor-pointer group">
+<span class="material-symbols-outlined text-indigo-400 group-hover:scale-110 transition-transform" data-icon="insights">insights</span>
+<span>Career Path</span>
+</div>
+<!-- Active Tab: Certifications -->
+<div class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-300 bg-indigo-500/20 text-indigo-200 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)] cursor-default">
+<span class="material-symbols-outlined text-indigo-300" data-icon="verified" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span>Certifications</span>
+</div>
+<div class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-300 hover:bg-white/5 text-slate-400 hover:text-slate-200 cursor-pointer group">
+<span class="material-symbols-outlined text-indigo-400 group-hover:scale-110 transition-transform" data-icon="pending_actions">pending_actions</span>
+<span>Approvals</span>
+</div>
+<div class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-300 hover:bg-white/5 text-slate-400 hover:text-slate-200 cursor-pointer group">
+<span class="material-symbols-outlined text-indigo-400 group-hover:scale-110 transition-transform" data-icon="menu_book">menu_book</span>
+<span>Resources</span>
+</div>
+<div class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-300 hover:bg-white/5 text-slate-400 hover:text-slate-200 cursor-pointer group">
+<span class="material-symbols-outlined text-indigo-400 group-hover:scale-110 transition-transform" data-icon="settings">settings</span>
+<span>Settings</span>
+</div>
+</nav>
+<div class="mt-auto pt-6 border-t border-white/5 space-y-4">
+<button class="w-full py-2 px-4 rounded-md bg-gradient-to-br from-primary-container to-primary text-on-primary-container font-bold text-xs uppercase tracking-widest scale-95 active:scale-90 transition-transform">
+                View Progress
+            </button>
+<div class="flex items-center gap-3 px-3 py-2 text-slate-400 hover:text-slate-200 cursor-pointer transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="help">help</span>
+<span>Support</span>
+</div>
+</div>
+</aside>
+<div class="flex-1 flex flex-col h-screen relative overflow-hidden">
+<!-- Background Accents -->
+<div class="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-primary-container/10 blur-[120px] rounded-full pointer-events-none"></div>
+<div class="absolute bottom-[-5%] left-[10%] w-[300px] h-[300px] bg-secondary-container/10 blur-[100px] rounded-full pointer-events-none"></div>
+<!-- TopNavBar Component -->
+<header class="sticky top-0 z-50 w-full bg-slate-950/20 backdrop-blur-md flex justify-between items-center h-16 px-8 transition-all duration-300 border-b border-white/5">
+<div class="flex items-center gap-8">
+<span class="text-lg font-black text-white">DCR 2.0</span>
+<nav class="hidden md:flex gap-6">
+<a class="font-inter text-sm font-semibold uppercase tracking-widest text-slate-400 hover:text-white transition-colors" href="#">My Path</a>
+<a class="font-inter text-sm font-semibold uppercase tracking-widest text-indigo-400 border-b-2 border-indigo-400 pb-1" href="#">Catalog</a>
+<a class="font-inter text-sm font-semibold uppercase tracking-widest text-slate-400 hover:text-white transition-colors" href="#">Team Overview</a>
+</nav>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-slate-400 hover:text-indigo-400 cursor-pointer transition-colors" data-icon="contrast">contrast</span>
+<div class="relative">
+<span class="material-symbols-outlined text-slate-400 hover:text-indigo-400 cursor-pointer transition-colors" data-icon="notifications">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-primary rounded-full border-2 border-surface"></span>
+</div>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-indigo-400/30">
+<img class="w-full h-full object-cover" data-alt="Close-up portrait of a professional male software engineer" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCPWlA5si6XVWACZOJ_v48oG6hPqxjPhcHan-Pa6fz8HCVSVpOjIVjp8a5k1UNRN7brUDNqAafyiVJaBwEyIO-AT_spJiAsJfpoGkSBc99mJKovckGVZ5adgLMRTsXZUYj-ygWIRbtaGl4ulM4DfDXMYjuSblE8qwchaLs8syQy9tsS6xiXG_R1F0gSBT412qR9mp8DMuEz6h-btfhD6-ngOGvxYPWPg0ymd0HdTnemPHC0UKcCgIwXyEFpWa3wNeQZb_sINSYA3gIW"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 overflow-y-auto custom-scrollbar p-8 relative z-10">
+<!-- Hero Header Section -->
+<div class="mb-8">
+<h2 class="text-5xl font-extrabold tracking-tight text-on-surface mb-2">Tech Catalog</h2>
+<p class="text-on-surface-variant max-w-2xl text-lg font-light leading-relaxed">
+                    Accelerate your professional growth by choosing from our curated selection of industry-leading certifications.
+                </p>
+</div>
+<!-- Redesigned Controls & Filters -->
+<div class="mb-10 space-y-6">
+<!-- Main Control Bar -->
+<div class="flex flex-col lg:flex-row gap-4 items-center justify-between">
+<!-- Left: Search & Achieved -->
+<div class="flex flex-1 items-center gap-4 w-full">
+<div class="flex-1 max-w-md relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" data-icon="search">search</span>
+<input class="w-full bg-surface-container-low border border-white/10 rounded-xl py-3 pl-12 pr-4 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all placeholder:text-slate-500" placeholder="Search items..." type="text"/>
+</div>
+<button class="flex items-center gap-2 px-5 py-3 rounded-xl border border-indigo-500/30 bg-indigo-500/10 text-indigo-300 text-sm font-semibold hover:bg-indigo-500/20 transition-colors shrink-0">
+<span class="material-symbols-outlined text-lg" data-icon="visibility">visibility</span>
+                            2 achieved
+                        </button>
+</div>
+<!-- Right: Sort & View Toggles -->
+<div class="flex items-center gap-4 shrink-0">
+<div class="flex items-center gap-3">
+<span class="text-[10px] font-black uppercase tracking-widest text-slate-500">Sort By:</span>
+<div class="relative min-w-[180px]">
+<select class="w-full appearance-none bg-surface-container-low border border-white/10 rounded-xl px-4 py-3 text-sm text-on-surface cursor-pointer focus:outline-none pr-10">
+<option>Category Order</option>
+<option>Points: High to Low</option>
+<option>Points: Low to High</option>
+<option>Most Popular</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+<div class="flex p-1 bg-surface-container-low border border-white/10 rounded-xl">
+<button class="p-2 rounded-lg bg-indigo-500 text-white shadow-lg shadow-indigo-500/20">
+<span class="material-symbols-outlined block" data-icon="grid_view">grid_view</span>
+</button>
+<button class="p-2 rounded-lg text-slate-400 hover:text-white transition-colors">
+<span class="material-symbols-outlined block" data-icon="list">list</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Secondary Filters: Topic & Provider -->
+<div class="space-y-4 pt-4 border-t border-white/5">
+<!-- Row 1: Topic -->
+<div class="flex items-center gap-6">
+<span class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 w-16">Topic</span>
+<div class="flex flex-wrap gap-2">
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold text-sky-400 hover:bg-sky-400/10 transition-colors">
+<span class="material-symbols-outlined text-base" data-icon="cloud">cloud</span> Cloud
+                            </button>
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold text-orange-400 hover:bg-orange-400/10 transition-colors">
+<span class="material-symbols-outlined text-base" data-icon="account_tree">account_tree</span> CI/CD
+                            </button>
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold text-emerald-400 hover:bg-emerald-400/10 transition-colors">
+<span class="material-symbols-outlined text-base" data-icon="schema">schema</span> GitOps
+                            </button>
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold text-rose-400 hover:bg-rose-400/10 transition-colors">
+<span class="material-symbols-outlined text-base" data-icon="shield">shield</span> Security
+                            </button>
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold text-indigo-400 hover:bg-indigo-400/10 transition-colors">
+<span class="material-symbols-outlined text-base" data-icon="hub">hub</span> Kubernetes
+                            </button>
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold text-purple-400 hover:bg-purple-400/10 transition-colors">
+<span class="material-symbols-outlined text-base" data-icon="code">code</span> IaC
+                            </button>
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold text-amber-400 hover:bg-amber-400/10 transition-colors">
+<span class="material-symbols-outlined text-base" data-icon="database">database</span> Data
+                            </button>
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold text-pink-400 hover:bg-pink-400/10 transition-colors">
+<span class="material-symbols-outlined text-base" data-icon="smart_toy">smart_toy</span> AI / ML
+                            </button>
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold text-teal-400 hover:bg-teal-400/10 transition-colors">
+<span class="material-symbols-outlined text-base" data-icon="payments">payments</span> FinOps
+                            </button>
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold text-blue-400 hover:bg-blue-400/10 transition-colors">
+<span class="material-symbols-outlined text-base" data-icon="lan">lan</span> Networking
+                            </button>
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold text-indigo-300 hover:bg-indigo-300/10 transition-colors">
+<span class="material-symbols-outlined text-base" data-icon="terminal">terminal</span> Developer
+                            </button>
+</div>
+</div>
+<!-- Row 2: Provider -->
+<div class="flex items-center gap-6">
+<span class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 w-16">Provider</span>
+<div class="flex flex-wrap gap-2">
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold text-orange-500 hover:bg-orange-500/10 transition-colors">
+<span class="material-symbols-outlined text-base" data-icon="cloud_queue">cloud_queue</span> AWS
+                            </button>
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold text-blue-500 hover:bg-blue-500/10 transition-colors">
+<span class="material-symbols-outlined text-base" data-icon="cloud_circle">cloud_circle</span> Azure
+                            </button>
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold text-red-500 hover:bg-red-500/10 transition-colors">
+<span class="material-symbols-outlined text-base" data-icon="cloud_sync">cloud_sync</span> GCP
+                            </button>
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-200 hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-base" data-icon="folder_managed">folder_managed</span> GitHub
+                            </button>
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold text-purple-500 hover:bg-purple-500/10 transition-colors">
+<span class="material-symbols-outlined text-base" data-icon="lock">lock</span> HashiCorp
+                            </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+<!-- Cert Card 1 -->
+<div class="glass-panel refractive-edge rounded-xl p-6 flex flex-col relative group transition-all duration-500 hover:translate-y-[-4px] hover:bg-white/[0.08]">
+<div class="absolute top-4 right-4 bg-primary-container/20 text-primary text-[10px] font-black px-2 py-1 rounded tracking-tighter uppercase">500 PTS</div>
+<div class="w-16 h-16 rounded-xl bg-surface-container-lowest mb-6 flex items-center justify-center p-3">
+<img class="w-full h-full object-contain" data-alt="Iconic orange and white logo of Amazon Web Services Solutions Architect Professional certification" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLKBEZu1XEX0ENLY0pa986rjBmrXQ7b-ILdBSqNtHHJ_RihA1YOeg6JAaMCrnPKBGKJX4ZORxbv50X73TsvJ6H-ONu9I5ArjoorYk6mF_16osQd8SyKuWvyEcIfWh7LMoVQUhzoWN98iXfP9ZW7FRY8tXJI68ymeZOfKVy2D8ra6jRX3yY9udpZnjIDSHw-74hO_FcYQFWE_7pekG5e4CL_nVoxCnWq0m7h9Z3-FFnxz3OmLCPnOvonx4K4KseWYjPh2NqbtBMRcGR"/>
+</div>
+<h3 class="text-lg font-bold text-on-surface mb-1 group-hover:text-primary transition-colors">AWS Solutions Architect</h3>
+<p class="text-xs text-on-surface-variant mb-6 uppercase tracking-wider font-semibold">Professional</p>
+<div class="mt-auto flex items-center justify-between">
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full border border-surface bg-surface-container-high flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Portrait of a professional developer" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBT8Om4asP5uyOvD6DI0ByLAfa8I_bWAOa35wuZiohrpx5BZQq9TIDeyr_tKHTprnjRYMMx7BSma_FwCXlMLkLj8wg8YLSE2ruaXeooD8dwNvFUS6rnpopXxpdoEwHoWDH1rWumY8EnYi3f088rrOfBX2571R5JRrvfFjnD_I-gqeB5JpHY5NihFy0zB_FkR4_JC3RKw67MGsDDQq2fwvLvzLNS1tO11CH0PrL5lHS2A1mtPY_FL3ooBvHkYAw9UEweDwoWTDA5kGnU"/>
+</div>
+<div class="w-6 h-6 rounded-full border border-surface bg-surface-container-high flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Focused software engineer" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAwEeWu_Vq-ElEGaDhhbmiqUwVMV43b-jj99kOd0Y9_FVbKiMwPHCqNbTS2p-u7iJ8_hGgK9IRILIpssdpKz3f8pTBwQETnqfa0gFnLHFmOW1retdxYDnGDbmRT1rwpDxkYBEcrfgzMQE_HqPa40TMRIibwcRwVWH_lU7eBeWPAbMd_Oudx5yqKAZ96a9OV933n_akPJprT7sEzqbvUqgrSrOqnycWCrwurIxZcXuOuPOb178rLr-927cnyMSZzOt_Sxath8nKZ-2TI"/>
+</div>
+<div class="w-6 h-6 rounded-full border border-surface bg-surface-container-high flex items-center justify-center text-[8px] font-bold">+12</div>
+</div>
+<button class="w-10 h-10 rounded-lg bg-white/5 hover:bg-primary text-on-surface hover:text-on-primary-container flex items-center justify-center transition-all duration-300 active:scale-90">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+</div>
+</div>
+<!-- Cert Card 2 -->
+<div class="glass-panel refractive-edge rounded-xl p-6 flex flex-col relative group transition-all duration-500 hover:translate-y-[-4px] hover:bg-white/[0.08]">
+<div class="absolute top-4 right-4 bg-primary-container/20 text-primary text-[10px] font-black px-2 py-1 rounded tracking-tighter uppercase">650 PTS</div>
+<div class="w-16 h-16 rounded-xl bg-surface-container-lowest mb-6 flex items-center justify-center p-3">
+<img class="w-full h-full object-contain" data-alt="Google Cloud Platform Professional Cloud Architect certification badge" src="https://lh3.googleusercontent.com/aida-public/AB6AXuARYW2KEpHO5hn8CWb_VVeAjY4W_a58bhnd5vVimMxuIdEsnwEnCPvkhbCIuDF0B9_amXuXe5MNL-eUMr0RiLv_O3y_ODnEysyjoo9jinP5MeOWva2P5vPKZsYa8pT2uRB7INeRbwGhf_yu0Ovl-t08RvQHAGpocTS0A930ACB1GQMja57pPs_hpM762PULLx6saPBWh1QXgL8C7SBD21Vf84Kgu0CnW8nc7uT4Pls0Zr8SS1ADcDp7MjFtL7sbukqt1RivuPleyLyC"/>
+</div>
+<h3 class="text-lg font-bold text-on-surface mb-1 group-hover:text-primary transition-colors">GCP Professional Architect</h3>
+<p class="text-xs text-on-surface-variant mb-6 uppercase tracking-wider font-semibold">Specialty</p>
+<div class="mt-auto flex items-center justify-between">
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full border border-surface bg-surface-container-high flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Confident female tech professional" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBC_pzNHxIckhNy2LdTDlIh7MzVoKIvhmrdNMQ9-xD0l0K8KPdTyz4fiv1pz36KF0SIzb1JbBBWiQlAlHszS4OuIEdTS2-xDrvd8YOHY2n-jVM6B1p_y_t44Zo7yiLsdDy32WH1PAV-cNy9ozW89zxvVnw479BBzRLcpe-wwVgpCvA1s04Ep1ffO5EZ5tdlZgmdLoi9kKGPRi0cN3H1FFJM74iyWnjjJI57nEojFvePuz8Vktx08eDXs3sxFCknq-pONDkmaM1cJqy"/>
+</div>
+<div class="w-6 h-6 rounded-full border border-surface bg-surface-container-high flex items-center justify-center text-[8px] font-bold">+5</div>
+</div>
+<button class="w-10 h-10 rounded-lg bg-white/5 hover:bg-primary text-on-surface hover:text-on-primary-container flex items-center justify-center transition-all duration-300 active:scale-90">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+</div>
+</div>
+<!-- Cert Card 3 -->
+<div class="glass-panel refractive-edge rounded-xl p-6 flex flex-col relative group transition-all duration-500 hover:translate-y-[-4px] hover:bg-white/[0.08]">
+<div class="absolute top-4 right-4 bg-primary-container/20 text-primary text-[10px] font-black px-2 py-1 rounded tracking-tighter uppercase">400 PTS</div>
+<div class="w-16 h-16 rounded-xl bg-surface-container-lowest mb-6 flex items-center justify-center p-3">
+<img class="w-full h-full object-contain" data-alt="HashiCorp Terraform Associate certification logo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAC22l_eHphkNXL7t1Kzam1P26tNuMgR5jG84MXlrhWEDZXvSgwQf697dT0u0ekUBf6cMG8bJG332gug2ecDZ1mjQWLxj97HGDRKFmhjLJshYg5xHRg1lA7SdULYxF3n6mgki3fsSsaZNfUmdjbmYHZeKMEUdXfvqPxsglC9Pp9xrPyH9cEQ-NSahLeKjDxl5JrIiMKL04uapRJHnEf8VClaJCbqsZgil3I8zjgwgsMXp3Dex2NuN1DEG4O6vx_Kd-8xM_6IkFaBm_E"/>
+</div>
+<h3 class="text-lg font-bold text-on-surface mb-1 group-hover:text-primary transition-colors">Terraform Associate</h3>
+<p class="text-xs text-on-surface-variant mb-6 uppercase tracking-wider font-semibold">Infrastructure</p>
+<div class="mt-auto flex items-center justify-between">
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full border border-surface bg-surface-container-high flex items-center justify-center text-[8px] font-bold">+42</div>
+</div>
+<button class="w-10 h-10 rounded-lg bg-white/5 hover:bg-primary text-on-surface hover:text-on-primary-container flex items-center justify-center transition-all duration-300 active:scale-90">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+</div>
+</div>
+<!-- Cert Card 4 -->
+<div class="glass-panel refractive-edge rounded-xl p-6 flex flex-col relative group transition-all duration-500 hover:translate-y-[-4px] hover:bg-white/[0.08]">
+<div class="absolute top-4 right-4 bg-primary-container/20 text-primary text-[10px] font-black px-2 py-1 rounded tracking-tighter uppercase">800 PTS</div>
+<div class="w-16 h-16 rounded-xl bg-surface-container-lowest mb-6 flex items-center justify-center p-3">
+<img class="w-full h-full object-contain" data-alt="CKA Certified Kubernetes Administrator certification logo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuARksUKaCfDM8NvniYq2QSi_66zaFw_L9zlGWuemCcQWhBDEY0_ARb8A2OGHM3pfu33h_HtDP85F1AhEoklbQq84Ri-1MrBXr4pdYe-TujlMyVXgVRzzAWpc_tY115UiCjdQO1Mbd3Pmmq3S_bxDZ3qYMHPunApq1p1vrurz9-oeUOvG1HbKmViY7kmisexLHSX8TzQwaIbtxGRcvZkQE26eSC5VHvKPjFdKLovNhBsO0-f3cXYV3QzhKLHG85C0fOQFowJh7FQJsj3"/>
+</div>
+<h3 class="text-lg font-bold text-on-surface mb-1 group-hover:text-primary transition-colors">Certified Admin (CKA)</h3>
+<p class="text-xs text-on-surface-variant mb-6 uppercase tracking-wider font-semibold">Kubernetes</p>
+<div class="mt-auto flex items-center justify-between">
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full border border-surface bg-surface-container-high flex items-center justify-center text-[8px] font-bold">+18</div>
+</div>
+<button class="w-10 h-10 rounded-lg bg-white/5 hover:bg-primary text-on-surface hover:text-on-primary-container flex items-center justify-center transition-all duration-300 active:scale-90">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+</div>
+</div>
+<!-- Cert Card 5 -->
+<div class="glass-panel refractive-edge rounded-xl p-6 flex flex-col relative group transition-all duration-500 hover:translate-y-[-4px] hover:bg-white/[0.08]">
+<div class="absolute top-4 right-4 bg-primary-container/20 text-primary text-[10px] font-black px-2 py-1 rounded tracking-tighter uppercase">350 PTS</div>
+<div class="w-16 h-16 rounded-xl bg-surface-container-lowest mb-6 flex items-center justify-center p-3">
+<img class="w-full h-full object-contain" data-alt="Microsoft Azure Fundamentals AZ-900 certification badge" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqG-2akdNdV8mSlEzM2RTw6XuQuZPCALs8KhS47CGWLRAJK0aXJj0F67piqySXTmtm1h6XYNMJOe0UoVQmLikh5QaSDGQHbti6F4TXUcsZCQ08TJrR68gbxJWLr_lYm1mOy0Bvt0SWmBkLnLgRgAeaamEP_etPcf7pOh30MR4gtLQja5w_5_ZIYBnVTk2wWjtCJ3lbAIkKAkE0mFteDWp2YLX9F_vGjaZ2R6ILMhogyL8T3lFE7MeJO59grLHXrNFLFT-wOjrzlot8"/>
+</div>
+<h3 class="text-lg font-bold text-on-surface mb-1 group-hover:text-primary transition-colors">Azure Fundamentals</h3>
+<p class="text-xs text-on-surface-variant mb-6 uppercase tracking-wider font-semibold">Cloud Basics</p>
+<div class="mt-auto flex items-center justify-between">
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full border border-surface bg-surface-container-high flex items-center justify-center text-[8px] font-bold">+89</div>
+</div>
+<button class="w-10 h-10 rounded-lg bg-white/5 hover:bg-primary text-on-surface hover:text-on-primary-container flex items-center justify-center transition-all duration-300 active:scale-90">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+</div>
+</div>
+<!-- Cert Card 6 -->
+<div class="glass-panel refractive-edge rounded-xl p-6 flex flex-col relative group transition-all duration-500 hover:translate-y-[-4px] hover:bg-white/[0.08]">
+<div class="absolute top-4 right-4 bg-primary-container/20 text-primary text-[10px] font-black px-2 py-1 rounded tracking-tighter uppercase">1200 PTS</div>
+<div class="w-16 h-16 rounded-xl bg-surface-container-lowest mb-6 flex items-center justify-center p-3">
+<img class="w-full h-full object-contain" data-alt="HashiCorp Vault Operations Professional certification badge" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCD8HIKQ6sbqiZUueHkrIKk7agyPqGMMkFAkJqUGG-o8vk0A7RKIydft9T1egYS4kUhrZzP2z86tARLodH4STWRlIHnDOrWqNvxR4TUIf2RKZW2ev6RibGSudhJKol6GCiwQmom-WlZeO-E3LKVgV-JdtPwPdN27jbJx_otLGwDYrCOPqGOS5dNNE5Te4QHT6qK4IWSzhlWwfzgK_IGtXwASI2E-L2aFOW212ttYVXnCxdGV8Sw5U846-oOA6MhhqQf1SH_vnMlKeC6"/>
+</div>
+<h3 class="text-lg font-bold text-on-surface mb-1 group-hover:text-primary transition-colors">Vault Operations</h3>
+<p class="text-xs text-on-surface-variant mb-6 uppercase tracking-wider font-semibold">Professional</p>
+<div class="mt-auto flex items-center justify-between">
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full border border-surface bg-surface-container-high flex items-center justify-center text-[8px] font-bold">+2</div>
+</div>
+<button class="w-10 h-10 rounded-lg bg-white/5 hover:bg-primary text-on-surface hover:text-on-primary-container flex items-center justify-center transition-all duration-300 active:scale-90">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+</div>
+</div>
+<!-- Cert Card 7 -->
+<div class="glass-panel refractive-edge rounded-xl p-6 flex flex-col relative group transition-all duration-500 hover:translate-y-[-4px] hover:bg-white/[0.08]">
+<div class="absolute top-4 right-4 bg-primary-container/20 text-primary text-[10px] font-black px-2 py-1 rounded tracking-tighter uppercase">450 PTS</div>
+<div class="w-16 h-16 rounded-xl bg-surface-container-lowest mb-6 flex items-center justify-center p-3">
+<img class="w-full h-full object-contain" data-alt="AWS Certified Developer Associate badge" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjYIkUSrXGIVdk-pA0XA0vfXR8PXZKcIWYN3bGf42CHje6_Y3-GudDQpbUGrWMmB9P5DfubUvnltv_1lgOwQNIn5MOi9YbLnGu0hUKaYxS6-qnyF3VuVLqie8_7Y2eVWU4lAkn54QC4lilz3wLiZkAonezlq6465HW9skkJV0VcrtWUomTmdug9JLotLhjxCMc9CwQR3YTmwdoxjAUkB_jWhZvHGs4ifVNG_njf1B68Z7i1hfqG4VAHqcnvzEvQbESe4qj21WDpdKT"/>
+</div>
+<h3 class="text-lg font-bold text-on-surface mb-1 group-hover:text-primary transition-colors">AWS Developer Associate</h3>
+<p class="text-xs text-on-surface-variant mb-6 uppercase tracking-wider font-semibold">Development</p>
+<div class="mt-auto flex items-center justify-between">
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full border border-surface bg-surface-container-high flex items-center justify-center text-[8px] font-bold">+56</div>
+</div>
+<button class="w-10 h-10 rounded-lg bg-white/5 hover:bg-primary text-on-surface hover:text-on-primary-container flex items-center justify-center transition-all duration-300 active:scale-90">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+</div>
+</div>
+<!-- Cert Card 8 -->
+<div class="glass-panel refractive-edge rounded-xl p-6 flex flex-col relative group transition-all duration-500 hover:translate-y-[-4px] hover:bg-white/[0.08]">
+<div class="absolute top-4 right-4 bg-primary-container/20 text-primary text-[10px] font-black px-2 py-1 rounded tracking-tighter uppercase">750 PTS</div>
+<div class="w-16 h-16 rounded-xl bg-surface-container-lowest mb-6 flex items-center justify-center p-3">
+<img class="w-full h-full object-contain" data-alt="Google Cloud Platform Professional Cloud Security Engineer certification badge" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBB2DbbtQdREJTf95vZL7f8ErgbL9QSIZmJuZnuM-A_AyGOLEmDX9a_qome6h4Go0PoQnAuuGrwwKHzFs0wkQOt1s49VUmnO3KDWujrXTVcdvCnp5SOdKI0PSKl8Qp73sR9XITstkp3HCZFO1oQhjOnLDrxX5psdxCjKequY6e15NJs0GJ_fRt85VB3VigqXiuPn0uBXFGUTT9vqKKK1oV3tcVJFvqMGYGJU6ExvOAe1wnwm5H3dqEwAHueBwZEtA6zRHj4ZuZa_L4H"/>
+</div>
+<h3 class="text-lg font-bold text-on-surface mb-1 group-hover:text-primary transition-colors">GCP Security Specialist</h3>
+<p class="text-xs text-on-surface-variant mb-6 uppercase tracking-wider font-semibold">Security</p>
+<div class="mt-auto flex items-center justify-between">
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full border border-surface bg-surface-container-high flex items-center justify-center text-[8px] font-bold">+14</div>
+</div>
+<button class="w-10 h-10 rounded-lg bg-white/5 hover:bg-primary text-on-surface hover:text-on-primary-container flex items-center justify-center transition-all duration-300 active:scale-90">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Bottom Floating Summary -->
+<div class="fixed bottom-8 left-1/2 -translate-x-1/2 bg-surface-container-high/80 backdrop-blur-xl px-6 py-4 rounded-2xl shadow-2xl border border-white/10 flex items-center gap-8 z-50">
+<div class="flex flex-col">
+<span class="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Planned Points</span>
+<span class="text-xl font-bold text-primary">1,150 PTS</span>
+</div>
+<div class="w-px h-8 bg-white/10"></div>
+<div class="flex flex-col">
+<span class="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Certifications</span>
+<span class="text-xl font-bold text-on-surface">2 Selected</span>
+</div>
+<button class="bg-gradient-to-br from-primary-container to-primary px-6 py-2.5 rounded-xl font-bold text-sm text-on-primary-container shadow-lg shadow-primary-container/20 active:scale-95 transition-transform">
+                    Checkout Path
+                </button>
+</div>
+</main>
+</div>
+</body></html>
