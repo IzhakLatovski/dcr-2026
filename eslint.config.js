@@ -20,4 +20,17 @@ export default defineConfig([
       globals: globals.browser,
     },
   },
+  // Ported design-system primitives + composed items follow the upstream
+  // shadcn / temp/ conventions (export variants alongside components,
+  // forward refs via cloneElement, mount-flag pattern in tooltip portal).
+  // These rules conflict with those conventions; disabling locally keeps
+  // the port 1:1 with upstream.
+  {
+    files: ['src/components/ui/**/*.{ts,tsx}', 'src/components/composed/**/*.{ts,tsx}'],
+    rules: {
+      'react-refresh/only-export-components': 'off',
+      'react-hooks/refs': 'off',
+      'react-hooks/set-state-in-effect': 'off',
+    },
+  },
 ])

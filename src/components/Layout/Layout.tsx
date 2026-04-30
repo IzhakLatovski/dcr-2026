@@ -2,7 +2,8 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import Sidebar from "../Sidebar/Sidebar";
 import CommandPalette from "../CommandPalette/CommandPalette";
 import type { SearchItem } from "../CommandPalette/CommandPalette";
-import Toast, { type ToastMessage } from "../Toast/Toast";
+import { Toaster, toast } from "sonner";
+import { Check, X } from "lucide-react";
 import FormsPage from "../FormsPage/FormsPage";
 import GuidelinesPage from "../GuidelinesPage/GuidelinesPage";
 import FaqPage from "../FaqPage/FaqPage";
@@ -220,8 +221,6 @@ export default function Layout() {
 
   const notifications = useNotifications(auth.user?.email ?? null);
 
-  const [toasts, setToasts] = useState<ToastMessage[]>([]);
-  const toastIdRef = useRef(0);
   const [isSimulatorMode, setIsSimulatorMode] = useState(() => {
     const saved = localStorage.getItem("dcr-simulator-mode");
     return saved ? saved === "true" : true; // Default to simulator mode
@@ -260,8 +259,14 @@ export default function Layout() {
   })();
 
   const showToast = useCallback((text: string, type: "added" | "removed") => {
-    const id = ++toastIdRef.current;
-    setToasts((prev) => [...prev, { id, text, type }]);
+    toast(text, {
+      icon:
+        type === "added" ? (
+          <Check className="size-4 text-green-600" />
+        ) : (
+          <X className="size-4 text-muted-foreground" />
+        ),
+    });
   }, []);
 
   // Show a toast whenever a new notification arrives
@@ -271,10 +276,6 @@ export default function Layout() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [notifications.latestNew]);
-
-  const dismissToast = useCallback((id: number) => {
-    setToasts((prev) => prev.filter((t) => t.id !== id));
-  }, []);
 
   const handleAddAllRequired = useCallback(async () => {
     const requiredItems = professionalism.filter((item) => item.required);
@@ -1063,7 +1064,7 @@ export default function Layout() {
           setPaletteOpen(false);
         }}
       />
-      <Toast toasts={toasts} onDismiss={dismissToast} />
+      <Toaster position="bottom-right" />
       {showProfileSetup && (
         <ProfileSetupModal
           onComplete={handleProfileSetupComplete}

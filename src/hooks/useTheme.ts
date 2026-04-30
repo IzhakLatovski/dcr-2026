@@ -9,7 +9,9 @@ export function useTheme() {
   });
 
   useEffect(() => {
-    document.documentElement.dataset.theme = theme;
+    const root = document.documentElement;
+    root.dataset.theme = theme;
+    root.classList.toggle('dark', theme === 'dark');
     localStorage.setItem('dcr-theme', theme);
   }, [theme]);
 
