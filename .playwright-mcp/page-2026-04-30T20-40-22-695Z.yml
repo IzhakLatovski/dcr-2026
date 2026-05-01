@@ -1,0 +1,90 @@
+- generic [ref=e3]:
+  - complementary [ref=e4]:
+    - heading "DCR" [level=1] [ref=e6] [cursor=pointer]
+    - navigation [ref=e7]:
+      - generic [ref=e8]:
+        - heading "Personal Zone" [level=3]
+        - list [ref=e9]:
+          - listitem [ref=e10]:
+            - button " Home" [ref=e11] [cursor=pointer]:
+              - generic [ref=e13]: 
+              - generic: Home
+          - listitem [ref=e14]:
+            - button " My Plan" [ref=e15] [cursor=pointer]:
+              - generic [ref=e17]: 
+              - generic: My Plan
+          - listitem [ref=e18]:
+            - button " My Profile" [active] [ref=e19] [cursor=pointer]:
+              - generic [ref=e21]: 
+              - generic: My Profile
+      - generic [ref=e22]:
+        - heading "Catalog" [level=3]
+        - generic [ref=e23]:
+          - heading "Pillars" [level=4]
+          - list [ref=e24]:
+            - listitem [ref=e25]:
+              - button " Professionalism" [ref=e26] [cursor=pointer]:
+                - generic [ref=e28]: 
+                - generic: Professionalism
+            - listitem [ref=e29]:
+              - button " Tech" [ref=e30] [cursor=pointer]:
+                - generic [ref=e32]: 
+                - generic: Tech
+            - listitem [ref=e33]:
+              - button " Knowledge Unlock" [ref=e34] [cursor=pointer]:
+                - generic [ref=e36]: 
+                - generic: Knowledge Unlock
+            - listitem [ref=e37]:
+              - button " Collaboration" [ref=e38] [cursor=pointer]:
+                - generic [ref=e40]: 
+                - generic: Collaboration
+        - generic [ref=e41]:
+          - heading "Badges" [level=4]
+          - list [ref=e42]:
+            - listitem [ref=e43]:
+              - button " Roadmaps" [ref=e44] [cursor=pointer]:
+                - generic [ref=e46]: 
+                - generic: Roadmaps
+        - generic [ref=e47]:
+          - heading "Extra" [level=4]
+          - list [ref=e48]:
+            - listitem [ref=e49]:
+              - button " Extra" [ref=e50] [cursor=pointer]:
+                - generic [ref=e52]: 
+                - generic: Extra
+      - generic [ref=e53]:
+        - heading "Resources" [level=3]
+        - list [ref=e54]:
+          - listitem [ref=e55]:
+            - button " Guidelines" [ref=e56] [cursor=pointer]:
+              - generic [ref=e58]: 
+              - generic: Guidelines
+          - listitem [ref=e59]:
+            - button " FAQ" [ref=e60] [cursor=pointer]:
+              - generic [ref=e62]: 
+              - generic: FAQ
+          - listitem [ref=e63]:
+            - button " Forms" [ref=e64] [cursor=pointer]:
+              - generic [ref=e66]: 
+              - generic: Forms
+    - button "" [ref=e67] [cursor=pointer]:
+      - generic [ref=e68]: 
+  - main [ref=e69]:
+    - generic [ref=e71]:
+      - text: 
+      - heading "My Profile" [level=2] [ref=e402]
+      - generic [ref=e73]:
+        - button " Search ⌘K" [ref=e74] [cursor=pointer]:
+          - generic [ref=e75]: 
+          - generic [ref=e76]: Search
+          - generic [ref=e77]: ⌘K
+        - button "" [ref=e78] [cursor=pointer]:
+          - generic [ref=e79]: 
+        - button " Sign in" [ref=e80] [cursor=pointer]:
+          - generic [ref=e81]: 
+          - generic [ref=e82]: Sign in
+    - generic [ref=e404]:
+      - img [ref=e406]
+      - heading "Sign in to view your profile" [level=3] [ref=e409]
+      - paragraph [ref=e410]: Your personal zone shows your progress, plan, and achievements.
+  - region "Notifications alt+T"

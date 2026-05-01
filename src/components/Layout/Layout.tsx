@@ -39,7 +39,10 @@ import { useAuth } from "../../hooks/useAuth";
 import type { AuthUser } from "../../hooks/useAuth";
 import type { CatalogItem, RoadmapItem, UserDocument } from "../../data/types";
 import { levels } from "../../data/levels";
-import "./Layout.css";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Menu, Search, Sun, Moon, LogOut, UserStar, Clock as ClockIcon, XCircle } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 function HeaderUser({
   user,
@@ -81,70 +84,74 @@ function HeaderUser({
 
   if (!user) {
     return (
-      <button className="header-sign-in-btn" onClick={onSignIn}>
-        <i className="ri-google-fill"></i>
+      <Button variant="outline" size="sm" onClick={onSignIn}>
+        <i className="ri-google-fill" />
         <span>Sign in</span>
-      </button>
+      </Button>
     );
   }
 
   return (
-    <div className="header-user" ref={ref}>
+    <div className="relative" ref={ref}>
       <button
-        className="header-avatar-btn"
+        type="button"
         onClick={() => setOpen((o) => !o)}
         title={user.email}
+        className="inline-flex size-9 items-center justify-center rounded-full overflow-hidden bg-primary/10 text-primary outline-none transition-all duration-150 hover:ring-2 hover:ring-ring/50 focus-visible:ring-3 focus-visible:ring-ring/50"
       >
         {user.photoURL && !imgError ? (
           <img
             src={user.photoURL}
             alt={user.displayName}
-            className="header-avatar-img"
+            className="size-full object-cover"
             onError={() => setImgError(true)}
           />
         ) : (
-          <div className="header-avatar-placeholder">
-            {getInitials(user.displayName)}
-          </div>
+          <span className="text-sm font-semibold">{getInitials(user.displayName)}</span>
         )}
       </button>
       {open && (
-        <div className="header-user-dropdown">
-          <div className="header-user-name">{user.displayName}</div>
-          <div className="header-user-email">{user.email}</div>
-          {userProfile?.role === "team_leader" && (
-            <div className="header-user-role">
-              <i className="ri-user-star-line"></i> Team Leader
-            </div>
-          )}
-          {userProfile?.role === "employee" &&
-            userProfile?.approvalStatus === "approved" &&
-            teamLeaderName && (
-              <div className="header-user-role">
-                <i className="ri-user-star-line"></i> Reports to{" "}
-                <strong>{teamLeaderName}</strong>
-              </div>
+        <div className="absolute right-0 top-full mt-2 w-64 rounded-2xl border border-border bg-popover text-popover-foreground shadow-xl overflow-hidden z-50 animate-in fade-in-0 zoom-in-95 duration-150">
+          <div className="px-4 py-3 border-b border-border">
+            <p className="text-sm font-semibold text-foreground truncate">{user.displayName}</p>
+            <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+          </div>
+          <div className="px-4 py-2 flex flex-col gap-1.5">
+            {userProfile?.role === "team_leader" && (
+              <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+                <UserStar className="size-3.5" /> Team Leader
+              </span>
             )}
-          {userProfile?.role === "employee" &&
-            userProfile?.approvalStatus === "pending" && (
-              <div className="header-user-role header-user-role--pending">
-                <i className="ri-time-line"></i> Awaiting approval
-              </div>
-            )}
-          {userProfile?.role === "employee" &&
-            userProfile?.approvalStatus === "rejected" && (
-              <div className="header-user-role header-user-role--rejected">
-                <i className="ri-close-circle-line"></i> Approval rejected
-              </div>
-            )}
+            {userProfile?.role === "employee" &&
+              userProfile?.approvalStatus === "approved" &&
+              teamLeaderName && (
+                <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+                  <UserStar className="size-3.5" />
+                  Reports to <strong className="text-foreground">{teamLeaderName}</strong>
+                </span>
+              )}
+            {userProfile?.role === "employee" &&
+              userProfile?.approvalStatus === "pending" && (
+                <Badge variant="warning" size="sm" className="self-start">
+                  <ClockIcon className="size-3" /> Awaiting approval
+                </Badge>
+              )}
+            {userProfile?.role === "employee" &&
+              userProfile?.approvalStatus === "rejected" && (
+                <Badge variant="destructive" size="sm" className="self-start">
+                  <XCircle className="size-3" /> Approval rejected
+                </Badge>
+              )}
+          </div>
           <button
-            className="header-user-signout"
+            type="button"
             onClick={() => {
               setOpen(false);
               onSignOut();
             }}
+            className="w-full flex items-center gap-2 border-t border-border px-4 py-3 text-sm text-foreground hover:bg-accent transition-colors duration-150 outline-none focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:ring-inset"
           >
-            <i className="ri-logout-box-line"></i> Sign out
+            <LogOut className="size-4" /> Sign out
           </button>
         </div>
       )}
@@ -692,10 +699,6 @@ export default function Layout() {
     [handleNavigate],
   );
 
-  const mainClasses = ["main-container", collapsed && "collapsed"]
-    .filter(Boolean)
-    .join(" ");
-
   const profile = userProfile.profile;
   const teamLeaderName = profile?.teamLeaderName ?? null;
 
@@ -713,11 +716,15 @@ export default function Layout() {
       activeQuarter={activeQuarter}
       setActiveQuarter={setActiveQuarter}
     >
-    <div className="app-container">
-      <div
-        className={`mobile-sidebar-overlay${sidebarOpen ? " active" : ""}`}
-        onClick={() => setSidebarOpen(false)}
-      />
+    <div className="flex h-screen bg-background text-foreground">
+      {/* Mobile sidebar overlay */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 z-30 bg-black/50 backdrop-blur-sm lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+          aria-hidden
+        />
+      )}
       <Sidebar
         activeId={activeId}
         onNavigate={handleNavigate}
@@ -735,33 +742,39 @@ export default function Layout() {
         unreadNotifications={notifications.unreadCount}
         onNotificationsClick={() => notifications.markAllAsRead()}
       />
-      <main className={mainClasses}>
-        <header className="header">
-          <div className="header-content">
+      <main className="flex-1 flex flex-col min-w-0 h-screen">
+        <header className="shrink-0 border-b border-border bg-card/60 backdrop-blur-md">
+          <div className="flex items-center gap-3 px-4 sm:px-6 h-16">
             <button
-              className="mobile-menu-btn"
+              type="button"
               onClick={() => setSidebarOpen(true)}
+              className="lg:hidden inline-flex size-9 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              aria-label="Open menu"
             >
-              <i className="ri-menu-line"></i>
+              <Menu className="size-5" />
             </button>
-            <h2 className="category-title">{activeLabel}</h2>
-            <div className="header-actions">
+            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground truncate">
+              {activeLabel}
+            </h2>
+            <div className="ml-auto flex items-center gap-2">
               <button
-                className="cmd-k-hint"
+                type="button"
                 onClick={() => setPaletteOpen(true)}
+                className="hidden sm:inline-flex items-center gap-2 rounded-xl border border-border bg-muted/30 pl-3 pr-1.5 h-9 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
               >
-                <i className="ri-search-line"></i>
-                <span className="cmd-k-hint-text">Search</span>
-                <kbd className="cmd-k-hint-kbd">⌘K</kbd>
+                <Search className="size-4" />
+                <span>Search</span>
+                <kbd className="inline-flex items-center rounded-md border border-border bg-card px-1.5 py-0.5 text-[0.6rem] font-mono text-muted-foreground">
+                  ⌘K
+                </kbd>
               </button>
               <button
-                className="theme-toggle"
+                type="button"
                 onClick={toggleTheme}
                 title={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
+                className="inline-flex size-9 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
-                <i
-                  className={theme === "light" ? "ri-moon-line" : "ri-sun-line"}
-                ></i>
+                {theme === "light" ? <Moon className="size-4" /> : <Sun className="size-4" />}
               </button>
               <HeaderUser
                 user={auth.user}
@@ -774,7 +787,10 @@ export default function Layout() {
           </div>
         </header>
         <div
-          className={`content-area${pageTransition ? " page-transition" : ""}`}
+          className={cn(
+            "flex-1 min-h-0 overflow-hidden transition-opacity duration-200",
+            pageTransition && "opacity-0",
+          )}
           ref={contentRef}
         >
           {activeId === "home" && (

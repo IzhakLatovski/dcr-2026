@@ -1,9 +1,51 @@
 import { useState, useMemo } from 'react';
+import {
+  User,
+  Trophy,
+  Award,
+  Newspaper,
+  FileText,
+  Eye,
+  EyeOff,
+  Calendar,
+  CheckCircle2,
+  XCircle,
+  Clock,
+  History,
+  ChevronDown,
+  ChevronUp,
+  AlertCircle,
+  ArrowUpRight,
+  Briefcase,
+  Computer,
+  Edit3,
+  Heart,
+  Route,
+  Star,
+  ArrowRight,
+  Route as JourneyIcon,
+  BarChart3,
+} from 'lucide-react';
 import { useAchievements } from '../../hooks/useAchievements';
 import { usePlanHistory } from '../../hooks/usePlanHistory';
 import { useCurrentQuarter } from '../../contexts/QuarterContext';
-import type { UserDocument, CatalogItem, AchievedItem, Achievement, PlanHistoryEntry, LevelHistoryEntry, PlanStatus } from '../../data/types';
-import './ProfilePage.css';
+import type {
+  UserDocument,
+  CatalogItem,
+  AchievedItem,
+  Achievement,
+  PlanHistoryEntry,
+  LevelHistoryEntry,
+  PlanStatus,
+} from '../../data/types';
+import { ProfileHeader } from '@/components/composed/profile-header';
+import { AchievementCard } from '@/components/composed/achievement-card';
+import { ActivityFeed, type TimelineItemProps } from '@/components/composed/activity-feed';
+import { SectionHeader } from '@/components/composed/section-header';
+import { StatCard } from '@/components/composed/stat-card';
+import { Badge } from '@/components/ui/badge';
+import { EmptyState } from '@/components/ui/empty-state';
+import { cn } from '@/lib/utils';
 
 interface AuthUser {
   uid: string;
@@ -26,12 +68,12 @@ interface ProfilePageProps {
   onNavigate?: (id: string) => void;
 }
 
-const PILLAR_CONFIG: Record<string, { label: string; icon: string; color: string }> = {
-  tech: { label: 'Tech', icon: 'ri-computer-line', color: 'var(--accent-color)' },
-  professionalism: { label: 'Professionalism', icon: 'ri-shield-check-line', color: 'var(--success-color)' },
-  'knowledge-unlock': { label: 'Knowledge Unlock', icon: 'ri-edit-line', color: '#8b5cf6' },
-  collaboration: { label: 'Collaboration', icon: 'ri-hearts-line', color: '#ec4899' },
-  roadmaps: { label: 'Roadmaps', icon: 'ri-route-line', color: 'var(--warning-color)' },
+const PILLAR_ICON: Record<string, React.ComponentType<{ className?: string }>> = {
+  tech: Computer,
+  professionalism: Briefcase,
+  'knowledge-unlock': Edit3,
+  collaboration: Heart,
+  roadmaps: Route,
 };
 
 interface GalleryEntry {
@@ -68,8 +110,6 @@ function formatDate(iso: string | null | undefined): string {
   }
 }
 
-
-/** Returns 'Q1-2026', 'Q2-2026', ... up to (and including) endQuarter */
 function getQuartersBetween(startQuarter: string, endQuarter: string): string[] {
   const parseQ = (q: string) => {
     const [qPart, year] = q.split('-');
@@ -82,23 +122,12 @@ function getQuartersBetween(startQuarter: string, endQuarter: string): string[] 
   while (y < end.y || (y === end.y && q <= end.q)) {
     result.push(`Q${q}-${y}`);
     q++;
-    if (q > 4) { q = 1; y++; }
+    if (q > 4) {
+      q = 1;
+      y++;
+    }
   }
   return result;
-}
-
-function CertBadgeCard({ entry }: { entry: GalleryEntry }) {
-  return (
-    <div className="profile-cert-badge" title={entry.item.name}>
-      <div className="profile-cert-badge-icon">
-        {entry.item.image ? (
-          <img src={entry.item.image} alt={entry.item.name} className="profile-cert-badge-img" />
-        ) : (
-          <i className="ri-award-line"></i>
-        )}
-      </div>
-    </div>
-  );
 }
 
 interface PlanDisplayRow {
@@ -127,14 +156,12 @@ export default function ProfilePage({
   planRejectionReason,
   onNavigate,
 }: ProfilePageProps) {
-  // ── All hooks before any conditional return ──
   const currentQuarter = useCurrentQuarter();
   const { achievements, isLoading: achLoading } = useAchievements(user?.email ?? null);
   const { planHistory, isLoading: histLoading } = usePlanHistory(user?.email ?? null);
   const [expandedQuarter, setExpandedQuarter] = useState<string | null>(null);
   const [showCertList, setShowCertList] = useState(false);
 
-  // Approved tech cert entries (historical + quarterly)
   const techCertEntries = useMemo<GalleryEntry[]>(() => {
     const histItems: AchievedItem[] = profile?.achieved?.items ?? [];
     const fromH: GalleryEntry[] = histItems
@@ -158,29 +185,28 @@ export default function ProfilePage({
         quarter: a.quarter,
       }));
     return [...fromQ, ...fromH].sort(
-      (a, b) => new Date(b.completionDate).getTime() - new Date(a.completionDate).getTime()
+      (a, b) => new Date(b.completionDate).getTime() - new Date(a.completionDate).getTime(),
     );
   }, [profile?.achieved?.items, achievements]);
 
-  // 2026+ approved achievements stats
   const yearStats = useMemo(() => {
     const year2026 = achievements.filter(
       (a: Achievement) =>
-        a.status === 'approved' &&
-        a.quarter &&
-        parseInt(a.quarter.split('-')[1]) >= 2026
+        a.status === 'approved' && a.quarter && parseInt(a.quarter.split('-')[1]) >= 2026,
     );
     return {
-      points: year2026.reduce((sum: number, a: Achievement) => sum + (a.item.promotedPoints ?? a.item.points), 0),
+      points: year2026.reduce(
+        (sum: number, a: Achievement) => sum + (a.item.promotedPoints ?? a.item.points),
+        0,
+      ),
       certs: techCertEntries.length,
       magazineArticles: year2026.filter((a: Achievement) => a.item.id === 'ku-article-magazine').length,
       externalArticles: year2026.filter((a: Achievement) => a.item.id === 'ku-article-external').length,
       reviewer: year2026.filter((a: Achievement) => a.item.id === 'col-peer-reviewer').length,
       reviewee: year2026.filter((a: Achievement) => a.item.id === 'col-peer-reviewee').length,
     };
-  }, [achievements]);
+  }, [achievements, techCertEntries]);
 
-  // Build the full quarterly history list: current quarter down to Q1-2026
   const quarterlyHistoryList = useMemo<PlanDisplayRow[]>(() => {
     const currentQ = currentQuarter;
     const startQ = 'Q1-2026';
@@ -190,7 +216,7 @@ export default function ProfilePage({
     };
     if (parseQ(currentQ) < parseQ(startQ)) return [];
 
-    const allQuarters = getQuartersBetween(startQ, currentQ).reverse(); // most recent first
+    const allQuarters = getQuartersBetween(startQ, currentQ).reverse();
     const historyMap = new Map(planHistory.map((e: PlanHistoryEntry) => [e.quarter, e]));
 
     return allQuarters.map((q): PlanDisplayRow => {
@@ -199,7 +225,17 @@ export default function ProfilePage({
       if (isCurrent) {
         const hasPlanItems = planStatus !== undefined && (planItems?.length ?? 0) > 0;
         if (!hasPlanItems) {
-          return { quarter: q, isCurrent: true, status: 'none', items: [], completedItemKeys: [], totalPoints: 0, selectedLevelId: null, levelAchieved: null, noData: true };
+          return {
+            quarter: q,
+            isCurrent: true,
+            status: 'none',
+            items: [],
+            completedItemKeys: [],
+            totalPoints: 0,
+            selectedLevelId: null,
+            levelAchieved: null,
+            noData: true,
+          };
         }
         return {
           quarter: q,
@@ -218,7 +254,17 @@ export default function ProfilePage({
 
       const entry = historyMap.get(q);
       if (!entry) {
-        return { quarter: q, isCurrent: false, status: 'none', items: [], completedItemKeys: [], totalPoints: 0, selectedLevelId: null, levelAchieved: null, noData: true };
+        return {
+          quarter: q,
+          isCurrent: false,
+          status: 'none',
+          items: [],
+          completedItemKeys: [],
+          totalPoints: 0,
+          selectedLevelId: null,
+          levelAchieved: null,
+          noData: true,
+        };
       }
       return {
         quarter: q,
@@ -235,95 +281,171 @@ export default function ProfilePage({
         noData: false,
       };
     });
-  }, [currentQuarter, planHistory, planStatus, planItems, planTotalPoints, planSelectedLevelId, planSubmittedAt, planRejectionReason, profile?.plan]);
-
-  const planStatusConfig = planStatus != null ? ({
-    draft:    { label: 'Draft',    icon: 'ri-draft-line',           cls: 'plan-status-draft' },
-    pending:  { label: 'Pending',  icon: 'ri-time-line',            cls: 'plan-status-pending' },
-    approved: { label: 'Approved', icon: 'ri-checkbox-circle-line', cls: 'plan-status-approved' },
-    rejected: { label: 'Rejected', icon: 'ri-close-circle-line',    cls: 'plan-status-rejected' },
-  } as const)[planStatus] ?? null : null;
+  }, [
+    currentQuarter,
+    planHistory,
+    planStatus,
+    planItems,
+    planTotalPoints,
+    planSelectedLevelId,
+    planSubmittedAt,
+    planRejectionReason,
+    profile?.plan,
+  ]);
 
   // ── Guard: not signed in ──
   if (!user) {
     return (
-      <div className="profile-page">
-        <div className="profile-card profile-signin-prompt">
-          <i className="ri-user-3-line profile-signin-icon"></i>
-          <h2>Sign in to view your profile</h2>
-          <p>Your personal zone shows your progress, plan, and achievements.</p>
-        </div>
+      <div className="flex items-center justify-center h-full p-6">
+        <EmptyState
+          icon={<User />}
+          title="Sign in to view your profile"
+          description="Your personal zone shows your progress, plan, and achievements."
+        />
       </div>
     );
   }
 
-  // ── Derivations ──
   const role = profile?.role ?? 'employee';
-  const roleConfig =
-    role === 'admin'
-      ? { label: 'Admin', cls: 'role-admin' }
-      : role === 'team_leader'
-        ? { label: 'Team Leader', cls: 'role-leader' }
-        : { label: 'Employee', cls: 'role-employee' };
+  const roleBadge =
+    role === 'admin' ? (
+      <Badge variant="primary" size="md">
+        Admin
+      </Badge>
+    ) : role === 'team_leader' ? (
+      <Badge variant="primary" size="md">
+        Team Leader
+      </Badge>
+    ) : (
+      <Badge variant="secondary" size="md">
+        Employee
+      </Badge>
+    );
 
   const yearStatItems = [
-    { icon: 'ri-trophy-line', value: yearStats.points.toLocaleString(), label: 'Points earned' },
-    { icon: 'ri-award-line', value: String(yearStats.certs), label: 'Certifications' },
-    { icon: 'ri-newspaper-line', value: String(yearStats.magazineArticles), label: 'Magazine articles' },
-    { icon: 'ri-article-line', value: String(yearStats.externalArticles), label: 'External articles' },
-    { icon: 'ri-eye-line', value: String(yearStats.reviewer), label: 'Code reviews done' },
-    { icon: 'ri-eye-2-line', value: String(yearStats.reviewee), label: 'Reviews received' },
+    { Icon: Trophy, value: yearStats.points.toLocaleString(), label: 'Points earned', tint: 'primary' as const },
+    { Icon: Award, value: String(yearStats.certs), label: 'Certifications', tint: 'success' as const, isCerts: true },
+    { Icon: Newspaper, value: String(yearStats.magazineArticles), label: 'Magazine articles', tint: 'warning' as const },
+    { Icon: FileText, value: String(yearStats.externalArticles), label: 'External articles', tint: 'muted' as const },
+    { Icon: Eye, value: String(yearStats.reviewer), label: 'Code reviews done', tint: 'primary' as const },
+    { Icon: EyeOff, value: String(yearStats.reviewee), label: 'Reviews received', tint: 'muted' as const },
   ];
 
+  // Career journey timeline
+  const levelEntries: LevelHistoryEntry[] = profile?.levelHistory ?? [];
+  const joinDate = profile?.joinedCompanyAt ?? profile?.createdAt;
+  const timelineItems: TimelineItemProps[] = [];
+  if (joinDate) {
+    timelineItems.push({
+      marker: <CheckCircle2 />,
+      tone: 'success',
+      title: 'Joined Develeap',
+      date: formatMonthYear(joinDate),
+    });
+  }
+  [...levelEntries]
+    .sort((a, b) => a.date.localeCompare(b.date))
+    .forEach((entry) => {
+      timelineItems.push({
+        marker: <span className="text-xs font-bold">{entry.level}</span>,
+        tone: 'primary',
+        title: `Level ${entry.level}`,
+        subtitle: entry.quarter ?? undefined,
+        date: formatMonthYear(entry.date),
+      });
+    });
+  timelineItems.push({
+    marker: <Clock />,
+    tone: 'muted',
+    title: 'Today',
+    date: formatMonthYear(new Date().toISOString()),
+  });
+
+  // Plan status badge
+  const planStatusVariant =
+    planStatus === 'approved'
+      ? 'success'
+      : planStatus === 'rejected'
+        ? 'destructive'
+        : planStatus === 'pending'
+          ? 'warning'
+          : 'default';
+  const planStatusLabel =
+    planStatus === 'approved'
+      ? 'Approved'
+      : planStatus === 'rejected'
+        ? 'Rejected'
+        : planStatus === 'pending'
+          ? 'Pending'
+          : 'Draft';
+
   return (
-    <div className="profile-page">
+    <div className="flex flex-col gap-4 p-4 sm:p-6 h-full overflow-y-auto">
       {/* ── Profile Header ── */}
-      <div className="profile-card profile-header-card">
-        <div className="profile-header-left">
-          <div className={`profile-avatar avatar-${role}`}>
+      <ProfileHeader
+        avatar={
+          <div className="flex size-16 sm:size-20 items-center justify-center rounded-2xl bg-primary/10 text-primary overflow-hidden">
             {profile?.photoURL ? (
-              <img src={profile.photoURL} alt={profile.displayName} className="profile-avatar-img" />
+              <img
+                src={profile.photoURL}
+                alt={profile.displayName}
+                className="size-full object-cover"
+              />
             ) : (
-              <span className="profile-avatar-initials">
+              <span className="text-2xl font-bold">
                 {getInitials(profile?.displayName ?? user.displayName)}
               </span>
             )}
           </div>
-          <div className="profile-identity">
-            <h2 className="profile-name">{profile?.displayName ?? user.displayName ?? 'Unknown'}</h2>
-            <p className="profile-email">{profile?.email ?? user.email}</p>
-            <div className="profile-badges">
-              <span className={`profile-badge ${roleConfig.cls}`}>{roleConfig.label}</span>
-            </div>
-            {role === 'employee' && profile?.teamLeaderName && (
-              <div className="profile-meta-row profile-meta-tl">
-                <i className="ri-user-star-line"></i>
-                <span>TL: <strong>{profile.teamLeaderName}</strong></span>
-              </div>
-            )}
+        }
+        name={profile?.displayName ?? user.displayName ?? 'Unknown'}
+        email={profile?.email ?? user.email ?? undefined}
+        badges={roleBadge}
+        meta={
+          role === 'employee' && profile?.teamLeaderName ? (
+            <span className="inline-flex items-center gap-1.5">
+              <span className="text-muted-foreground">TL:</span>
+              <span className="font-semibold text-foreground">{profile.teamLeaderName}</span>
+            </span>
+          ) : undefined
+        }
+        trailing={
+          <div className="flex flex-col items-center justify-center rounded-2xl bg-primary/10 text-primary px-6 py-3">
+            <span className="text-3xl font-bold tracking-tight tabular-nums">
+              {profile?.currentLevel ?? '—'}
+            </span>
+            <span className="text-[0.65rem] font-semibold uppercase tracking-wider text-primary/80">
+              Level
+            </span>
           </div>
-        </div>
-        <div className="profile-header-right">
-          <div className="profile-level-circle">
-            <span className="profile-level-number">{profile?.currentLevel ?? '—'}</span>
-            <span className="profile-level-label">Level</span>
-          </div>
-        </div>
-      </div>
+        }
+      />
 
-      {/* ── Certification Badges ── */}
+      {/* ── Certification Badges Strip ── */}
       {!achLoading && techCertEntries.length > 0 && (
-        <div className="profile-card profile-gallery-card">
-          <div className="profile-cert-strip">
-            {techCertEntries.map((entry) => (
-              <CertBadgeCard key={entry.key} entry={entry} />
-            ))}
-          </div>
+        <div className="flex gap-2 overflow-x-auto -mx-1 px-1 py-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {techCertEntries.map((entry) => (
+            <div
+              key={entry.key}
+              title={entry.item.name}
+              className="shrink-0 inline-flex size-16 items-center justify-center rounded-2xl border border-border bg-card overflow-hidden p-2"
+            >
+              {entry.item.image ? (
+                <img
+                  src={entry.item.image}
+                  alt={entry.item.name}
+                  className="size-full object-contain"
+                />
+              ) : (
+                <Award className="size-6 text-muted-foreground" />
+              )}
+            </div>
+          ))}
         </div>
       )}
 
-      {/* ── Current Plan Status Card ── */}
-      {planStatus !== undefined && planStatusConfig && (() => {
+      {/* ── Current Plan Status ── */}
+      {planStatus !== undefined && (() => {
         const currentLevel = profile?.currentLevel ?? null;
         const targetLevelId =
           planSelectedLevelId != null && planSelectedLevelId > 0
@@ -336,243 +458,265 @@ export default function ProfilePage({
 
         return (
           <div
-            className={`profile-card profile-plan-status-card${onNavigate ? ' profile-card-clickable' : ''}`}
-            onClick={() => onNavigate?.('simulator')}
+            className={cn(
+              'flex items-center gap-3 rounded-2xl border border-border bg-card p-4 shadow-sm transition-all duration-200',
+              onNavigate && 'cursor-pointer hover:border-primary/30 hover:shadow-md outline-none focus-visible:ring-3 focus-visible:ring-ring/50',
+            )}
             role={onNavigate ? 'button' : undefined}
             tabIndex={onNavigate ? 0 : undefined}
-            onKeyDown={onNavigate ? (e) => e.key === 'Enter' && onNavigate('simulator') : undefined}
+            onClick={onNavigate ? () => onNavigate('simulator') : undefined}
+            onKeyDown={
+              onNavigate
+                ? (e) => e.key === 'Enter' && onNavigate('simulator')
+                : undefined
+            }
           >
-            <div className="profile-plan-status-row">
-              <i className="ri-calendar-todo-line profile-plan-status-cal-icon"></i>
-              <span className="profile-plan-status-quarter">{currentQuarter}</span>
-              <span className="profile-plan-status-meta">
+            <Calendar className="size-5 text-muted-foreground shrink-0" />
+            <span className="font-semibold text-foreground tabular-nums">
+              {currentQuarter}
+            </span>
+            <span className="text-sm text-muted-foreground flex items-center gap-2 flex-wrap">
+              <span>
                 {itemCount} item{itemCount !== 1 ? 's' : ''} · {planPts.toLocaleString()} pts
-                {targetLevelId != null && (
-                  <> · <i className="ri-arrow-right-line"></i> Level {targetLevelId}</>
-                )}
               </span>
-              <span className={`profile-plan-status-badge ${planStatusConfig.cls}`}>
-                <i className={planStatusConfig.icon}></i>
-                {planStatusConfig.label}
-              </span>
-              {onNavigate && <i className="ri-arrow-right-up-line profile-plan-status-open-icon"></i>}
-            </div>
-            {planStatus === 'rejected' && planRejectionReason && (
-              <div className="profile-plan-rejection" style={{ marginTop: '0.75rem' }}>
-                <i className="ri-error-warning-line"></i>
-                {planRejectionReason}
-              </div>
+              {targetLevelId != null && (
+                <>
+                  <ArrowRight className="size-3.5" />
+                  <span>Level {targetLevelId}</span>
+                </>
+              )}
+            </span>
+            <Badge variant={planStatusVariant} size="md" className="ml-auto">
+              {planStatusLabel}
+            </Badge>
+            {onNavigate && (
+              <ArrowUpRight className="size-4 text-muted-foreground shrink-0" />
             )}
           </div>
         );
       })()}
 
-      {/* ── 2026 Achievements Summary ── */}
-      <div className="profile-card">
-        <div className="profile-section-header">
-          <i className="ri-bar-chart-2-line"></i>
-          <h3>Summary <span style={{ fontWeight: 400, color: 'var(--text-muted)' }}>(2026 and on)</span></h3>
+      {planStatus === 'rejected' && planRejectionReason && (
+        <div className="flex items-start gap-3 rounded-2xl border border-destructive/30 bg-destructive/5 p-4">
+          <AlertCircle className="size-4 text-destructive shrink-0 mt-0.5" />
+          <p className="text-sm text-foreground">{planRejectionReason}</p>
         </div>
-        <div className="profile-year-stats">
-          {yearStatItems.map(({ icon, value, label }) => {
-            const isCerts = label === 'Certifications';
-            return (
-              <div
-                className={`profile-year-stat${isCerts ? ' profile-year-stat-clickable' : ''}`}
-                key={label}
-                onClick={isCerts ? () => setShowCertList((v) => !v) : undefined}
-                role={isCerts ? 'button' : undefined}
-                tabIndex={isCerts ? 0 : undefined}
-                onKeyDown={isCerts ? (e) => e.key === 'Enter' && setShowCertList((v) => !v) : undefined}
-              >
-                <i className={`${icon} profile-year-stat-icon`}></i>
-                <span className="profile-year-stat-value">{value}</span>
-                <span className="profile-year-stat-label">
-                  {label}
-                  {isCerts && <i className={`ri-arrow-${showCertList ? 'up' : 'down'}-s-line`} style={{ fontSize: '0.8rem' }}></i>}
-                </span>
-              </div>
-            );
-          })}
+      )}
+
+      {/* ── 2026 Stats Summary ── */}
+      <section className="flex flex-col gap-3">
+        <SectionHeader
+          icon={<BarChart3 />}
+          title="Summary"
+          subtitle="2026 and on"
+        />
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+          {yearStatItems.map(({ Icon, value, label, tint, isCerts }) => (
+            <StatCard
+              key={label}
+              icon={<Icon />}
+              iconTint={tint}
+              value={value}
+              label={label}
+              onClick={isCerts ? () => setShowCertList((v) => !v) : undefined}
+              sub={isCerts ? (showCertList ? 'Hide list' : 'View list') : undefined}
+            />
+          ))}
         </div>
         {showCertList && techCertEntries.length > 0 && (
-          <div className="profile-cert-dropdown">
+          <div className="flex flex-col gap-2">
             {techCertEntries.map((entry) => (
-              <div key={entry.key} className="profile-cert-dropdown-row">
-                {entry.item.image ? (
-                  <img src={entry.item.image} alt={entry.item.name} className="profile-cert-dropdown-img" />
-                ) : (
-                  <i className="ri-award-line profile-cert-dropdown-icon"></i>
-                )}
-                <span className="profile-cert-dropdown-name">{entry.item.name}</span>
-                <span className="profile-cert-dropdown-sub">{entry.item.subcategory ?? ''}</span>
-                <span className="profile-cert-dropdown-quarter">{entry.quarter ?? 'Historical'}</span>
-              </div>
+              <AchievementCard
+                key={entry.key}
+                image={entry.item.image}
+                icon={<Award />}
+                title={entry.item.name}
+                subtitle={entry.item.subcategory ?? undefined}
+                quarter={entry.quarter ?? 'Historical'}
+                date={formatDate(entry.completionDate)}
+                hideStatus
+              />
             ))}
           </div>
         )}
-      </div>
+      </section>
 
-      {/* ── Career Timeline ── */}
-      {(() => {
-        const levelEntries: LevelHistoryEntry[] = profile?.levelHistory ?? [];
-        const joinDate = profile?.joinedCompanyAt ?? profile?.createdAt;
-        if (!joinDate && levelEntries.length === 0) return null;
-        return (
-          <div className="profile-card profile-timeline-card">
-            <div className="profile-section-header">
-              <i className="ri-route-line"></i>
-              <h3>Career Journey</h3>
-            </div>
-            <div className="profile-timeline">
-              <div className="profile-timeline-node">
-                <div className="profile-timeline-dot profile-timeline-dot-join"></div>
-                <div className="profile-timeline-content">
-                  <span className="profile-timeline-title">Joined Develeap</span>
-                  <span className="profile-timeline-date">{formatMonthYear(joinDate)}</span>
-                </div>
-              </div>
-              {[...levelEntries]
-                .sort((a, b) => a.date.localeCompare(b.date))
-                .map((entry, i) => (
-                  <div key={i} className="profile-timeline-node">
-                    <div className="profile-timeline-line"></div>
-                    <div className="profile-timeline-dot profile-timeline-dot-level">
-                      <span>{entry.level}</span>
-                    </div>
-                    <div className="profile-timeline-content">
-                      <span className="profile-timeline-title">Level {entry.level}</span>
-                      {entry.quarter && (
-                        <span className="profile-ach-quarter">{entry.quarter}</span>
-                      )}
-                      <span className="profile-timeline-date">{formatMonthYear(entry.date)}</span>
-                    </div>
-                  </div>
-                ))}
-              <div className="profile-timeline-node">
-                <div className="profile-timeline-line"></div>
-                <div className="profile-timeline-dot profile-timeline-dot-current">
-                  <i className="ri-time-line"></i>
-                </div>
-                <div className="profile-timeline-content">
-                  <span className="profile-timeline-title">Today</span>
-                  <span className="profile-timeline-date">{formatMonthYear(new Date().toISOString())}</span>
-                </div>
-              </div>
-            </div>
+      {/* ── Career Journey ── */}
+      {(joinDate || levelEntries.length > 0) && (
+        <section className="flex flex-col gap-3">
+          <SectionHeader icon={<JourneyIcon />} title="Career Journey" />
+          <div className="rounded-2xl border border-border bg-card p-5">
+            <ActivityFeed items={timelineItems} />
           </div>
-        );
-      })()}
+        </section>
+      )}
 
       {/* ── Quarterly Plan History ── */}
-      <div className="profile-card profile-history-card">
-        <div className="profile-section-header">
-          <i className="ri-history-line"></i>
-          <h3>Quarterly History</h3>
-          {quarterlyHistoryList.length > 0 && (
-            <span className="profile-gallery-total">{quarterlyHistoryList.length}</span>
-          )}
-        </div>
-        <p className="profile-history-subtitle">
-          Plan history from Q1 2026 onwards. Current quarter plan is managed in the Plan page.
-        </p>
+      <section className="flex flex-col gap-3">
+        <SectionHeader
+          icon={<History />}
+          title="Quarterly History"
+          subtitle="Plan history from Q1 2026 onwards. Current quarter plan is managed in the Plan page."
+          action={
+            quarterlyHistoryList.length > 0 ? (
+              <Badge variant="secondary" size="md">
+                {quarterlyHistoryList.length}
+              </Badge>
+            ) : undefined
+          }
+        />
         {histLoading ? (
-          <div className="profile-empty-state"><p>Loading history...</p></div>
-        ) : quarterlyHistoryList.length === 0 ? (
-          <div className="profile-empty-state">
-            <i className="ri-calendar-line"></i>
-            <p>No completed quarters yet — history will appear here at the end of Q1 2026.</p>
+          <div className="rounded-2xl border border-border bg-card p-4 text-sm text-muted-foreground">
+            Loading history…
           </div>
+        ) : quarterlyHistoryList.length === 0 ? (
+          <EmptyState
+            icon={<Calendar />}
+            title="No completed quarters yet"
+            description="History will appear here at the end of Q1 2026."
+          />
         ) : (
-          <div className="profile-history-list">
-            {quarterlyHistoryList.map((row) => {
-              if (row.noData) {
-                return (
-                  <div key={row.quarter} className="profile-history-entry profile-history-entry-empty">
-                    <div className="profile-history-header profile-history-header-static">
-                      <span className="profile-history-status-icon history-status-empty">
-                        <i className="ri-subtract-line"></i>
-                      </span>
-                      <span className="profile-history-quarter">{row.quarter}</span>
-                      <span className="profile-history-meta profile-history-no-plan">No plan submitted</span>
-                    </div>
-                  </div>
-                );
-              }
+          <div className="flex flex-col gap-2">
+            {quarterlyHistoryList.map((row) => (
+              <QuarterHistoryRow
+                key={row.quarter}
+                row={row}
+                isExpanded={expandedQuarter === row.quarter}
+                onToggle={() =>
+                  setExpandedQuarter(expandedQuarter === row.quarter ? null : row.quarter)
+                }
+              />
+            ))}
+          </div>
+        )}
+      </section>
+    </div>
+  );
+}
 
-              const isExpanded = expandedQuarter === row.quarter;
-              const statusIcon =
-                row.status === 'approved' ? 'ri-checkbox-circle-line' :
-                row.status === 'rejected' ? 'ri-close-circle-line' :
-                'ri-time-line';
-              const statusCls =
-                row.status === 'approved' ? 'history-status-approved' :
-                row.status === 'rejected' ? 'history-status-rejected' :
-                'history-status-pending';
+/* ── Quarter history row ────────────────────────────────────── */
+
+function QuarterHistoryRow({
+  row,
+  isExpanded,
+  onToggle,
+}: {
+  row: PlanDisplayRow;
+  isExpanded: boolean;
+  onToggle: () => void;
+}) {
+  if (row.noData) {
+    return (
+      <div className="flex items-center gap-3 rounded-xl border border-dashed border-border bg-muted/30 p-3">
+        <span className="inline-flex size-8 items-center justify-center rounded-full bg-muted text-muted-foreground [&_svg]:size-3.5">
+          <Calendar />
+        </span>
+        <span className="text-sm font-semibold text-foreground tabular-nums">
+          {row.quarter}
+        </span>
+        <span className="text-xs text-muted-foreground">No plan submitted</span>
+      </div>
+    );
+  }
+
+  const StatusIcon =
+    row.status === 'approved'
+      ? CheckCircle2
+      : row.status === 'rejected'
+        ? XCircle
+        : Clock;
+  const statusTint =
+    row.status === 'approved'
+      ? 'bg-green-600/15 text-green-600 dark:text-green-400'
+      : row.status === 'rejected'
+        ? 'bg-destructive/15 text-destructive'
+        : 'bg-amber-500/15 text-amber-600 dark:text-amber-400';
+
+  return (
+    <div className="rounded-2xl border border-border bg-card overflow-hidden">
+      <button
+        type="button"
+        onClick={onToggle}
+        className="w-full flex items-center gap-3 p-3 text-left transition-colors duration-150 hover:bg-accent outline-none focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:ring-inset"
+      >
+        <span
+          className={cn(
+            'inline-flex size-8 items-center justify-center rounded-full [&_svg]:size-4',
+            statusTint,
+          )}
+        >
+          <StatusIcon />
+        </span>
+        <span className="font-semibold text-foreground tabular-nums">
+          {row.quarter}
+        </span>
+        {row.levelAchieved && (
+          <Badge variant="primary" size="sm">
+            <ArrowRight className="size-3" /> Level {row.levelAchieved}
+          </Badge>
+        )}
+        <span className="text-xs text-muted-foreground">
+          {row.items.length} items · {row.totalPoints.toLocaleString()} pts
+        </span>
+        {row.resolvedAt && (
+          <span className="ml-auto text-xs text-muted-foreground">
+            {formatDate(row.resolvedAt)}
+          </span>
+        )}
+        {isExpanded ? (
+          <ChevronUp className="size-4 text-muted-foreground" />
+        ) : (
+          <ChevronDown className="size-4 text-muted-foreground" />
+        )}
+      </button>
+      {row.rejectionReason && !isExpanded && (
+        <div className="flex items-start gap-2 px-3 pb-3 text-xs text-destructive">
+          <AlertCircle className="size-3.5 shrink-0 mt-0.5" />
+          {row.rejectionReason}
+        </div>
+      )}
+      {isExpanded && (
+        <div className="border-t border-border p-3 space-y-2">
+          {row.rejectionReason && (
+            <div className="flex items-start gap-2 rounded-xl border border-destructive/30 bg-destructive/5 p-3 text-sm text-foreground">
+              <AlertCircle className="size-4 text-destructive shrink-0 mt-0.5" />
+              {row.rejectionReason}
+            </div>
+          )}
+          <div className="flex flex-col gap-1.5">
+            {row.items.map((item, i) => {
+              const pts = item.promotedPoints ?? item.points;
+              const PIcon = PILLAR_ICON[item.category] ?? Star;
               return (
-                <div key={row.quarter} className="profile-history-entry">
-                  <button
-                    className="profile-history-header"
-                    onClick={() => setExpandedQuarter(isExpanded ? null : row.quarter)}
-                  >
-                    <span className={`profile-history-status-icon ${statusCls}`}>
-                      <i className={statusIcon}></i>
-                    </span>
-                    <span className="profile-history-quarter">{row.quarter}</span>
-                    {row.levelAchieved && (
-                      <span className="profile-history-level-badge">→ Level {row.levelAchieved}</span>
+                <div
+                  key={`${item.id}-${i}`}
+                  className="flex items-center gap-3 rounded-xl bg-muted/30 px-3 py-2"
+                >
+                  <span className="inline-flex size-8 shrink-0 items-center justify-center rounded-lg bg-card overflow-hidden [&_svg]:size-4 [&_svg]:text-muted-foreground">
+                    {item.image ? (
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="size-full object-contain p-0.5"
+                      />
+                    ) : (
+                      <PIcon />
                     )}
-                    <span className="profile-history-meta">
-                      {row.items.length} items · {row.totalPoints.toLocaleString()} pts
+                  </span>
+                  <span className="flex-1 min-w-0 text-sm font-medium text-foreground truncate">
+                    {item.name}
+                  </span>
+                  {pts > 0 && (
+                    <span className="text-sm font-semibold text-foreground tabular-nums">
+                      +{pts.toLocaleString()}
                     </span>
-                    {row.resolvedAt && (
-                      <span className="profile-history-date">{formatDate(row.resolvedAt)}</span>
-                    )}
-                    <i className={`profile-history-chevron ri-arrow-${isExpanded ? 'up' : 'down'}-s-line`}></i>
-                  </button>
-                  {row.rejectionReason && !isExpanded && (
-                    <div className="profile-history-rejection-inline">
-                      <i className="ri-error-warning-line"></i>
-                      {row.rejectionReason}
-                    </div>
-                  )}
-                  {isExpanded && (
-                    <div className="profile-history-body">
-                      {row.rejectionReason && (
-                        <div className="profile-plan-rejection">
-                          <i className="ri-error-warning-line"></i>
-                          {row.rejectionReason}
-                        </div>
-                      )}
-                      <div className="profile-history-items">
-                        {row.items.map((item: CatalogItem, i: number) => {
-                          const pts = item.promotedPoints ?? item.points;
-                          const pillarCfg = PILLAR_CONFIG[item.category];
-                          return (
-                            <div key={`${item.id}-${i}`} className="profile-history-item-row">
-                              <div className="profile-ach-icon">
-                                {item.image ? (
-                                  <img src={item.image} alt={item.name} className="profile-ach-img" />
-                                ) : (
-                                  <i className={pillarCfg?.icon ?? 'ri-star-line'}></i>
-                                )}
-                              </div>
-                              <span className="profile-history-item-name">{item.name}</span>
-                              {pts > 0 && (
-                                <span className="profile-ach-pts">+{pts.toLocaleString()}</span>
-                              )}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
                   )}
                 </div>
               );
             })}
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

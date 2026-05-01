@@ -1,6 +1,10 @@
 import { useState } from 'react';
+import { RefreshCw, Users, Plus, Check } from 'lucide-react';
 import type { CatalogItem, CertificationItem } from '../../data/types';
-import './ExtraPage.css';
+import { FormCard } from '@/components/composed/form-card';
+import { Select } from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 const SIZE_BONUS: Record<string, number> = {
   '3': 0.08,
@@ -24,25 +28,21 @@ interface ExtraPageProps {
 }
 
 export default function ExtraPage({ onAddItem, onToggleItem, isInCart, certItems }: ExtraPageProps) {
-  // Widget 1: Certification Renewal
   const [renewalCertId, setRenewalCertId] = useState('');
-
-  // Widget 2: Certification Circle
   const [circleCertId, setCircleCertId] = useState('');
   const [groupSize, setGroupSize] = useState('');
   const [reservists, setReservists] = useState('0');
 
-  // Computed values
-  const renewalCert = certItems.find(c => c.id === renewalCertId) ?? null;
+  const renewalCert = certItems.find((c) => c.id === renewalCertId) ?? null;
   const renewalPoints = renewalCert ? Math.ceil(renewalCert.points * 0.25) : 0;
 
-  const eligibleCerts = certItems.filter(c => c.points >= 130);
-  const circleCert = eligibleCerts.find(c => c.id === circleCertId) ?? null;
+  const eligibleCerts = certItems.filter((c) => c.points >= 130);
+  const circleCert = eligibleCerts.find((c) => c.id === circleCertId) ?? null;
   const circleBonus =
     circleCert && groupSize
       ? Math.round(
           circleCert.points *
-            ((SIZE_BONUS[groupSize] ?? 0) + (RESERVIST_BONUS[reservists] ?? 0))
+            ((SIZE_BONUS[groupSize] ?? 0) + (RESERVIST_BONUS[reservists] ?? 0)),
         )
       : 0;
 
@@ -68,7 +68,9 @@ export default function ExtraPage({ onAddItem, onToggleItem, isInCart, certItems
       onAddItem(circleCert);
     }
     const reservistLabel =
-      reservists === '0' ? 'no reservists' : `${reservists} reservist${reservists === '1' ? '' : 's'}`;
+      reservists === '0'
+        ? 'no reservists'
+        : `${reservists} reservist${reservists === '1' ? '' : 's'}`;
     onAddItem({
       id: `extra-circle-${circleCertId}-${Date.now()}`,
       name: `Cert Circle: ${circleCert.name}`,
@@ -80,127 +82,153 @@ export default function ExtraPage({ onAddItem, onToggleItem, isInCart, certItems
     });
   };
 
-  return (
-    <div className="extra-page">
-      <div className="extra-widgets-grid">
+  const certOptions = certItems.map((c) => ({ value: c.id, label: c.name }));
+  const eligibleOptions = eligibleCerts.map((c) => ({ value: c.id, label: c.name }));
 
+  return (
+    <div className="flex flex-col gap-4 p-4 sm:p-6 h-full overflow-y-auto">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Widget 1: Certification Renewal */}
-        <div className="extra-widget">
-          <div className="extra-widget-icon renewal">
-            <i className="ri-refresh-line"></i>
-          </div>
-          <h3 className="extra-widget-title">Certification renewal</h3>
-          <p className="extra-widget-desc">
-            Renewing a cert earns 25% of its base points
-          </p>
-          <div className="extra-widget-body">
-            <select
-              className="extra-select"
-              value={renewalCertId}
-              onChange={(e) => setRenewalCertId(e.target.value)}
+        <FormCard
+          icon={<RefreshCw />}
+          iconTint="primary"
+          title="Certification renewal"
+          description="Renewing a cert earns 25% of its base points"
+          footer={
+            <Button
+              variant="default"
+              size="default"
+              onClick={handleToggleRenewal}
+              disabled={!renewalCert}
             >
-              <option value="">Select certification...</option>
-              {certItems.map((cert) => (
-                <option key={cert.id} value={cert.id}>
-                  {cert.name}
-                </option>
-              ))}
-            </select>
-            {renewalCert && (
-              <p className="extra-calc-result">
-                <span className="extra-calc-pts">{renewalPoints}</span>
-                <span className="extra-calc-note">
-                  {' '}pts &nbsp;·&nbsp; 25% of {renewalCert.points}
+              {renewalInCart ? <Check className="size-4" /> : <Plus className="size-4" />}
+              {renewalInCart ? 'Added' : 'Add to Plan'}
+            </Button>
+          }
+        >
+          <Select
+            options={certOptions}
+            value={renewalCertId}
+            onValueChange={setRenewalCertId}
+            placeholder="Select certification..."
+          />
+          {renewalCert && (
+            <div className="rounded-xl bg-primary/5 border border-primary/20 px-4 py-3">
+              <div className="flex items-baseline gap-1.5 tabular-nums">
+                <span className="text-2xl font-bold text-primary">{renewalPoints}</span>
+                <span className="text-sm text-muted-foreground">
+                  pts · 25% of {renewalCert.points}
                 </span>
-              </p>
-            )}
-          </div>
-          <button
-            className={`extra-add-btn${renewalInCart ? ' added' : ''}`}
-            onClick={handleToggleRenewal}
-            disabled={!renewalCert}
-          >
-            <i className={renewalInCart ? 'ri-check-line' : 'ri-add-line'}></i>
-            {renewalInCart ? 'Added' : 'Add to Plan'}
-          </button>
-        </div>
+              </div>
+            </div>
+          )}
+        </FormCard>
 
         {/* Widget 2: Certification Circle */}
-        <div className="extra-widget">
-          <div className="extra-widget-icon circle">
-            <i className="ri-group-line"></i>
-          </div>
-          <h3 className="extra-widget-title">Certification circle</h3>
-          <p className="extra-widget-desc">
-            Group study bonus — more people means higher bonus points
-          </p>
-          <div className="extra-widget-body">
-            <select
-              className="extra-select"
-              value={circleCertId}
-              onChange={(e) => setCircleCertId(e.target.value)}
+        <FormCard
+          icon={<Users />}
+          iconTint="violet"
+          title="Certification circle"
+          description="Group study bonus — more people means higher bonus points"
+          footer={
+            <Button
+              variant="default"
+              size="default"
+              onClick={handleAddCircle}
+              disabled={!circleCert || !groupSize || circleBonus <= 0}
             >
-              <option value="">Select certification (≥130 pts)...</option>
-              {eligibleCerts.map((cert) => (
-                <option key={cert.id} value={cert.id}>
-                  {cert.name}
-                </option>
-              ))}
-            </select>
+              <Plus className="size-4" /> Add to Plan
+            </Button>
+          }
+        >
+          <Select
+            options={eligibleOptions}
+            value={circleCertId}
+            onValueChange={setCircleCertId}
+            placeholder="Select certification (≥130 pts)..."
+          />
 
-            <div className="extra-toggle-group">
-              <span className="extra-toggle-label">Group size</span>
-              <div className="extra-toggle-buttons">
-                {['3', '4', '5', '6', '7+'].map((size) => (
-                  <button
-                    key={size}
-                    className={`extra-toggle-btn${groupSize === size ? ' active' : ''}`}
-                    onClick={() => setGroupSize(groupSize === size ? '' : size)}
-                    title={`+${Math.round((SIZE_BONUS[size] ?? 0) * 100)}%`}
-                  >
-                    {size}
-                  </button>
-                ))}
-              </div>
-            </div>
+          <ToggleGroup
+            label="Group size"
+            options={['3', '4', '5', '6', '7+']}
+            value={groupSize}
+            onChange={(val) => setGroupSize(groupSize === val ? '' : val)}
+            getTitle={(val) => `+${Math.round((SIZE_BONUS[val] ?? 0) * 100)}%`}
+          />
 
-            <div className="extra-toggle-group">
-              <span className="extra-toggle-label">Reservists in group</span>
-              <div className="extra-toggle-buttons">
-                {(['0', '1', '2+'] as const).map((val) => (
-                  <button
-                    key={val}
-                    className={`extra-toggle-btn${reservists === val ? ' active' : ''}`}
-                    onClick={() => setReservists(val)}
-                    title={val === '0' ? 'No reservist bonus' : `+${Math.round((RESERVIST_BONUS[val] ?? 0) * 100)}%`}
-                  >
-                    {val === '0' ? 'None' : val}
-                  </button>
-                ))}
-              </div>
-            </div>
+          <ToggleGroup
+            label="Reservists in group"
+            options={['0', '1', '2+']}
+            value={reservists}
+            onChange={setReservists}
+            renderLabel={(val) => (val === '0' ? 'None' : val)}
+            getTitle={(val) =>
+              val === '0' ? 'No reservist bonus' : `+${Math.round((RESERVIST_BONUS[val] ?? 0) * 100)}%`
+            }
+          />
 
-            {circleCert && groupSize && (
-              <p className="extra-calc-result">
-                <span className="extra-calc-pts">{circleBonus}</span>
-                <span className="extra-calc-note">
-                  {' '}pts &nbsp;·&nbsp;
-                  +{Math.round(((SIZE_BONUS[groupSize] ?? 0) + (RESERVIST_BONUS[reservists] ?? 0)) * 100)}%
-                  {' '}of {circleCert.points}
+          {circleCert && groupSize && (
+            <div className="rounded-xl bg-violet-500/5 border border-violet-500/20 px-4 py-3">
+              <div className="flex items-baseline gap-1.5 tabular-nums">
+                <span className="text-2xl font-bold text-violet-600 dark:text-violet-400">
+                  {circleBonus}
                 </span>
-              </p>
-            )}
-          </div>
-          <button
-            className="extra-add-btn"
-            onClick={handleAddCircle}
-            disabled={!circleCert || !groupSize || circleBonus <= 0}
-          >
-            <i className="ri-add-line"></i>
-            Add to Plan
-          </button>
-        </div>
+                <span className="text-sm text-muted-foreground">
+                  pts · +
+                  {Math.round(((SIZE_BONUS[groupSize] ?? 0) + (RESERVIST_BONUS[reservists] ?? 0)) * 100)}
+                  % of {circleCert.points}
+                </span>
+              </div>
+            </div>
+          )}
+        </FormCard>
+      </div>
+    </div>
+  );
+}
 
+/* ── Inline toggle group ────────────────────────────────────── */
+
+function ToggleGroup({
+  label,
+  options,
+  value,
+  onChange,
+  renderLabel,
+  getTitle,
+}: {
+  label: string;
+  options: string[];
+  value: string;
+  onChange: (val: string) => void;
+  renderLabel?: (val: string) => string;
+  getTitle?: (val: string) => string;
+}) {
+  return (
+    <div className="flex flex-col gap-1.5">
+      <span className="text-[0.65rem] font-semibold uppercase tracking-wider text-muted-foreground">
+        {label}
+      </span>
+      <div className="inline-flex items-center rounded-xl border border-border bg-muted/30 p-0.5">
+        {options.map((val) => {
+          const active = value === val;
+          return (
+            <button
+              key={val}
+              type="button"
+              onClick={() => onChange(val)}
+              title={getTitle?.(val)}
+              className={cn(
+                'inline-flex items-center justify-center min-w-9 h-8 px-3 rounded-lg text-xs font-medium transition-all duration-150 outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                active
+                  ? 'bg-card text-foreground shadow-sm'
+                  : 'text-muted-foreground hover:text-foreground',
+              )}
+            >
+              {renderLabel ? renderLabel(val) : val}
+            </button>
+          );
+        })}
       </div>
     </div>
   );

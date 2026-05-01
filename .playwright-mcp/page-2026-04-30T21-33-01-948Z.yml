@@ -1,0 +1,177 @@
+- generic [ref=e3]:
+  - complementary [ref=e4]:
+    - generic [ref=e5]:
+      - button "DCR 2.0" [ref=e8]:
+        - generic [ref=e9]: DCR
+        - generic [ref=e10]: "2.0"
+      - separator [ref=e11]
+      - generic [ref=e12]:
+        - paragraph [ref=e13]: Personal Zone
+        - button " Home" [ref=e15]:
+          - generic [ref=e17]: 
+          - generic [ref=e18]: Home
+        - button " My Plan" [ref=e20]:
+          - generic [ref=e22]: 
+          - generic [ref=e23]: My Plan
+        - button " My Profile" [ref=e25]:
+          - generic [ref=e27]: 
+          - generic [ref=e28]: My Profile
+        - separator [ref=e29]
+        - paragraph [ref=e30]: Catalog
+        - paragraph [ref=e31]: Pillars
+        - button " Professionalism" [ref=e33]:
+          - generic [ref=e35]: 
+          - generic [ref=e36]: Professionalism
+        - button " Tech" [ref=e38]:
+          - generic [ref=e40]: 
+          - generic [ref=e41]: Tech
+        - button " Knowledge Unlock" [ref=e43]:
+          - generic [ref=e45]: 
+          - generic [ref=e46]: Knowledge Unlock
+        - button " Collaboration" [ref=e48]:
+          - generic [ref=e50]: 
+          - generic [ref=e51]: Collaboration
+        - paragraph [ref=e52]: Badges
+        - button " Roadmaps" [ref=e54]:
+          - generic [ref=e56]: 
+          - generic [ref=e57]: Roadmaps
+        - paragraph [ref=e58]: Extra
+        - button " Extra" [ref=e60]:
+          - generic [ref=e62]: 
+          - generic [ref=e63]: Extra
+        - separator [ref=e64]
+        - paragraph [ref=e65]: Resources
+        - button " Guidelines" [ref=e67]:
+          - generic [ref=e69]: 
+          - generic [ref=e70]: Guidelines
+        - button " FAQ" [ref=e72]:
+          - generic [ref=e74]: 
+          - generic [ref=e75]: FAQ
+        - button " Forms" [ref=e77]:
+          - generic [ref=e79]: 
+          - generic [ref=e80]: Forms
+      - separator [ref=e81]
+      - button "Collapse sidebar" [ref=e84]:
+        - img [ref=e85]
+  - main [ref=e87]:
+    - generic [ref=e89]:
+      - heading "My Plan" [level=2] [ref=e1307]
+      - generic [ref=e91]:
+        - button "Search ⌘K" [ref=e92]:
+          - img [ref=e93]
+          - generic [ref=e96]: Search
+          - generic [ref=e97]: ⌘K
+        - button "Switch to light mode" [ref=e98]:
+          - img [ref=e99]
+        - button " Sign in" [ref=e105]:
+          - generic [ref=e106]: 
+          - generic [ref=e107]: Sign in
+    - generic [ref=e1309]:
+      - generic [ref=e1310]:
+        - generic [ref=e1311]:
+          - generic [ref=e1313]:
+            - heading "Your Learning Path" [level=2] [ref=e1314]
+            - paragraph [ref=e1315]: Building toward Level 5
+          - generic [ref=e1316]:
+            - generic [ref=e1317]: Target Level
+            - generic [ref=e1318]:
+              - button "Level 5 · 1,200 pts" [expanded] [active] [ref=e1319]:
+                - generic [ref=e1320]: Level 5 · 1,200 pts
+                - img [ref=e1321]
+              - listbox [ref=e1441]:
+                - option "No level selected" [ref=e1442]: No level selected
+                - option "Level 1 · 850 pts" [ref=e1444]: Level 1 · 850 pts
+                - option "Level 2 · 850 pts" [ref=e1446]: Level 2 · 850 pts
+                - option "Level 3 · 1,000 pts" [ref=e1448]: Level 3 · 1,000 pts
+                - option "Level 4 · 1,000 pts" [ref=e1450]: Level 4 · 1,000 pts
+                - option "Level 5 · 1,200 pts" [selected] [ref=e1452]:
+                  - img [ref=e1454]
+                  - text: Level 5 · 1,200 pts
+                - option "Level 6 · 1,200 pts" [ref=e1456]: Level 6 · 1,200 pts
+                - option "Level 7 · 1,500 pts" [ref=e1458]: Level 7 · 1,500 pts
+                - option "Level 8 · 1,500 pts" [ref=e1460]: Level 8 · 1,500 pts
+                - option "Level 9 · 1,700 pts" [ref=e1462]: Level 9 · 1,700 pts
+                - option "Level 10 · 1,700 pts" [ref=e1464]: Level 10 · 1,700 pts
+          - generic [ref=e1323]:
+            - generic [ref=e1324]:
+              - generic [ref=e1325]:
+                - text: "0"
+                - generic [ref=e1326]: / 1,200 pts
+              - generic [ref=e1327]: 1200 pts to go
+            - generic [ref=e1329]:
+              - progressbar
+        - generic [ref=e1330]:
+          - generic [ref=e1331]:
+            - generic [ref=e1332]:
+              - img [ref=e1334]
+              - generic [ref=e1337]: Professionalism
+              - generic [ref=e1338]:
+                - text: "0"
+                - generic [ref=e1339]: / 4 items
+            - generic [ref=e1342]:
+              - progressbar
+          - generic [ref=e1343]:
+            - generic [ref=e1344]:
+              - img [ref=e1346]
+              - generic [ref=e1350]: Tech
+              - generic [ref=e1351]:
+                - text: "0"
+                - generic [ref=e1352]: / 50 pts
+            - generic [ref=e1355]:
+              - progressbar
+          - generic [ref=e1356]:
+            - generic [ref=e1357]:
+              - img [ref=e1359]
+              - generic [ref=e1361]: Knowledge Unlock
+              - generic [ref=e1362]:
+                - text: "0"
+                - generic [ref=e1363]: / 20 pts
+            - generic [ref=e1366]:
+              - progressbar
+          - generic [ref=e1367]:
+            - generic [ref=e1368]:
+              - img [ref=e1370]
+              - generic [ref=e1375]: Collaboration
+              - generic [ref=e1376]:
+                - text: "0"
+                - generic [ref=e1377]: / 30 pts
+            - generic [ref=e1380]:
+              - progressbar
+        - generic [ref=e1381]:
+          - img [ref=e1383]
+          - heading "No items yet" [level=3] [ref=e1387]
+          - paragraph [ref=e1388]: Browse the catalog and add items to your learning path.
+      - generic [ref=e1390]:
+        - generic [ref=e1391]:
+          - paragraph [ref=e1392]: Missing for
+          - paragraph [ref=e1393]: Level 5
+        - generic [ref=e1394]:
+          - generic [ref=e1395]:
+            - img [ref=e1397]
+            - generic [ref=e1402]:
+              - generic [ref=e1403]: Need 1200 more pts
+              - generic [ref=e1404]: 0 / 1200 total
+          - generic [ref=e1405]:
+            - img [ref=e1407]
+            - generic [ref=e1410]:
+              - generic [ref=e1411]: Missing mandatory items
+              - generic [ref=e1412]: Billable hours, Weekly reports, Weekly performance forms, Toggle regular filling
+          - generic [ref=e1413]:
+            - img [ref=e1415]
+            - generic [ref=e1419]:
+              - generic [ref=e1420]: "Tech: need 50 more pts"
+              - generic [ref=e1421]: 0 / 50 pts
+          - generic [ref=e1422]:
+            - img [ref=e1424]
+            - generic [ref=e1426]:
+              - generic [ref=e1427]: "Knowledge: need 20 more pts"
+              - generic [ref=e1428]: 0 / 20 pts
+          - generic [ref=e1429]:
+            - img [ref=e1431]
+            - generic [ref=e1436]:
+              - generic [ref=e1437]: "Collaboration: need 30 more pts"
+              - generic [ref=e1438]: 0 / 30 pts
+        - button "Add Missing Mandatory" [ref=e1440]:
+          - img
+          - text: Add Missing Mandatory
+  - region "Notifications alt+T"

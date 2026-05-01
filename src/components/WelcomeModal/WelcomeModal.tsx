@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
+import { Users, MessageSquare, Send, AlertCircle, Info, RotateCw } from 'lucide-react';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import type { UserDocument } from '../../data/types';
-import './WelcomeModal.css';
+import { Select } from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
 
 interface WelcomeModalProps {
   onSelectTeamLeader: (teamLeaderId: string, message?: string) => Promise<void>;
@@ -15,11 +17,6 @@ interface TeamLeader {
   email: string;
 }
 
-/**
- * Modal shown to employees on first login
- * Lets them select their team leader
- * Non-dismissible until a team leader is selected
- */
 export function WelcomeModal({ onSelectTeamLeader }: WelcomeModalProps) {
   const [teamLeaders, setTeamLeaders] = useState<TeamLeader[]>([]);
   const [selectedTeamLeaderId, setSelectedTeamLeaderId] = useState<string>('');
@@ -28,17 +25,14 @@ export function WelcomeModal({ onSelectTeamLeader }: WelcomeModalProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch team leaders on mount
   useEffect(() => {
     const fetchTeamLeaders = async () => {
       try {
         setIsLoading(true);
         setError(null);
-
         const usersRef = collection(db, 'users');
         const q = query(usersRef, where('role', '==', 'team_leader'));
         const snapshot = await getDocs(q);
-
         const leaders = snapshot.docs.map((doc) => {
           const data = doc.data() as UserDocument;
           return {
@@ -48,11 +42,7 @@ export function WelcomeModal({ onSelectTeamLeader }: WelcomeModalProps) {
             email: data.email,
           };
         });
-
-        // Sort alphabetically by name
         leaders.sort((a, b) => a.displayName.localeCompare(b.displayName));
-
-        console.log('[WelcomeModal] Fetched team leaders:', leaders.length);
         setTeamLeaders(leaders);
         setIsLoading(false);
       } catch (err) {
@@ -61,30 +51,19 @@ export function WelcomeModal({ onSelectTeamLeader }: WelcomeModalProps) {
         setIsLoading(false);
       }
     };
-
     fetchTeamLeaders();
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!selectedTeamLeaderId) {
       setError('Please select a team leader');
       return;
     }
-
     try {
       setIsSubmitting(true);
       setError(null);
-
-      console.log('[WelcomeModal] Submitting team leader selection:', {
-        teamLeaderId: selectedTeamLeaderId,
-        hasMessage: !!message,
-      });
-
       await onSelectTeamLeader(selectedTeamLeaderId, message || undefined);
-
-      console.log('[WelcomeModal] Team leader selection submitted successfully');
     } catch (err) {
       console.error('[WelcomeModal] Error submitting:', err);
       setError('Failed to submit. Please try again.');
@@ -92,124 +71,115 @@ export function WelcomeModal({ onSelectTeamLeader }: WelcomeModalProps) {
     }
   };
 
+  const teamLeaderOptions = teamLeaders.map((tl) => ({ value: tl.uid, label: tl.displayName }));
+
   return (
-    <div className="welcome-modal-backdrop">
-      <div className="welcome-modal-container">
-        <div className="welcome-modal-card">
-          {/* Header */}
-          <div className="welcome-modal-header">
-            <div className="welcome-modal-icon">
-              <i className="ri-team-line"></i>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in-0 duration-200">
+      <div className="relative w-full max-w-md max-h-[90vh] overflow-y-auto rounded-3xl border border-border bg-card text-card-foreground shadow-xl animate-in fade-in-0 zoom-in-95 duration-200">
+        {/* Header */}
+        <div className="flex flex-col items-center gap-3 px-6 pt-8 pb-4 text-center">
+          <span className="inline-flex size-14 items-center justify-center rounded-2xl bg-primary text-primary-foreground [&_svg]:size-6">
+            <Users />
+          </span>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">
+            Welcome to DCR 2.0!
+          </h1>
+          <p className="text-sm text-muted-foreground max-w-xs">
+            Let's get you started by connecting you with your team leader
+          </p>
+        </div>
+
+        {/* Content */}
+        <div className="px-6 pb-6">
+          {isLoading ? (
+            <div className="flex flex-col items-center gap-3 py-8">
+              <div className="size-5 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+              <p className="text-sm text-muted-foreground">Loading team leaders…</p>
             </div>
-            <h1 className="welcome-modal-title">Welcome to DCR 2.0!</h1>
-            <p className="welcome-modal-subtitle">
-              Let's get you started by connecting you with your team leader
-            </p>
-          </div>
-
-          {/* Content */}
-          <div className="welcome-modal-content">
-            {isLoading ? (
-              <div className="welcome-modal-loading">
-                <div className="spinner"></div>
-                <p>Loading team leaders...</p>
+          ) : error && teamLeaders.length === 0 ? (
+            <div className="flex flex-col items-center gap-3 rounded-2xl border border-destructive/30 bg-destructive/5 p-5">
+              <AlertCircle className="size-6 text-destructive" />
+              <p className="text-sm text-foreground text-center">{error}</p>
+              <Button variant="outline" size="sm" onClick={() => window.location.reload()}>
+                <RotateCw className="size-3.5" /> Refresh Page
+              </Button>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+              <div className="flex flex-col gap-1.5">
+                <label className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  <Users className="size-3.5" />
+                  Who is your team leader?
+                  <span className="text-destructive">*</span>
+                </label>
+                <Select
+                  options={teamLeaderOptions}
+                  value={selectedTeamLeaderId}
+                  onValueChange={(v) => {
+                    setSelectedTeamLeaderId(v);
+                    setError(null);
+                  }}
+                  placeholder="Select a team leader…"
+                />
               </div>
-            ) : error && teamLeaders.length === 0 ? (
-              <div className="welcome-modal-error">
-                <i className="ri-error-warning-line"></i>
-                <p>{error}</p>
-                <button
-                  className="btn-secondary"
-                  onClick={() => window.location.reload()}
+
+              <div className="flex flex-col gap-1.5">
+                <label
+                  htmlFor="message"
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground"
                 >
-                  Refresh Page
-                </button>
+                  <MessageSquare className="size-3.5" />
+                  Message to team leader (optional)
+                </label>
+                <textarea
+                  id="message"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value.slice(0, 200))}
+                  rows={3}
+                  maxLength={200}
+                  placeholder="Hi! I'm joining the team and looking forward to working with you..."
+                  className="w-full rounded-xl border border-border bg-card px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none transition-all duration-200 focus:border-primary focus:ring-3 focus:ring-ring/30 resize-none"
+                />
+                <div className="text-right text-xs text-muted-foreground tabular-nums">
+                  {message.length}/200
+                </div>
               </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="welcome-modal-form">
-                {/* Team Leader Selection */}
-                <div className="form-group">
-                  <label htmlFor="team-leader" className="form-label">
-                    <i className="ri-user-star-line"></i>
-                    Who is your team leader?
-                    <span className="required">*</span>
-                  </label>
-                  <select
-                    id="team-leader"
-                    className="form-select"
-                    value={selectedTeamLeaderId}
-                    onChange={(e) => {
-                      setSelectedTeamLeaderId(e.target.value);
-                      setError(null);
-                    }}
-                    required
-                  >
-                    <option value="">Select a team leader...</option>
-                    {teamLeaders.map((leader) => (
-                      <option key={leader.uid} value={leader.uid}>
-                        {leader.displayName}
-                      </option>
-                    ))}
-                  </select>
-                </div>
 
-                {/* Optional Message */}
-                <div className="form-group">
-                  <label htmlFor="message" className="form-label">
-                    <i className="ri-message-3-line"></i>
-                    Message to team leader (optional)
-                  </label>
-                  <textarea
-                    id="message"
-                    className="form-textarea"
-                    placeholder="Hi! I'm joining the team and looking forward to working with you..."
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value.slice(0, 200))}
-                    rows={3}
-                    maxLength={200}
-                  />
-                  <div className="form-hint">
-                    {message.length}/200 characters
-                  </div>
+              {error && (
+                <div className="flex items-start gap-2 rounded-xl border border-destructive/30 bg-destructive/5 p-3 text-sm text-foreground">
+                  <AlertCircle className="size-4 text-destructive shrink-0 mt-0.5" />
+                  {error}
                 </div>
+              )}
 
-                {/* Error Message */}
-                {error && (
-                  <div className="form-error">
-                    <i className="ri-error-warning-line"></i>
-                    {error}
-                  </div>
+              <Button
+                type="submit"
+                variant="default"
+                size="lg"
+                disabled={isSubmitting || !selectedTeamLeaderId}
+              >
+                {isSubmitting ? (
+                  <>
+                    <div className="size-4 rounded-full border-2 border-current border-t-transparent animate-spin" />
+                    Submitting…
+                  </>
+                ) : (
+                  <>
+                    <Send className="size-4" />
+                    Request to Join Team
+                  </>
                 )}
+              </Button>
+            </form>
+          )}
+        </div>
 
-                {/* Submit Button */}
-                <button
-                  type="submit"
-                  className="btn-primary btn-large"
-                  disabled={isSubmitting || !selectedTeamLeaderId}
-                >
-                  {isSubmitting ? (
-                    <>
-                      <div className="spinner-small"></div>
-                      Submitting...
-                    </>
-                  ) : (
-                    <>
-                      <i className="ri-send-plane-line"></i>
-                      Request to Join Team
-                    </>
-                  )}
-                </button>
-              </form>
-            )}
-          </div>
-
-          {/* Footer */}
-          <div className="welcome-modal-footer">
-            <p className="footer-text">
-              <i className="ri-information-line"></i>
-              Your team leader will review and approve your request
-            </p>
-          </div>
+        {/* Footer */}
+        <div className="border-t border-border px-6 py-3 bg-muted/20 text-center">
+          <p className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+            <Info className="size-3.5" />
+            Your team leader will review and approve your request
+          </p>
         </div>
       </div>
     </div>

@@ -1,0 +1,128 @@
+- generic [ref=e3]:
+  - complementary [ref=e4]:
+    - heading "DCR" [level=1] [ref=e6] [cursor=pointer]
+    - navigation [ref=e7]:
+      - generic [ref=e8]:
+        - heading "Personal Zone" [level=3]
+        - list [ref=e9]:
+          - listitem [ref=e10]:
+            - button " Home" [ref=e11] [cursor=pointer]:
+              - generic [ref=e13]: 
+              - generic: Home
+          - listitem [ref=e14]:
+            - button " My Plan" [ref=e15] [cursor=pointer]:
+              - generic [ref=e17]: 
+              - generic: My Plan
+          - listitem [ref=e18]:
+            - button " My Profile" [ref=e19] [cursor=pointer]:
+              - generic [ref=e21]: 
+              - generic: My Profile
+      - generic [ref=e22]:
+        - heading "Catalog" [level=3]
+        - generic [ref=e23]:
+          - heading "Pillars" [level=4]
+          - list [ref=e24]:
+            - listitem [ref=e25]:
+              - button " Professionalism" [ref=e26] [cursor=pointer]:
+                - generic [ref=e28]: 
+                - generic: Professionalism
+            - listitem [ref=e29]:
+              - button " Tech" [ref=e30] [cursor=pointer]:
+                - generic [ref=e32]: 
+                - generic: Tech
+            - listitem [ref=e33]:
+              - button " Knowledge Unlock" [ref=e34] [cursor=pointer]:
+                - generic [ref=e36]: 
+                - generic: Knowledge Unlock
+            - listitem [ref=e37]:
+              - button " Collaboration" [ref=e38] [cursor=pointer]:
+                - generic [ref=e40]: 
+                - generic: Collaboration
+        - generic [ref=e41]:
+          - heading "Badges" [level=4]
+          - list [ref=e42]:
+            - listitem [ref=e43]:
+              - button " Roadmaps" [ref=e44] [cursor=pointer]:
+                - generic [ref=e46]: 
+                - generic: Roadmaps
+        - generic [ref=e47]:
+          - heading "Extra" [level=4]
+          - list [ref=e48]:
+            - listitem [ref=e49]:
+              - button " Extra" [active] [ref=e50] [cursor=pointer]:
+                - generic [ref=e52]: 
+                - generic: Extra
+      - generic [ref=e53]:
+        - heading "Resources" [level=3]
+        - list [ref=e54]:
+          - listitem [ref=e55]:
+            - button " Guidelines" [ref=e56] [cursor=pointer]:
+              - generic [ref=e58]: 
+              - generic: Guidelines
+          - listitem [ref=e59]:
+            - button " FAQ" [ref=e60] [cursor=pointer]:
+              - generic [ref=e62]: 
+              - generic: FAQ
+          - listitem [ref=e63]:
+            - button " Forms" [ref=e64] [cursor=pointer]:
+              - generic [ref=e66]: 
+              - generic: Forms
+    - button "" [ref=e67] [cursor=pointer]:
+      - generic [ref=e68]: 
+  - main [ref=e69]:
+    - generic [ref=e71]:
+      - text: 
+      - heading "Extra" [level=2] [ref=e405]
+      - generic [ref=e73]:
+        - button " Search ⌘K" [ref=e74] [cursor=pointer]:
+          - generic [ref=e75]: 
+          - generic [ref=e76]: Search
+          - generic [ref=e77]: ⌘K
+        - button "" [ref=e78] [cursor=pointer]:
+          - generic [ref=e79]: 
+        - button " Sign in" [ref=e80] [cursor=pointer]:
+          - generic [ref=e81]: 
+          - generic [ref=e82]: Sign in
+    - generic [ref=e407]:
+      - generic [ref=e408]:
+        - generic [ref=e409]:
+          - img [ref=e411]
+          - generic [ref=e416]:
+            - heading "Certification renewal" [level=3] [ref=e418]
+            - paragraph [ref=e419]: Renewing a cert earns 25% of its base points
+        - button "Select certification..." [ref=e422]:
+          - generic [ref=e423]: Select certification...
+          - img [ref=e424]
+        - generic [ref=e426]:
+          - button "Add to Plan" [disabled]:
+            - img
+            - text: Add to Plan
+      - generic [ref=e427]:
+        - generic [ref=e428]:
+          - img [ref=e430]
+          - generic [ref=e435]:
+            - heading "Certification circle" [level=3] [ref=e437]
+            - paragraph [ref=e438]: Group study bonus — more people means higher bonus points
+        - generic [ref=e439]:
+          - button "Select certification (≥130 pts)..." [ref=e441]:
+            - generic [ref=e442]: Select certification (≥130 pts)...
+            - img [ref=e443]
+          - generic [ref=e445]:
+            - generic [ref=e446]: Group size
+            - generic [ref=e447]:
+              - button "3" [ref=e448]
+              - button "4" [ref=e449]
+              - button "5" [ref=e450]
+              - button "6" [ref=e451]
+              - button "7+" [ref=e452]
+          - generic [ref=e453]:
+            - generic [ref=e454]: Reservists in group
+            - generic [ref=e455]:
+              - button "None" [ref=e456]
+              - button "1" [ref=e457]
+              - button "2+" [ref=e458]
+        - generic [ref=e459]:
+          - button "Add to Plan" [disabled]:
+            - img
+            - text: Add to Plan
+  - region "Notifications alt+T"

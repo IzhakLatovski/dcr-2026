@@ -1,4 +1,30 @@
 import { useMemo } from 'react';
+import {
+  ShoppingCart,
+  BarChart2,
+  FileEdit,
+  CheckCircle2,
+  XCircle,
+  Clock,
+  Lock,
+  FlaskConical,
+  Disc,
+  Megaphone,
+  LayoutGrid,
+  Sparkles,
+  Gift,
+  Trophy,
+  Rocket,
+  ShieldCheck,
+  Computer,
+  Heart,
+  Edit3,
+  Route,
+  Award,
+  ArrowRight,
+  Star,
+  AlertTriangle,
+} from 'lucide-react';
 import { useAchievements } from '../../hooks/useAchievements';
 import { useCurrentQuarter, useQuarterConfig } from '../../contexts/QuarterContext';
 import { professionalism } from '../../data/catalog/professionalism';
@@ -8,7 +34,15 @@ import { collaboration } from '../../data/catalog/collaboration';
 import { levels, MANDATORY_ITEM_IDS } from '../../data/levels';
 import { portalNews } from '../../data/portalNews';
 import type { UserDocument, CatalogItem, PlanStatus, Achievement } from '../../data/types';
-import './HomePage.css';
+import { HeroBanner } from '@/components/composed/hero-banner';
+import { StatCard } from '@/components/composed/stat-card';
+import { NewsCard, type NewsType } from '@/components/composed/news-card';
+import { SectionHeader } from '@/components/composed/section-header';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { ProgressBar } from '@/components/ui/progress-bar';
+import { EmptyState } from '@/components/ui/empty-state';
+import { cn } from '@/lib/utils';
 
 interface AuthUser {
   uid: string;
@@ -52,7 +86,7 @@ function getDaysRemainingInQuarter(quarter: string): number {
   const parts = quarter.split('-');
   const q = parseInt(parts[0].slice(1));
   const year = parseInt(parts[1]);
-  const end = new Date(year, q * 3, 0); // last day of quarter
+  const end = new Date(year, q * 3, 0);
   return Math.max(0, Math.ceil((end.getTime() - new Date().getTime()) / 86400000));
 }
 
@@ -72,15 +106,22 @@ function fmtDate(iso: string): string {
   }
 }
 
-// ── Component ─────────────────────────────────────────────────────────────────
-
-const PILLAR_CFG: Record<string, { icon: string; color: string }> = {
-  tech: { icon: 'ri-computer-line', color: 'var(--accent-color)' },
-  professionalism: { icon: 'ri-shield-check-line', color: 'var(--success-color)' },
-  'knowledge-unlock': { icon: 'ri-edit-line', color: '#8b5cf6' },
-  collaboration: { icon: 'ri-hearts-line', color: '#ec4899' },
-  roadmaps: { icon: 'ri-route-line', color: 'var(--warning-color)' },
+const PILLAR_CFG: Record<string, { Icon: React.ComponentType<{ className?: string }>; tint: string; label: string }> = {
+  tech: { Icon: Computer, tint: 'bg-primary/10 text-primary', label: 'Tech' },
+  professionalism: { Icon: ShieldCheck, tint: 'bg-green-600/10 text-green-600 dark:bg-green-500/15 dark:text-green-400', label: 'Professionalism' },
+  'knowledge-unlock': { Icon: Edit3, tint: 'bg-violet-500/10 text-violet-600 dark:bg-violet-500/15 dark:text-violet-400', label: 'Knowledge Unlock' },
+  collaboration: { Icon: Heart, tint: 'bg-pink-500/10 text-pink-600 dark:bg-pink-500/15 dark:text-pink-400', label: 'Collaboration' },
+  roadmaps: { Icon: Route, tint: 'bg-amber-500/10 text-amber-600 dark:bg-amber-500/15 dark:text-amber-400', label: 'Roadmaps' },
 };
+
+const NEWS_ICON: Record<string, React.ComponentType<{ className?: string }>> = {
+  promotion: Gift,
+  deadline: AlertTriangle,
+  reminder: Clock,
+  announcement: Sparkles,
+};
+
+// ── Component ─────────────────────────────────────────────────────────────────
 
 export default function HomePage({
   user,
@@ -96,10 +137,9 @@ export default function HomePage({
   const currentQuarter = useCurrentQuarter();
   const { isFrozen } = useQuarterConfig();
 
-  // Filter news to items relevant to the current quarter (or quarter-agnostic)
   const activeNews = useMemo(
     () => portalNews.filter((n) => !n.quarter || n.quarter === currentQuarter),
-    [currentQuarter]
+    [currentQuarter],
   );
   const daysRemaining = getDaysRemainingInQuarter(currentQuarter);
   const currentLevel = profile?.currentLevel ?? null;
@@ -129,7 +169,7 @@ export default function HomePage({
 
   const requiredInCart = useMemo(
     () => MANDATORY_ITEM_IDS.filter((id) => cartItemIds.has(id)),
-    [cartItemIds]
+    [cartItemIds],
   );
 
   // ── Points / level bank ───────────────────────────────────────────────────
@@ -153,8 +193,8 @@ export default function HomePage({
   const progressToNext = nextLevelDef
     ? Math.min(100, Math.round((bankedPoints / nextLevelDef.points) * 100))
     : currentLevel === 10
-    ? 100
-    : 0;
+      ? 100
+      : 0;
 
   // ── Recent achievements ───────────────────────────────────────────────────
 
@@ -184,478 +224,366 @@ export default function HomePage({
   const knowledgePts = cartPointsByCategory['knowledge-unlock'] ?? 0;
   const collabPts = cartPointsByCategory['collaboration'] ?? 0;
 
-  // ── Render ────────────────────────────────────────────────────────────────
+  // ── Identity bits ─────────────────────────────────────────────────────────
 
   const role = profile?.role ?? 'employee';
   const approvalStatus = profile?.approvalStatus;
   const displayName = profile?.displayName ?? user?.displayName;
   const photoURL = profile?.photoURL ?? user?.photoURL;
 
-  const planStatusColor =
-    planStatus === 'approved'
-      ? 'var(--success-color)'
-      : planStatus === 'rejected'
-      ? 'var(--error-color)'
-      : planStatus === 'pending'
-      ? 'var(--warning-color)'
-      : 'var(--text-muted)';
+  // ── Plan status visual ────────────────────────────────────────────────────
 
-  const planStatusIcon =
+  const planStatusTint: 'primary' | 'success' | 'warning' | 'destructive' | 'muted' =
     planStatus === 'approved'
-      ? 'ri-checkbox-circle-line'
+      ? 'success'
       : planStatus === 'rejected'
-      ? 'ri-close-circle-line'
-      : planStatus === 'pending'
-      ? 'ri-time-line'
-      : 'ri-file-edit-line';
+        ? 'destructive'
+        : planStatus === 'pending'
+          ? 'warning'
+          : 'muted';
+
+  const PlanStatusIcon =
+    planStatus === 'approved'
+      ? CheckCircle2
+      : planStatus === 'rejected'
+        ? XCircle
+        : planStatus === 'pending'
+          ? Clock
+          : FileEdit;
 
   const planStatusLabel = useRealPlan
     ? planStatus === 'approved'
       ? 'Approved'
       : planStatus === 'rejected'
-      ? 'Rejected'
-      : planStatus === 'pending'
-      ? 'Under Review'
-      : 'Draft'
+        ? 'Rejected'
+        : planStatus === 'pending'
+          ? 'Under Review'
+          : 'Draft'
     : 'Simulator';
 
-  return (
-    <div className="home-page">
+  // ── Render ────────────────────────────────────────────────────────────────
 
+  return (
+    <div className="flex flex-col gap-6 p-4 sm:p-6 h-full overflow-y-auto">
       {/* ── Hero ── */}
-      <div className="home-hero">
-        <div className="home-hero-left">
-          <div className={`home-hero-avatar home-avatar-${role}`}>
+      <HeroBanner
+        avatar={
+          <div className="flex size-14 sm:size-16 items-center justify-center rounded-2xl bg-primary/10 text-primary overflow-hidden">
             {photoURL ? (
-              <img src={photoURL} alt={displayName ?? ''} />
+              <img src={photoURL} alt={displayName ?? ''} className="size-full object-cover" />
             ) : (
-              <span>{getInitials(displayName)}</span>
+              <span className="text-xl font-bold">{getInitials(displayName)}</span>
             )}
           </div>
-          <div className="home-hero-identity">
-            <p className="home-hero-greeting">
-              {user ? getGreeting(displayName) : 'Welcome to DCR 2.0'}
-            </p>
-            <h1 className="home-hero-name">
-              {displayName ?? 'Development Career Roadmap'}
-            </h1>
-            <div className="home-hero-tags">
-              {currentLevel != null && (
-                <span className="home-tag home-tag-level">
-                  <i className="ri-bar-chart-2-line"></i> Level {currentLevel}
-                </span>
-              )}
-              {role === 'team_leader' && (
-                <span className="home-tag home-tag-tl">
-                  <i className="ri-user-star-line"></i> Team Leader
-                </span>
-              )}
-              {role === 'admin' && (
-                <span className="home-tag home-tag-admin">
-                  <i className="ri-shield-star-line"></i> Admin
-                </span>
-              )}
-              {approvalStatus === 'approved' && (
-                <span className="home-tag home-tag-approved">
-                  <i className="ri-checkbox-circle-line"></i> Active
-                </span>
-              )}
-              {approvalStatus === 'pending' && (
-                <span className="home-tag home-tag-pending">
-                  <i className="ri-time-line"></i> Pending Approval
-                </span>
-              )}
+        }
+        eyebrow={user ? getGreeting(displayName) : 'Welcome to DCR 2.0'}
+        title={displayName ?? 'Development Career Roadmap'}
+        tags={
+          <>
+            {currentLevel != null && (
+              <Badge variant="primary" size="sm">
+                <BarChart2 className="size-3" /> Level {currentLevel}
+              </Badge>
+            )}
+            {role === 'team_leader' && (
+              <Badge variant="secondary" size="sm">
+                Team Leader
+              </Badge>
+            )}
+            {role === 'admin' && (
+              <Badge variant="secondary" size="sm">
+                Admin
+              </Badge>
+            )}
+            {approvalStatus === 'approved' && (
+              <Badge variant="success" size="sm">
+                <CheckCircle2 className="size-3" /> Active
+              </Badge>
+            )}
+            {approvalStatus === 'pending' && (
+              <Badge variant="warning" size="sm">
+                <Clock className="size-3" /> Pending Approval
+              </Badge>
+            )}
+          </>
+        }
+        trailing={
+          <>
+            <div className="rounded-2xl border border-border bg-muted/40 px-4 py-3 sm:min-w-[180px]">
+              <p className="text-[0.65rem] font-semibold uppercase tracking-wider text-muted-foreground">
+                Current Quarter
+              </p>
+              <p className="text-2xl font-bold tracking-tight text-foreground tabular-nums">
+                {currentQuarter}
+              </p>
+              <p className="mt-1 inline-flex items-center gap-1 text-xs text-muted-foreground">
+                {isFrozen ? (
+                  <>
+                    <Lock className="size-3.5" /> Quarter locked
+                  </>
+                ) : (
+                  <>
+                    <Clock className="size-3.5" /> {daysRemaining}d remaining
+                  </>
+                )}
+              </p>
             </div>
-          </div>
-        </div>
-        <div className="home-hero-right">
-          <div className="home-hero-quarter-box">
-            <span className="home-hero-quarter-label">Current Quarter</span>
-            <span className="home-hero-quarter-value">{currentQuarter}</span>
-            {isFrozen ? (
-              <span className="home-hero-days-left">
-                <i className="ri-lock-line"></i> Quarter locked
-              </span>
-            ) : (
-              <span className="home-hero-days-left">
-                <i className="ri-time-line"></i> {daysRemaining}d remaining
-              </span>
-            )}
-          </div>
-          <span className={`home-mode-badge ${isSimulatorMode ? 'sim' : 'real'}`}>
-            <i className={isSimulatorMode ? 'ri-flask-line' : 'ri-record-circle-line'}></i>
-            {isSimulatorMode ? 'Simulator' : 'Real Plan'}
-          </span>
-        </div>
-      </div>
+            <Badge variant={isSimulatorMode ? 'secondary' : 'success'} size="md">
+              {isSimulatorMode ? <FlaskConical className="size-3" /> : <Disc className="size-3" />}
+              {isSimulatorMode ? 'Simulator' : 'Real Plan'}
+            </Badge>
+          </>
+        }
+      />
 
       {/* ── Top Stats Row ── */}
-      <div className="home-stats-row">
-        {/* Plan points */}
-        <div className="home-stat-card" onClick={() => onNavigate('simulator', 'Plan')}>
-          <div className="home-stat-icon-wrap" style={{ background: 'rgba(59,130,246,0.12)' }}>
-            <i className="ri-shopping-cart-2-line" style={{ color: 'var(--accent-color)' }}></i>
-          </div>
-          <div className="home-stat-body">
-            <span className="home-stat-value">{cartTotalPoints.toLocaleString()}</span>
-            <span className="home-stat-label">Points in plan</span>
-            <span className="home-stat-sub">
-              {cartItems.length} item{cartItems.length !== 1 ? 's' : ''} added
-            </span>
-          </div>
-          <i className="home-stat-chevron ri-arrow-right-s-line"></i>
-        </div>
-
-        {/* Level progress */}
-        <div className="home-stat-card" onClick={() => onNavigate('my-profile', 'My Profile')}>
-          <div className="home-stat-icon-wrap" style={{ background: 'rgba(16,185,129,0.12)' }}>
-            <i className="ri-bar-chart-2-line" style={{ color: 'var(--success-color)' }}></i>
-          </div>
-          <div className="home-stat-body">
-            <span className="home-stat-value">
-              {currentLevel != null ? `Level ${currentLevel}` : '—'}
-            </span>
-            <span className="home-stat-label">Current level</span>
-            <span className="home-stat-sub">
-              {nextLevelDef
-                ? `${bankedPoints.toLocaleString()} / ${nextLevelDef.points.toLocaleString()} pts → L${nextLevelDef.id}`
-                : currentLevel === 10
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+        <StatCard
+          icon={<ShoppingCart />}
+          iconTint="primary"
+          value={cartTotalPoints.toLocaleString()}
+          label="Points in plan"
+          sub={`${cartItems.length} item${cartItems.length !== 1 ? 's' : ''} added`}
+          onClick={() => onNavigate('simulator', 'Plan')}
+        />
+        <StatCard
+          icon={<BarChart2 />}
+          iconTint="success"
+          value={currentLevel != null ? `Level ${currentLevel}` : '—'}
+          label="Current level"
+          sub={
+            nextLevelDef
+              ? `${bankedPoints.toLocaleString()} / ${nextLevelDef.points.toLocaleString()} pts → L${nextLevelDef.id}`
+              : currentLevel === 10
                 ? 'Maximum level reached!'
                 : user
-                ? 'Set up profile to track'
-                : 'Sign in to track'}
-            </span>
-          </div>
-          {nextLevelDef && (
-            <div className="home-stat-progress-bar">
-              <div
-                className="home-stat-progress-fill"
-                style={{ width: `${progressToNext}%` }}
-              />
-            </div>
-          )}
-          <i className="home-stat-chevron ri-arrow-right-s-line"></i>
-        </div>
-
-        {/* Plan status */}
-        <div className="home-stat-card" onClick={() => onNavigate('simulator', 'Plan')}>
-          <div
-            className="home-stat-icon-wrap"
-            style={{
-              background: planStatus
-                ? `${planStatusColor}1a`
-                : 'rgba(100,116,139,0.12)',
-            }}
-          >
-            <i className={planStatusIcon} style={{ color: planStatusColor }}></i>
-          </div>
-          <div className="home-stat-body">
-            <span className="home-stat-value" style={{ color: planStatus ? planStatusColor : undefined }}>
-              {planStatusLabel}
-            </span>
-            <span className="home-stat-label">Plan status</span>
-            <span className="home-stat-sub">
-              {useRealPlan ? currentQuarter : 'Switch to Real Plan to submit'}
-            </span>
-          </div>
-          <i className="home-stat-chevron ri-arrow-right-s-line"></i>
-        </div>
+                  ? 'Set up profile to track'
+                  : 'Sign in to track'
+          }
+          progress={nextLevelDef ? progressToNext : undefined}
+          onClick={() => onNavigate('my-profile', 'My Profile')}
+        />
+        <StatCard
+          icon={<PlanStatusIcon />}
+          iconTint={planStatusTint}
+          value={planStatusLabel}
+          label="Plan status"
+          sub={useRealPlan ? currentQuarter : 'Switch to Real Plan to submit'}
+          onClick={() => onNavigate('simulator', 'Plan')}
+        />
       </div>
 
       {/* ── Program Updates / News ── */}
       {activeNews.length > 0 && (
-        <div className="home-section">
-          <div className="home-section-header-row">
-            <h2 className="home-section-title">
-              <i className="ri-megaphone-line"></i>
-              Program Updates
-            </h2>
-            <button
-              className="home-card-link-btn"
-              onClick={() => onNavigate('guidelines', 'Guidelines')}
-            >
-              Full guidelines <i className="ri-arrow-right-line"></i>
-            </button>
-          </div>
-          <div className="home-news-scroll">
+        <section className="flex flex-col gap-3">
+          <SectionHeader
+            icon={<Megaphone />}
+            title="Program Updates"
+            action={
+              <Button variant="ghost" size="sm" onClick={() => onNavigate('guidelines', 'Guidelines')}>
+                Full guidelines
+                <ArrowRight className="size-3.5" />
+              </Button>
+            }
+          />
+          <div className="flex gap-3 overflow-x-auto -mx-1 px-1 pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {activeNews.map((item) => {
-              const COLOR: Record<string, string> = {
-                promotion: 'var(--warning-color)',
-                deadline: 'var(--error-color)',
-                reminder: 'var(--accent-color)',
-                announcement: '#8b5cf6',
-              };
-              const BG: Record<string, string> = {
-                promotion: 'rgba(245,158,11,0.08)',
-                deadline: 'rgba(239,68,68,0.06)',
-                reminder: 'rgba(59,130,246,0.06)',
-                announcement: 'rgba(139,92,246,0.06)',
-              };
-              const BORDER: Record<string, string> = {
-                promotion: 'rgba(245,158,11,0.18)',
-                deadline: 'rgba(239,68,68,0.15)',
-                reminder: 'rgba(59,130,246,0.13)',
-                announcement: 'rgba(139,92,246,0.15)',
-              };
-              const color = COLOR[item.type];
+              const Icon = NEWS_ICON[item.type] ?? Sparkles;
               return (
-                <div
-                  key={item.id}
-                  className="home-news-card"
-                  style={{
-                    background: BG[item.type],
-                    borderColor: BORDER[item.type],
-                  }}
-                >
-                  <div className="home-news-card-top">
-                    <div
-                      className="home-news-icon"
-                      style={{ background: `${color}18`, color }}
-                    >
-                      <i className={item.icon}></i>
-                    </div>
-                    <div className="home-news-badges">
-                      <span
-                        className="home-news-type-badge"
-                        style={{ background: `${color}14`, color, borderColor: `${color}25` }}
-                      >
-                        {item.type === 'promotion' && 'Promotion'}
-                        {item.type === 'deadline' && 'Deadline'}
-                        {item.type === 'reminder' && 'Reminder'}
-                        {item.type === 'announcement' && "What's New"}
-                      </span>
-                      {item.isNew && (
-                        <span className="home-news-new-badge">NEW</span>
-                      )}
-                    </div>
-                  </div>
-                  <h3 className="home-news-title">{item.title}</h3>
-                  <p className="home-news-body">{item.body}</p>
-                  {item.link && (
-                    <button
-                      className="home-news-link"
-                      style={{ color }}
-                      onClick={() => onNavigate(item.link!.navId, item.link!.navLabel)}
-                    >
-                      {item.link.label} <i className="ri-arrow-right-line"></i>
-                    </button>
-                  )}
+                <div key={item.id} className="shrink-0 w-[18rem]">
+                  <NewsCard
+                    icon={<Icon />}
+                    title={item.title}
+                    body={item.body}
+                    type={item.type as NewsType}
+                    isNew={item.isNew}
+                    linkLabel={item.link?.label}
+                    onLinkClick={
+                      item.link
+                        ? () => onNavigate(item.link!.navId, item.link!.navLabel)
+                        : undefined
+                    }
+                  />
                 </div>
               );
             })}
           </div>
-        </div>
+        </section>
       )}
 
       {/* ── Pillars Section ── */}
       {user && (
-        <div className="home-section">
-          <h2 className="home-section-title">
-            <i className="ri-layout-4-line"></i>
-            Pillars This Quarter
-          </h2>
-          <div className="home-pillars-grid">
-
-            {/* Professionalism */}
-            <div
-              className="home-pillar-card"
+        <section className="flex flex-col gap-3">
+          <SectionHeader icon={<LayoutGrid />} title="Pillars This Quarter" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+            {/* Professionalism — checklist */}
+            <PillarCard
+              category="professionalism"
               onClick={() => onNavigate('professionalism', 'Professionalism')}
-            >
-              <div className="home-pillar-top">
-                <div className="home-pillar-icon" style={{ background: 'rgba(16,185,129,0.12)', color: 'var(--success-color)' }}>
-                  <i className="ri-shield-check-line"></i>
-                </div>
-                <div className="home-pillar-meta">
-                  <span className="home-pillar-name">Professionalism</span>
-                  <span className="home-pillar-sub">Required items</span>
-                </div>
-                <span
-                  className={`home-pillar-badge ${
+              right={
+                <Badge
+                  variant={
                     requiredInCart.length === MANDATORY_ITEM_IDS.length
-                      ? 'done'
+                      ? 'success'
                       : requiredInCart.length > 0
-                      ? 'partial'
-                      : 'missing'
-                  }`}
+                        ? 'warning'
+                        : 'default'
+                  }
+                  size="sm"
                 >
                   {requiredInCart.length}/{MANDATORY_ITEM_IDS.length}
-                </span>
-              </div>
-              <div className="home-pillar-checklist">
+                </Badge>
+              }
+              sub="Required items"
+            >
+              <div className="flex flex-col gap-1.5">
                 {professionalism
                   .filter((i) => MANDATORY_ITEM_IDS.includes(i.id))
-                  .map((item) => (
-                    <div
-                      key={item.id}
-                      className={`home-pillar-check-row ${cartItemIds.has(item.id) ? 'checked' : ''}`}
-                    >
-                      <i
-                        className={
-                          cartItemIds.has(item.id)
-                            ? 'ri-checkbox-circle-fill'
-                            : 'ri-checkbox-blank-circle-line'
-                        }
-                      ></i>
-                      <span>{item.name}</span>
-                    </div>
-                  ))}
+                  .map((item) => {
+                    const checked = cartItemIds.has(item.id);
+                    return (
+                      <div
+                        key={item.id}
+                        className="flex items-center gap-2 text-xs"
+                      >
+                        {checked ? (
+                          <CheckCircle2 className="size-3.5 text-green-600 dark:text-green-400 shrink-0" />
+                        ) : (
+                          <span className="size-3.5 rounded-full border border-border shrink-0" />
+                        )}
+                        <span
+                          className={cn(
+                            'truncate',
+                            checked ? 'text-foreground' : 'text-muted-foreground',
+                          )}
+                        >
+                          {item.name}
+                        </span>
+                      </div>
+                    );
+                  })}
               </div>
-            </div>
+            </PillarCard>
 
             {/* Tech */}
-            <div
-              className="home-pillar-card"
+            <PillarCard
+              category="tech"
               onClick={() => onNavigate('tech', 'Tech')}
-            >
-              <div className="home-pillar-top">
-                <div className="home-pillar-icon" style={{ background: 'rgba(59,130,246,0.12)', color: 'var(--accent-color)' }}>
-                  <i className="ri-computer-line"></i>
-                </div>
-                <div className="home-pillar-meta">
-                  <span className="home-pillar-name">Tech</span>
-                  <span className="home-pillar-sub">Min. {PILLAR_REQS.tech} pts</span>
-                </div>
-                <span
-                  className={`home-pillar-badge ${
-                    techPts >= PILLAR_REQS.tech ? 'done' : techPts > 0 ? 'partial' : 'missing'
-                  }`}
+              right={
+                <Badge
+                  variant={
+                    techPts >= PILLAR_REQS.tech
+                      ? 'success'
+                      : techPts > 0
+                        ? 'warning'
+                        : 'default'
+                  }
+                  size="sm"
                 >
                   {techPts} pts
-                </span>
-              </div>
-              <div className="home-pillar-bar-row">
-                <div className="home-pillar-bar">
-                  <div
-                    className={`home-pillar-bar-fill ${techPts >= PILLAR_REQS.tech ? 'done' : 'tech'}`}
-                    style={{ width: `${Math.min(100, (techPts / PILLAR_REQS.tech) * 100)}%` }}
-                  />
-                </div>
-                <span className="home-pillar-bar-label">
-                  {techPts >= PILLAR_REQS.tech
-                    ? `Min. met ✓`
-                    : `${PILLAR_REQS.tech - techPts} more pts needed`}
-                </span>
-              </div>
+                </Badge>
+              }
+              sub={`Min. ${PILLAR_REQS.tech} pts`}
+            >
+              <PillarProgress
+                value={techPts}
+                max={PILLAR_REQS.tech}
+                metLabel="Min. met ✓"
+                missingLabel={`${PILLAR_REQS.tech - techPts} more pts needed`}
+              />
               {(cartByCategory['tech']?.length ?? 0) > 0 && (
-                <div className="home-pillar-chips">
+                <div className="flex flex-wrap gap-1 mt-2">
                   {(cartByCategory['tech'] ?? []).slice(0, 3).map((item) => (
-                    <span key={item.id} className="home-pillar-chip">
-                      {item.image && <img src={item.image} alt="" />}
-                      {item.name.replace(/^(AWS|GCP|HashiCorp|Kubernetes)\s+Certified\s*/i, '').slice(0, 24)}
+                    <span
+                      key={item.id}
+                      className="inline-flex items-center gap-1 rounded-full border border-border bg-muted/50 px-2 h-6 text-[0.65rem] font-medium text-muted-foreground"
+                    >
+                      {item.image && <img src={item.image} alt="" className="size-3 object-contain" />}
+                      {item.name.replace(/^(AWS|GCP|HashiCorp|Kubernetes)\s+Certified\s*/i, '').slice(0, 18)}
                     </span>
                   ))}
                   {(cartByCategory['tech']?.length ?? 0) > 3 && (
-                    <span className="home-pillar-chip home-pillar-chip-more">
+                    <span className="inline-flex items-center rounded-full bg-primary/10 text-primary px-2 h-6 text-[0.65rem] font-semibold">
                       +{(cartByCategory['tech']?.length ?? 0) - 3}
                     </span>
                   )}
                 </div>
               )}
-            </div>
+            </PillarCard>
 
             {/* Knowledge Unlock */}
-            <div
-              className="home-pillar-card"
+            <PillarCard
+              category="knowledge-unlock"
               onClick={() => onNavigate('knowledge-unlock', 'Knowledge Unlock')}
-            >
-              <div className="home-pillar-top">
-                <div className="home-pillar-icon" style={{ background: 'rgba(139,92,246,0.12)', color: '#8b5cf6' }}>
-                  <i className="ri-edit-line"></i>
-                </div>
-                <div className="home-pillar-meta">
-                  <span className="home-pillar-name">Knowledge Unlock</span>
-                  <span className="home-pillar-sub">Min. {PILLAR_REQS['knowledge-unlock']} pts</span>
-                </div>
-                <span
-                  className={`home-pillar-badge ${
+              right={
+                <Badge
+                  variant={
                     knowledgePts >= PILLAR_REQS['knowledge-unlock']
-                      ? 'done'
+                      ? 'success'
                       : knowledgePts > 0
-                      ? 'partial'
-                      : 'missing'
-                  }`}
+                        ? 'warning'
+                        : 'default'
+                  }
+                  size="sm"
                 >
                   {knowledgePts} pts
-                </span>
-              </div>
-              <div className="home-pillar-bar-row">
-                <div className="home-pillar-bar">
-                  <div
-                    className={`home-pillar-bar-fill ${knowledgePts >= PILLAR_REQS['knowledge-unlock'] ? 'done' : 'knowledge'}`}
-                    style={{
-                      width: `${Math.min(100, (knowledgePts / PILLAR_REQS['knowledge-unlock']) * 100)}%`,
-                    }}
-                  />
-                </div>
-                <span className="home-pillar-bar-label">
-                  {knowledgePts >= PILLAR_REQS['knowledge-unlock']
-                    ? 'Min. met ✓'
-                    : `${PILLAR_REQS['knowledge-unlock'] - knowledgePts} more pts needed`}
-                </span>
-              </div>
-            </div>
+                </Badge>
+              }
+              sub={`Min. ${PILLAR_REQS['knowledge-unlock']} pts`}
+            >
+              <PillarProgress
+                value={knowledgePts}
+                max={PILLAR_REQS['knowledge-unlock']}
+                metLabel="Min. met ✓"
+                missingLabel={`${PILLAR_REQS['knowledge-unlock'] - knowledgePts} more pts needed`}
+              />
+            </PillarCard>
 
             {/* Collaboration */}
-            <div
-              className="home-pillar-card"
+            <PillarCard
+              category="collaboration"
               onClick={() => onNavigate('collaboration', 'Collaboration')}
-            >
-              <div className="home-pillar-top">
-                <div className="home-pillar-icon" style={{ background: 'rgba(236,72,153,0.12)', color: '#ec4899' }}>
-                  <i className="ri-hearts-line"></i>
-                </div>
-                <div className="home-pillar-meta">
-                  <span className="home-pillar-name">Collaboration</span>
-                  <span className="home-pillar-sub">Min. {PILLAR_REQS.collaboration} pts</span>
-                </div>
-                <span
-                  className={`home-pillar-badge ${
+              right={
+                <Badge
+                  variant={
                     collabPts >= PILLAR_REQS.collaboration
-                      ? 'done'
+                      ? 'success'
                       : collabPts > 0
-                      ? 'partial'
-                      : 'missing'
-                  }`}
+                        ? 'warning'
+                        : 'default'
+                  }
+                  size="sm"
                 >
                   {collabPts} pts
-                </span>
-              </div>
-              <div className="home-pillar-bar-row">
-                <div className="home-pillar-bar">
-                  <div
-                    className={`home-pillar-bar-fill ${collabPts >= PILLAR_REQS.collaboration ? 'done' : 'collab'}`}
-                    style={{
-                      width: `${Math.min(100, (collabPts / PILLAR_REQS.collaboration) * 100)}%`,
-                    }}
-                  />
-                </div>
-                <span className="home-pillar-bar-label">
-                  {collabPts >= PILLAR_REQS.collaboration
-                    ? 'Min. met ✓'
-                    : `${PILLAR_REQS.collaboration - collabPts} more pts needed`}
-                </span>
-              </div>
-            </div>
+                </Badge>
+              }
+              sub={`Min. ${PILLAR_REQS.collaboration} pts`}
+            >
+              <PillarProgress
+                value={collabPts}
+                max={PILLAR_REQS.collaboration}
+                metLabel="Min. met ✓"
+                missingLabel={`${PILLAR_REQS.collaboration - collabPts} more pts needed`}
+              />
+            </PillarCard>
           </div>
-        </div>
+        </section>
       )}
 
       {/* ── Featured This Quarter ── */}
       {ALL_PROMOTED.length > 0 && (
-        <div className="home-section">
-          <div className="home-section-header-row">
-            <h2 className="home-section-title">
-              <i className="ri-sparkling-2-line"></i>
-              Featured This Quarter
-            </h2>
-            <span className="home-section-badge-pill">
-              <i className="ri-gift-line"></i> Bonus Points
-            </span>
-          </div>
-          <p className="home-section-subtitle">
-            These items carry bonus points this quarter — great choices for your plan.
-          </p>
-          <div className="home-featured-scroll">
+        <section className="flex flex-col gap-3">
+          <SectionHeader
+            icon={<Sparkles />}
+            title="Featured This Quarter"
+            subtitle="These items carry bonus points this quarter — great choices for your plan."
+            action={
+              <Badge variant="warning" size="md">
+                <Gift className="size-3" /> Bonus Points
+              </Badge>
+            }
+          />
+          <div className="flex gap-3 overflow-x-auto -mx-1 px-1 pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {ALL_PROMOTED.map((item) => {
               const basePts = item.points;
               const bonusPts = item.promotedPoints ?? item.points;
@@ -664,150 +592,240 @@ export default function HomePage({
                 item.category === 'knowledge-unlock'
                   ? 'knowledge-unlock'
                   : item.category === 'collaboration'
-                  ? 'collaboration'
-                  : 'tech';
+                    ? 'collaboration'
+                    : 'tech';
               const navLabel =
                 item.category === 'knowledge-unlock'
                   ? 'Knowledge Unlock'
                   : item.category === 'collaboration'
-                  ? 'Collaboration'
-                  : 'Tech';
+                    ? 'Collaboration'
+                    : 'Tech';
               return (
-                <div
+                <button
                   key={item.id}
-                  className={`home-featured-card ${inCart ? 'in-cart' : ''}`}
+                  type="button"
                   onClick={() => onNavigate(navId, navLabel)}
+                  className={cn(
+                    'group/featured shrink-0 w-[15rem] flex flex-col gap-2 rounded-2xl border bg-card text-left p-3 shadow-sm transition-all duration-200',
+                    'hover:-translate-y-0.5 hover:shadow-md hover:border-primary/30',
+                    'outline-none focus-visible:ring-3 focus-visible:ring-ring/50',
+                    inCart && 'border-primary/30 bg-primary/5',
+                  )}
                 >
-                  <div className="home-featured-img-wrap">
+                  <div className="relative flex h-24 items-center justify-center rounded-xl bg-gradient-to-br from-muted/60 to-muted/20">
                     {item.image ? (
-                      <img src={item.image} alt={item.name} />
+                      <img src={item.image} alt={item.name} className="h-full max-w-full object-contain p-2" />
                     ) : (
-                      <i className="ri-award-line"></i>
+                      <Award className="size-8 text-muted-foreground" />
                     )}
                     {inCart && (
-                      <div className="home-featured-in-cart-badge">
-                        <i className="ri-check-line"></i>
-                      </div>
+                      <span className="absolute right-2 top-2 inline-flex size-6 items-center justify-center rounded-full bg-green-600/15 text-green-600">
+                        <CheckCircle2 className="size-4" />
+                      </span>
                     )}
                   </div>
-                  <div className="home-featured-body">
-                    <span className="home-featured-name">{item.name}</span>
+                  <div className="flex-1 min-w-0 flex flex-col gap-0.5">
+                    <span className="text-sm font-semibold text-foreground truncate">
+                      {item.name}
+                    </span>
                     {item.subcategory && (
-                      <span className="home-featured-sub">{item.subcategory}</span>
+                      <span className="text-xs text-muted-foreground truncate">
+                        {item.subcategory}
+                      </span>
                     )}
-                    <div className="home-featured-pts">
+                  </div>
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="inline-flex items-baseline gap-1 tabular-nums">
                       {bonusPts !== basePts && (
-                        <span className="home-featured-pts-base">{basePts} pts</span>
+                        <span className="text-xs text-muted-foreground line-through">
+                          {basePts}
+                        </span>
                       )}
-                      <span className="home-featured-pts-bonus">{bonusPts} pts</span>
+                      <span className="text-sm font-semibold text-primary">{bonusPts}</span>
+                      <span className="text-[0.65rem] uppercase tracking-wider text-muted-foreground">
+                        pts
+                      </span>
+                    </div>
+                    <ArrowRight className="size-3.5 text-muted-foreground transition-transform duration-150 group-hover/featured:translate-x-0.5" />
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
+      {/* ── Recent Activity ── */}
+      <section className="flex flex-col gap-3">
+        <SectionHeader
+          icon={<Trophy />}
+          title="Recent Achievements"
+          action={
+            user && (
+              <Button variant="ghost" size="sm" onClick={() => onNavigate('my-profile', 'My Profile')}>
+                View all <ArrowRight className="size-3.5" />
+              </Button>
+            )
+          }
+        />
+        {!user ? (
+          <EmptyState
+            title="Sign in to see your achievements"
+            description="Your personal zone will show progress, plan, and earned items."
+          />
+        ) : achLoading ? (
+          <div className="rounded-2xl border border-border bg-card p-4 text-sm text-muted-foreground">
+            Loading...
+          </div>
+        ) : recentAchievements.length === 0 ? (
+          <EmptyState
+            icon={<Trophy />}
+            title="No achievements yet"
+            description="Complete items in your plan to earn them."
+          />
+        ) : (
+          <div className="flex flex-col gap-2">
+            {recentAchievements.map(({ key, item, status, date, quarter }) => {
+              const pts = item.promotedPoints ?? item.points;
+              const pillar = PILLAR_CFG[item.category];
+              const PillarIcon = pillar?.Icon ?? Star;
+              const statusVariant: 'success' | 'destructive' | 'warning' | 'default' =
+                status === 'approved'
+                  ? 'success'
+                  : status === 'rejected'
+                    ? 'destructive'
+                    : status === 'submitted'
+                      ? 'warning'
+                      : 'default';
+              return (
+                <div
+                  key={key}
+                  className="flex items-center gap-3 rounded-xl border border-border bg-card px-3 py-2.5"
+                >
+                  <span
+                    className={cn(
+                      'inline-flex size-10 shrink-0 items-center justify-center rounded-xl overflow-hidden [&_svg]:size-4',
+                      pillar?.tint ?? 'bg-muted text-muted-foreground',
+                    )}
+                  >
+                    {item.image ? (
+                      <img src={item.image} alt={item.name} className="size-full object-contain p-1" />
+                    ) : (
+                      <PillarIcon />
+                    )}
+                  </span>
+                  <div className="flex-1 min-w-0 flex flex-col">
+                    <span className="text-sm font-medium text-foreground truncate">
+                      {item.name}
+                    </span>
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                      {quarter && <span>{quarter}</span>}
+                      <span>{fmtDate(date)}</span>
                     </div>
                   </div>
-                  <i className="home-featured-arrow ri-arrow-right-line"></i>
+                  <div className="shrink-0 flex items-center gap-2">
+                    {pts > 0 && (
+                      <span className="text-sm font-semibold text-foreground tabular-nums">
+                        +{pts}
+                      </span>
+                    )}
+                    <Badge variant={statusVariant} size="sm">
+                      {status}
+                    </Badge>
+                  </div>
                 </div>
               );
             })}
           </div>
-        </div>
-      )}
-
-      {/* ── Bottom Grid: Recent Activity ── */}
-      <div className="home-bottom-grid">
-
-        {/* Recent Achievements */}
-        <div className="home-card">
-          <div className="home-card-header-row">
-            <h2 className="home-section-title">
-              <i className="ri-trophy-line"></i>
-              Recent Achievements
-            </h2>
-            {user && (
-              <button
-                className="home-card-link-btn"
-                onClick={() => onNavigate('my-profile', 'My Profile')}
-              >
-                View all <i className="ri-arrow-right-line"></i>
-              </button>
-            )}
-          </div>
-          {!user ? (
-            <div className="home-empty-state">
-              <i className="ri-user-line"></i>
-              <p>Sign in to see your achievements.</p>
-            </div>
-          ) : achLoading ? (
-            <div className="home-empty-state">
-              <p>Loading...</p>
-            </div>
-          ) : recentAchievements.length === 0 ? (
-            <div className="home-empty-state">
-              <i className="ri-inbox-line"></i>
-              <p>No achievements yet — complete items to earn them!</p>
-            </div>
-          ) : (
-            <div className="home-ach-list">
-              {recentAchievements.map(({ key, item, status, date, quarter }) => {
-                const pts = item.promotedPoints ?? item.points;
-                const pillar = PILLAR_CFG[item.category];
-                const statusColor =
-                  status === 'approved'
-                    ? 'var(--success-color)'
-                    : status === 'rejected'
-                    ? 'var(--error-color)'
-                    : status === 'submitted'
-                    ? 'var(--warning-color)'
-                    : 'var(--text-muted)';
-                return (
-                  <div key={key} className="home-ach-row">
-                    <div
-                      className="home-ach-icon"
-                      style={{ background: `${pillar?.color ?? 'var(--accent-color)'}18` }}
-                    >
-                      {item.image ? (
-                        <img src={item.image} alt={item.name} />
-                      ) : (
-                        <i
-                          className={pillar?.icon ?? 'ri-star-line'}
-                          style={{ color: pillar?.color }}
-                        />
-                      )}
-                    </div>
-                    <div className="home-ach-info">
-                      <span className="home-ach-name">{item.name}</span>
-                      <div className="home-ach-meta">
-                        {quarter && <span className="home-ach-quarter">{quarter}</span>}
-                        <span className="home-ach-date">{fmtDate(date)}</span>
-                      </div>
-                    </div>
-                    <div className="home-ach-right">
-                      {pts > 0 && <span className="home-ach-pts">+{pts}</span>}
-                      <span className="home-ach-status" style={{ color: statusColor }}>
-                        {status}
-                      </span>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      </div>
+        )}
+      </section>
 
       {/* ── Guest CTA ── */}
       {!user && (
-        <div className="home-guest-cta">
-          <div className="home-guest-cta-content">
-            <i className="ri-rocket-2-line"></i>
-            <div>
-              <h3>Ready to accelerate your career?</h3>
-              <p>
-                Sign in with your Develeap account to track your quarterly progress, build a
-                real plan, and earn certifications.
-              </p>
-            </div>
+        <section className="rounded-3xl border border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10 p-5 sm:p-6 flex items-center gap-4 sm:gap-6">
+          <span className="hidden sm:inline-flex size-14 items-center justify-center rounded-2xl bg-primary text-primary-foreground shrink-0 [&_svg]:size-6">
+            <Rocket />
+          </span>
+          <div className="flex-1 min-w-0">
+            <h3 className="text-base sm:text-lg font-semibold text-foreground">
+              Ready to accelerate your career?
+            </h3>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Sign in with your Develeap account to track your quarterly progress, build a real plan, and earn certifications.
+            </p>
           </div>
-        </div>
+        </section>
       )}
+    </div>
+  );
+}
 
+/* ── Inline pillar card helper ───────────────────────────────── */
+
+function PillarCard({
+  category,
+  onClick,
+  right,
+  sub,
+  children,
+}: {
+  category: keyof typeof PILLAR_CFG;
+  onClick: () => void;
+  right: React.ReactNode;
+  sub: string;
+  children: React.ReactNode;
+}) {
+  const cfg = PILLAR_CFG[category];
+  const Icon = cfg.Icon;
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-4 text-left shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:border-primary/30 outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+    >
+      <div className="flex items-center gap-3">
+        <span className={cn('inline-flex size-10 shrink-0 items-center justify-center rounded-xl [&_svg]:size-5', cfg.tint)}>
+          <Icon />
+        </span>
+        <div className="flex-1 min-w-0 flex flex-col gap-0.5">
+          <span className="text-sm font-semibold text-foreground">{cfg.label}</span>
+          <span className="text-xs text-muted-foreground">{sub}</span>
+        </div>
+        <div className="shrink-0">{right}</div>
+      </div>
+      <div className="flex flex-col gap-1.5">{children}</div>
+    </button>
+  );
+}
+
+function PillarProgress({
+  value,
+  max,
+  metLabel,
+  missingLabel,
+}: {
+  value: number;
+  max: number;
+  metLabel: string;
+  missingLabel: string;
+}) {
+  const met = value >= max;
+  return (
+    <div className="flex flex-col gap-1.5">
+      <ProgressBar
+        value={value}
+        max={max}
+        size="sm"
+        variant={met ? 'success' : 'primary'}
+      />
+      <span
+        className={cn(
+          'text-[0.65rem] font-medium uppercase tracking-wider',
+          met ? 'text-green-600 dark:text-green-400' : 'text-muted-foreground',
+        )}
+      >
+        {met ? metLabel : missingLabel}
+      </span>
     </div>
   );
 }

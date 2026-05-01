@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { Users, UserCircle, Clock, Medal, Settings, AlertCircle, RotateCw, ShieldCheck } from 'lucide-react';
 import { useTeamMembers } from '../../hooks/useTeamMembers';
 import { useLevelUpRequests } from '../../hooks/useLevelUpRequests';
 import { PendingApprovalsTab } from './PendingApprovalsTab';
@@ -6,7 +7,10 @@ import { MyTeamTab } from './MyTeamTab';
 import { LevelUpsTab, type LevelUpHistoryRow } from './LevelUpsTab';
 import { QuarterSettingsTab } from './QuarterSettingsTab';
 import type { UserDocument } from '../../data/types';
-import './TeamLeaderDashboard.css';
+import { StatCard } from '@/components/composed/stat-card';
+import { Tabs, TabList, Tab, TabPanel } from '@/components/ui/tabs';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 
 interface TeamLeaderDashboardProps {
   userId: string;
@@ -17,29 +21,27 @@ interface TeamLeaderDashboardProps {
 
 type TabId = 'pending' | 'team' | 'levelups' | 'settings';
 
-/**
- * Team Leader / Admin Dashboard - Manage team members and approvals
- * Team leaders see their team; admins see ALL employees across all teams
- */
-export function TeamLeaderDashboard({ userId, userDisplayName = '', userEmail = '', isAdmin = false }: TeamLeaderDashboardProps) {
+export function TeamLeaderDashboard({
+  userId,
+  userDisplayName = '',
+  userEmail = '',
+  isAdmin = false,
+}: TeamLeaderDashboardProps) {
   const [activeTab, setActiveTab] = useState<TabId>('team');
   const { teamMembers, teamLeaders, isLoading, error } = useTeamMembers(userId, isAdmin);
   const { requests: levelUpRequests, isLoading: levelUpsLoading } = useLevelUpRequests(userId, isAdmin);
   const pendingLevelUps = levelUpRequests.filter((r) => r.status === 'pending');
 
-  // Admin: only TLs whose own quarterly plans are pending admin approval
-  // TL: employee registrations + employee plan submissions + completion reviews
   const pendingMembers = isAdmin
     ? teamLeaders.filter((tl) => tl.plan?.planStatus === 'pending')
-    : [
+    : ([
         ...teamMembers.filter((m) => m.approvalStatus === 'pending'),
         ...teamMembers.filter((m) => m.approvalStatus === 'approved' && m.plan?.planStatus === 'pending'),
         ...teamMembers.filter((m) => m.approvalStatus === 'approved' && m.plan?.completionStatus === 'pending_review'),
-      ] as (UserDocument & { uid: string })[];
+      ] as (UserDocument & { uid: string })[]);
   const approvedMembers = teamMembers.filter((m) => m.approvalStatus === 'approved') as (UserDocument & { uid: string })[];
   const teamsCount = new Set(approvedMembers.map((m) => m.teamLeaderId).filter(Boolean)).size;
 
-  // Admin only: flat chronological history of all approved level-ups across all users
   const allLevelHistory = useMemo<LevelUpHistoryRow[] | undefined>(() => {
     if (!isAdmin) return undefined;
     const allUsers = [
@@ -66,126 +68,107 @@ export function TeamLeaderDashboard({ userId, userDisplayName = '', userEmail = 
     return rows.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   }, [isAdmin, approvedMembers, teamLeaders]);
 
+  const pendingCount = isAdmin ? pendingLevelUps.length : pendingMembers.length;
+
   return (
-    <div className="team-leader-dashboard">
+    <div className="flex flex-col gap-4 p-4 sm:p-6 h-full overflow-y-auto">
       {/* Header */}
-      <div className="dashboard-header">
-        <div className="header-content">
-          <div className="header-icon">
-            <i className="ri-team-line"></i>
-          </div>
-          <div className="header-text">
-            <h1>{isAdmin ? 'Admin Dashboard' : 'Team Dashboard'}</h1>
-            <p>{isAdmin ? 'Manage all employees and approvals across all teams' : 'Manage your team members and approvals'}</p>
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center gap-3">
+          <span className="inline-flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary [&_svg]:size-5">
+            {isAdmin ? <ShieldCheck /> : <Users />}
+          </span>
+          <div>
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
+              {isAdmin ? 'Admin Dashboard' : 'Team Dashboard'}
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              {isAdmin
+                ? 'Manage all employees and approvals across all teams'
+                : 'Manage your team members and approvals'}
+            </p>
           </div>
         </div>
 
-        {/* Stats Cards */}
-        <div className="stats-cards">
+        {/* Stats */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
           {isAdmin ? (
             <>
-              <div className="stat-card">
-                <i className="ri-user-star-line"></i>
-                <div className="stat-content">
-                  <p className="stat-label">Teams</p>
-                  <p className="stat-value">{teamsCount}</p>
-                </div>
-              </div>
-              <div className="stat-card">
-                <i className="ri-group-line"></i>
-                <div className="stat-content">
-                  <p className="stat-label">Employees</p>
-                  <p className="stat-value">{approvedMembers.length}</p>
-                </div>
-              </div>
-              <div className="stat-card">
-                <i className="ri-team-line"></i>
-                <div className="stat-content">
-                  <p className="stat-label">Total Members</p>
-                  <p className="stat-value">{teamsCount + approvedMembers.length}</p>
-                </div>
-              </div>
+              <StatCard icon={<UserCircle />} iconTint="primary" value={teamsCount} label="Teams" />
+              <StatCard icon={<Users />} iconTint="success" value={approvedMembers.length} label="Employees" />
+              <StatCard icon={<Users />} iconTint="muted" value={teamsCount + approvedMembers.length} label="Total Members" />
             </>
           ) : (
-            <div className="stat-card">
-              <i className="ri-group-line"></i>
-              <div className="stat-content">
-                <p className="stat-label">Team Members</p>
-                <p className="stat-value">{approvedMembers.length}</p>
-              </div>
-            </div>
+            <StatCard icon={<Users />} iconTint="primary" value={approvedMembers.length} label="Team Members" />
           )}
-          <div className="stat-card stat-warning">
-            <i className="ri-time-line"></i>
-            <div className="stat-content">
-              <p className="stat-label">Pending Approvals</p>
-              <p className="stat-value">{isAdmin ? pendingLevelUps.length : pendingMembers.length}</p>
-            </div>
-          </div>
+          <StatCard
+            icon={<Clock />}
+            iconTint={pendingCount > 0 ? 'warning' : 'muted'}
+            value={pendingCount}
+            label="Pending Approvals"
+          />
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="dashboard-tabs">
-        <button
-          className={`tab-button ${activeTab === 'team' ? 'active' : ''}`}
-          onClick={() => setActiveTab('team')}
-        >
-          <i className="ri-group-line"></i>
-          {isAdmin ? 'All Teams' : 'My Team'}
-          {isAdmin ? (
-            teamsCount > 0 && <span className="tab-count">({teamsCount})</span>
-          ) : (
-            approvedMembers.length > 0 && <span className="tab-count">({approvedMembers.length})</span>
+      <Tabs
+        defaultValue="team"
+        value={activeTab}
+        onValueChange={(v) => setActiveTab(v as TabId)}
+      >
+        <TabList className="flex-wrap">
+          <Tab value="team">
+            <Users className="size-3.5 mr-1" />
+            {isAdmin ? 'All Teams' : 'My Team'}
+            {(isAdmin ? teamsCount : approvedMembers.length) > 0 && (
+              <span className="ml-1.5 text-xs text-muted-foreground tabular-nums">
+                ({isAdmin ? teamsCount : approvedMembers.length})
+              </span>
+            )}
+          </Tab>
+          <Tab value="pending">
+            <Clock className="size-3.5 mr-1" />
+            Pending Approvals
+            {pendingCount > 0 && (
+              <Badge variant="destructive" size="sm" className="ml-1.5">
+                {pendingCount}
+              </Badge>
+            )}
+          </Tab>
+          <Tab value="levelups">
+            <Medal className="size-3.5 mr-1" />
+            Level Ups
+            {!isAdmin && pendingLevelUps.length > 0 && (
+              <Badge variant="destructive" size="sm" className="ml-1.5">
+                {pendingLevelUps.length}
+              </Badge>
+            )}
+          </Tab>
+          {isAdmin && (
+            <Tab value="settings">
+              <Settings className="size-3.5 mr-1" />
+              Settings
+            </Tab>
           )}
-        </button>
-        <button
-          className={`tab-button ${activeTab === 'pending' ? 'active' : ''}`}
-          onClick={() => setActiveTab('pending')}
-        >
-          <i className="ri-time-line"></i>
-          Pending Approvals
-          {(isAdmin ? pendingLevelUps.length : pendingMembers.length) > 0 && (
-            <span className="tab-badge">{isAdmin ? pendingLevelUps.length : pendingMembers.length}</span>
-          )}
-        </button>
-        <button
-          className={`tab-button ${activeTab === 'levelups' ? 'active' : ''}`}
-          onClick={() => setActiveTab('levelups')}
-        >
-          <i className="ri-medal-line"></i>
-          Level Ups
-          {!isAdmin && pendingLevelUps.length > 0 && <span className="tab-badge">{pendingLevelUps.length}</span>}
-        </button>
-        {isAdmin && (
-          <button
-            className={`tab-button ${activeTab === 'settings' ? 'active' : ''}`}
-            onClick={() => setActiveTab('settings')}
-          >
-            <i className="ri-settings-3-line"></i>
-            Settings
-          </button>
-        )}
-      </div>
+        </TabList>
 
-      {/* Tab Content */}
-      <div className="dashboard-content">
+        {/* Content */}
         {isLoading ? (
-          <div className="loading-state">
-            <div className="spinner"></div>
-            <p>Loading team members...</p>
+          <div className="mt-4 flex items-center justify-center gap-3 rounded-2xl border border-border bg-card p-12">
+            <div className="size-5 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+            <p className="text-sm text-muted-foreground">Loading team members…</p>
           </div>
         ) : error ? (
-          <div className="error-state">
-            <i className="ri-error-warning-line"></i>
-            <p>{error}</p>
-            <button className="btn-secondary" onClick={() => window.location.reload()}>
-              Retry
-            </button>
+          <div className="mt-4 flex flex-col items-center justify-center gap-3 rounded-2xl border border-destructive/30 bg-destructive/5 p-8">
+            <AlertCircle className="size-6 text-destructive" />
+            <p className="text-sm text-foreground">{error}</p>
+            <Button variant="outline" size="sm" onClick={() => window.location.reload()}>
+              <RotateCw className="size-3.5" /> Retry
+            </Button>
           </div>
         ) : (
           <>
-            {activeTab === 'pending' && (
+            <TabPanel value="pending">
               <PendingApprovalsTab
                 pendingMembers={pendingMembers}
                 teamLeaderId={userId}
@@ -194,15 +177,15 @@ export function TeamLeaderDashboard({ userId, userDisplayName = '', userEmail = 
                 pendingLevelUps={isAdmin ? pendingLevelUps : undefined}
                 adminUid={isAdmin ? userId : undefined}
               />
-            )}
-            {activeTab === 'team' && (
+            </TabPanel>
+            <TabPanel value="team">
               <MyTeamTab
                 approvedMembers={approvedMembers}
                 isAdmin={isAdmin}
                 teamLeaders={teamLeaders}
               />
-            )}
-            {activeTab === 'levelups' && (
+            </TabPanel>
+            <TabPanel value="levelups">
               <LevelUpsTab
                 requests={isAdmin ? [] : levelUpRequests}
                 isLoading={levelUpsLoading}
@@ -211,11 +194,15 @@ export function TeamLeaderDashboard({ userId, userDisplayName = '', userEmail = 
                 allLevelHistory={allLevelHistory}
                 approvedRequests={isAdmin ? levelUpRequests.filter((r) => r.status === 'approved') : undefined}
               />
+            </TabPanel>
+            {isAdmin && (
+              <TabPanel value="settings">
+                <QuarterSettingsTab />
+              </TabPanel>
             )}
-            {activeTab === 'settings' && isAdmin && <QuarterSettingsTab />}
           </>
         )}
-      </div>
+      </Tabs>
     </div>
   );
 }

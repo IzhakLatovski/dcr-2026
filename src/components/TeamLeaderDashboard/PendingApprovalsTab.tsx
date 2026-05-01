@@ -1,17 +1,52 @@
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { doc, updateDoc, collection, setDoc, addDoc } from 'firebase/firestore';
+import {
+  AlertTriangle,
+  ArrowRight,
+  Calendar,
+  Check,
+  CheckCheck,
+  CheckCircle2,
+  ChevronDown,
+  ChevronUp,
+  Circle,
+  Clock,
+  ExternalLink,
+  Heart,
+  ListChecks,
+  Lock,
+  Medal,
+  MonitorSmartphone,
+  Paperclip,
+  Pencil,
+  Route,
+  Send,
+  Shield,
+  StickyNote,
+  Trophy,
+  User,
+  UserCircle,
+  UserPlus,
+  X,
+} from 'lucide-react';
 import { db } from '../../config/firebase';
 import { createNotification } from '../../hooks/useNotifications';
 import { HR_EMAIL } from '../../data/hrConfig';
 import { levels } from '../../data/levels';
 import type { UserDocument, CatalogItem, LevelHistoryEntry, ProofEntry, LevelUpRequest } from '../../data/types';
+import { Avatar } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { EmptyState } from '@/components/ui/empty-state';
+import { Alert } from '@/components/ui/alert';
+import { cn } from '@/lib/utils';
 
-const PILLAR_ICON: Record<string, string> = {
-  tech: 'ri-computer-line',
-  professionalism: 'ri-shield-check-line',
-  'knowledge-unlock': 'ri-edit-line',
-  collaboration: 'ri-hearts-line',
-  roadmaps: 'ri-route-line',
+const PILLAR_ICON: Record<string, ReactNode> = {
+  tech: <MonitorSmartphone className="size-3.5" />,
+  professionalism: <Shield className="size-3.5" />,
+  'knowledge-unlock': <Pencil className="size-3.5" />,
+  collaboration: <Heart className="size-3.5" />,
+  roadmaps: <Route className="size-3.5" />,
 };
 
 const PILLAR_LABEL: Record<string, string> = {
@@ -30,6 +65,18 @@ function getQuarterFromDate(iso: string | undefined | null): string {
   return `Q${q}-${d.getFullYear()}`;
 }
 
+function formatDate(isoString: string) {
+  try {
+    return new Date(isoString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    });
+  } catch {
+    return isoString;
+  }
+}
+
 interface PendingApprovalsTabProps {
   pendingMembers: (UserDocument & { uid: string })[];
   teamLeaderId: string;
@@ -45,49 +92,26 @@ interface PendingApprovalsTabProps {
  * - Initial registration: approvalStatus === 'pending' (level + historical achievements)
  * - Quarterly plan: plan.planStatus === 'pending' (approve/reject the plan items)
  */
-export function PendingApprovalsTab({ pendingMembers, teamLeaderId, teamLeaderName, teamLeaderEmail, pendingLevelUps = [], adminUid }: PendingApprovalsTabProps) {
+export function PendingApprovalsTab({
+  pendingMembers,
+  teamLeaderId,
+  teamLeaderName,
+  teamLeaderEmail,
+  pendingLevelUps = [],
+  adminUid,
+}: PendingApprovalsTabProps) {
   const [processingIds, setProcessingIds] = useState<Set<string>>(new Set());
   const [expandedProofKey, setExpandedProofKey] = useState<string | null>(null);
 
   const toggleProofs = (key: string) =>
     setExpandedProofKey((prev) => (prev === key ? null : key));
 
-  const renderProofEntries = (proofs: ProofEntry[]) => (
-    <ul className="proof-entries-list">
-      {proofs.map((p) => (
-        <li key={p.id} className="proof-entry">
-          {p.type === 'url' && p.url && (
-            <a href={p.url} target="_blank" rel="noopener noreferrer" className="proof-entry-link">
-              <i className="ri-link"></i>
-              <span>{p.url}</span>
-            </a>
-          )}
-          {p.type === 'file' && p.fileUrl && (
-            <a href={p.fileUrl} target="_blank" rel="noopener noreferrer" className="proof-entry-link">
-              <i className="ri-file-line"></i>
-              <span>{p.fileName ?? 'Download file'}</span>
-            </a>
-          )}
-          {p.type === 'note' && p.note && (
-            <span className="proof-entry-note">
-              <i className="ri-sticky-note-line"></i>
-              {p.note}
-            </span>
-          )}
-        </li>
-      ))}
-    </ul>
-  );
-
-  // Determine if a member is a quarterly plan submission vs initial registration
   const isQuarterlyPlan = (member: UserDocument & { uid: string }) =>
     member.approvalStatus === 'approved' && member.plan?.planStatus === 'pending';
 
-  // Determine if a member has sent their completed plan for level-up review
   const isCompletionReview = (member: UserDocument & { uid: string }) =>
     member.approvalStatus === 'approved' && member.plan?.completionStatus === 'pending_review';
 
-  // Check if a plan meets the level-up requirements for the target level
   const checkPlanRequirements = (items: CatalogItem[], targetLevelId: number, carryOverPoints: number = 0) => {
     const level = levels.find((l) => l.id === targetLevelId);
     if (!level) return null;
@@ -287,7 +311,6 @@ export function PendingApprovalsTab({ pendingMembers, teamLeaderId, teamLeaderNa
 
       const userRef = doc(db, 'users', member.uid);
 
-      // Approve user and mark their achieved items as approved — all in one update
       const achievedUpdate = memberAchievements.length > 0
         ? {
             'achieved.items': memberAchievements.map((item) => ({ ...item, status: 'approved' })),
@@ -319,11 +342,8 @@ export function PendingApprovalsTab({ pendingMembers, teamLeaderId, teamLeaderNa
   };
 
   const handleRejectInitial = async (member: UserDocument & { uid: string }) => {
-    const reason = prompt(
-      `Why are you rejecting ${member.displayName}? (Optional)`
-    );
+    const reason = prompt(`Why are you rejecting ${member.displayName}? (Optional)`);
     if (reason === null) return;
-
     if (!confirm(`Reject ${member.displayName}'s request to join your team?`)) return;
 
     try {
@@ -360,11 +380,8 @@ export function PendingApprovalsTab({ pendingMembers, teamLeaderId, teamLeaderNa
       const quarter = getQuarterFromDate(member.plan?.planSubmittedAt);
 
       const userRef = doc(db, 'users', member.uid);
-
-      // Resolve planHistory doc
       const historyRef = doc(collection(userRef, 'planHistory'), quarter);
 
-      // Build level history entry if this plan includes a level-up
       const prevLevel = member.currentLevel ?? 0;
       const levelAchieved = targetLevel && targetLevel > prevLevel ? targetLevel : undefined;
       const newLevelEntry: LevelHistoryEntry | null = levelAchieved
@@ -379,7 +396,6 @@ export function PendingApprovalsTab({ pendingMembers, teamLeaderId, teamLeaderNa
       };
       if (levelAchieved) {
         userUpdate.currentLevel = levelAchieved;
-        // Append to levelHistory array (arrayUnion not imported, so read+write is fine here)
         userUpdate.levelHistory = [
           ...(member.levelHistory ?? []),
           newLevelEntry,
@@ -407,7 +423,6 @@ export function PendingApprovalsTab({ pendingMembers, teamLeaderId, teamLeaderNa
   const handleRejectPlan = async (member: UserDocument & { uid: string }) => {
     const reason = prompt(`Why are you rejecting ${member.displayName}'s plan? (Optional)`);
     if (reason === null) return;
-
     if (!confirm(`Reject ${member.displayName}'s quarterly plan?`)) return;
 
     try {
@@ -443,8 +458,6 @@ export function PendingApprovalsTab({ pendingMembers, teamLeaderId, teamLeaderNa
   const handleApproveCompletion = async (member: UserDocument & { uid: string }) => {
     const plan = member.plan;
     const prevLevel = member.currentLevel ?? 0;
-    // In real plan mode the target is always currentLevel + 1.
-    // Fall back to that if selectedLevelId is 0 / unset.
     const targetLevel = plan?.selectedLevelId || prevLevel + 1;
     if (targetLevel <= prevLevel) {
       alert('Cannot determine target level for this level-up. Please check the employee\'s plan.');
@@ -466,7 +479,6 @@ export function PendingApprovalsTab({ pendingMembers, teamLeaderId, teamLeaderNa
 
       const userRef = doc(db, 'users', member.uid);
 
-      // Create level-up request for admin to review
       await addDoc(collection(db, 'levelUpRequests'), {
         userId: member.uid,
         userDisplayName: member.displayName,
@@ -485,7 +497,6 @@ export function PendingApprovalsTab({ pendingMembers, teamLeaderId, teamLeaderNa
         requestedAt: now,
       });
 
-      // Set user plan status to admin_pending (TL recommended, waiting for admin)
       await updateDoc(userRef, {
         'plan.completionStatus': 'admin_pending',
       });
@@ -506,7 +517,6 @@ export function PendingApprovalsTab({ pendingMembers, teamLeaderId, teamLeaderNa
   const handleRejectCompletion = async (member: UserDocument & { uid: string }) => {
     const reason = prompt(`Why are you rejecting ${member.displayName}'s level-up request? (Optional)`);
     if (reason === null) return;
-
     if (!confirm(`Reject ${member.displayName}'s level-up review? They will be able to fix and resubmit.`)) return;
 
     try {
@@ -531,685 +541,870 @@ export function PendingApprovalsTab({ pendingMembers, teamLeaderId, teamLeaderNa
     }
   };
 
-  const formatDate = (isoString: string) => {
-    try {
-      return new Date(isoString).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-      });
-    } catch {
-      return isoString;
-    }
-  };
-
   if (pendingMembers.length === 0 && pendingLevelUps.length === 0) {
     return (
-      <div className="empty-state">
-        <div className="empty-icon">
-          <i className="ri-checkbox-circle-line"></i>
-        </div>
-        <h3>All caught up!</h3>
-        <p>No pending approval requests at the moment</p>
-      </div>
+      <EmptyState
+        icon={<CheckCircle2 />}
+        title="All caught up!"
+        description="No pending approval requests at the moment."
+      />
     );
   }
 
   return (
-    <div className="pending-approvals-tab">
-      <div className="tab-header">
-        <h2>
-          <i className="ri-time-line"></i>
+    <div className="flex flex-col gap-6">
+      <div>
+        <h2 className="flex items-center gap-2 text-base font-semibold text-foreground tracking-tight">
+          <Clock className="size-4 text-muted-foreground" />
           Pending Approvals
         </h2>
-        <p className="tab-description">
+        <p className="mt-1 text-sm text-muted-foreground">
           {adminUid
             ? 'Review level-up requests recommended by team leaders.'
-            : 'Review each employee\'s submitted level and historical certifications, then approve or reject.'}
+            : "Review each employee's submitted level and historical certifications, then approve or reject."}
         </p>
       </div>
 
-      {!adminUid && <div className="approval-cards">
-        {pendingMembers.map((member) => {
-          const isProcessing = processingIds.has(member.uid);
-          const completion = isCompletionReview(member);
-          const quarterly = !completion && isQuarterlyPlan(member);
+      {!adminUid && pendingMembers.length > 0 && (
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+          {pendingMembers.map((member) => (
+            <PendingMemberCard
+              key={member.uid}
+              member={member}
+              isProcessing={processingIds.has(member.uid)}
+              isCompletion={isCompletionReview(member)}
+              isQuarterly={isQuarterlyPlan(member)}
+              expandedProofKey={expandedProofKey}
+              onToggleProofs={toggleProofs}
+              checkPlanRequirements={checkPlanRequirements}
+              onApproveInitial={handleApproveInitial}
+              onRejectInitial={handleRejectInitial}
+              onApprovePlan={handleApprovePlan}
+              onRejectPlan={handleRejectPlan}
+              onApproveCompletion={handleApproveCompletion}
+              onRejectCompletion={handleRejectCompletion}
+            />
+          ))}
+        </div>
+      )}
 
-          if (completion) {
-            // Completion review card — TL verifies completed items and grants level-up
-            const plan = member.plan;
-            const allPlanItems = plan?.items ?? [];
-            const allPlanItemsWithKeys = allPlanItems.map((item, idx) => ({
-              item,
-              itemKey: item.planItemKey ?? `${item.id}-${idx}`,
-            }));
-            const completedItemKeys = plan?.completedItemKeys ?? [];
-            const completedItems = allPlanItems.filter((item, idx) => {
-              const itemKey = item.planItemKey ?? `${item.id}-${idx}`;
-              return completedItemKeys.includes(itemKey);
-            });
-            const planCarryOverPoints = plan?.carryOverPoints ?? 0;
-            const completedPts = completedItems.reduce((s, i) => s + (i.promotedPoints ?? i.points), 0);
-            const totalCompletedPts = completedPts + planCarryOverPoints;
-            const prevLevel = member.currentLevel ?? 0;
-            const targetLevel = plan?.selectedLevelId || prevLevel + 1;
-            const reqCheck = checkPlanRequirements(completedItems, targetLevel, planCarryOverPoints);
-
-            return (
-              <div key={member.uid} className="approval-card">
-                <div className="approval-header">
-                  <div className="member-avatar">
-                    {member.photoURL ? (
-                      <img src={member.photoURL} alt={member.displayName} referrerPolicy="no-referrer" />
-                    ) : (
-                      <div className="avatar-placeholder"><i className="ri-user-line"></i></div>
-                    )}
-                  </div>
-                  <div className="member-info">
-                    <div className="member-name-row">
-                      <h3>{member.displayName}</h3>
-                      <span className="approval-type-badge approval-type-completion">
-                        <i className="ri-medal-line"></i> Level-Up Review
-                      </span>
-                    </div>
-                    <p className="member-email">{member.email}</p>
-                    {plan?.completionSubmittedAt && (
-                      <p className="request-date">
-                        <i className="ri-calendar-line"></i>
-                        Submitted {formatDate(plan.completionSubmittedAt)}
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                <div className="employee-submission">
-                  <div className="submission-section">
-                    <div className="submission-label">
-                      <i className="ri-bar-chart-line"></i>
-                      Requesting level-up
-                    </div>
-                    {targetLevel ? (
-                      <div className="submission-level-badge">
-                        Level {prevLevel} → Level {targetLevel}
-                      </div>
-                    ) : (
-                      <span className="submission-empty">Not set</span>
-                    )}
-                  </div>
-
-                  <div className="submission-section">
-                    <div className="submission-label">
-                      <i className="ri-checkbox-multiple-line"></i>
-                      Completed items
-                      <span className="submission-count">{completedItems.length}/{allPlanItems.length}</span>
-                    </div>
-                    {allPlanItemsWithKeys.length > 0 ? (
-                      <div className="pillar-groups">
-                        {PILLAR_ORDER.filter((p) => allPlanItemsWithKeys.some(({ item }) => item.category === p)).map((pillar) => (
-                          <div key={pillar} className="pillar-group">
-                            <div className="pillar-group-header">
-                              <i className={PILLAR_ICON[pillar] ?? 'ri-star-line'}></i>
-                              {PILLAR_LABEL[pillar] ?? pillar}
-                            </div>
-                            <ul className="submission-certs">
-                              {allPlanItemsWithKeys.filter(({ item }) => item.category === pillar).map(({ item, itemKey }) => {
-                                const done = completedItemKeys.includes(itemKey);
-                                const proofs = plan?.proofEntries?.[itemKey] ?? [];
-                                const proofKey = `${member.uid}-${itemKey}`;
-                                const proofExpanded = expandedProofKey === proofKey;
-                                return (
-                                  <li key={itemKey} className={`submission-cert-item${done ? ' cert-completed' : ' cert-incomplete'}`}>
-                                    <div className="cert-main">
-                                      <i className={done ? 'ri-checkbox-circle-fill cert-done-icon' : 'ri-checkbox-blank-circle-line cert-todo-icon'}></i>
-                                      <span className="cert-name">{item.name}</span>
-                                      <span className="cert-points">{item.promotedPoints ?? item.points} pts</span>
-                                      {proofs.length > 0 && (
-                                        <button
-                                          className={`cert-proof-count${proofExpanded ? ' active' : ''}`}
-                                          onClick={() => toggleProofs(proofKey)}
-                                          title={proofExpanded ? 'Hide attachments' : 'View attachments'}
-                                        >
-                                          <i className="ri-attachment-2-line"></i> {proofs.length}
-                                          <i className={`ri-arrow-${proofExpanded ? 'up' : 'down'}-s-line`}></i>
-                                        </button>
-                                      )}
-                                    </div>
-                                    {proofExpanded && renderProofEntries(proofs)}
-                                  </li>
-                                );
-                              })}
-                            </ul>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <span className="submission-empty">No items in plan</span>
-                    )}
-                    {allPlanItemsWithKeys.length > 0 && (
-                      <>
-                        <div className="plan-total-points">
-                          {planCarryOverPoints > 0 ? 'Completed items: ' : 'Total completed: '}<strong>{completedPts} pts</strong>
-                        </div>
-                        {planCarryOverPoints > 0 && (
-                          <>
-                            <div className="plan-total-points">
-                              Previous level carry-over: <strong>{planCarryOverPoints} pts</strong>
-                            </div>
-                            <div className="plan-total-points">
-                              Combined total: <strong>{totalCompletedPts} pts</strong>
-                            </div>
-                          </>
-                        )}
-                      </>
-                    )}
-                  </div>
-                </div>
-
-                {reqCheck && !reqCheck.meetsRequirements && (
-                  <div className="plan-requirements-warning">
-                    <i className="ri-alert-line"></i>
-                    <div>
-                      <div className="plan-requirements-warning-title">
-                        Completed items may not meet {reqCheck.level.label} requirements
-                      </div>
-                      <ul className="plan-requirements-warning-list">
-                        {reqCheck.shortfalls.map((s) => <li key={s}>{s}</li>)}
-                      </ul>
-                    </div>
-                  </div>
-                )}
-
-                <div className="approval-actions">
-                  <button
-                    className="btn-success"
-                    onClick={() => handleApproveCompletion(member)}
-                    disabled={isProcessing}
-                  >
-                    {isProcessing ? (
-                      <><div className="spinner-small"></div> Processing...</>
-                    ) : (
-                      <><i className="ri-send-plane-line"></i> Recommend Level-Up</>
-                    )}
-                  </button>
-                  <button
-                    className="btn-danger"
-                    onClick={() => handleRejectCompletion(member)}
-                    disabled={isProcessing}
-                  >
-                    <i className="ri-close-line"></i> Request Revision
-                  </button>
-                </div>
-              </div>
-            );
-          }
-
-          if (quarterly) {
-            // Quarterly plan approval card
-            const planItems = member.plan?.items ?? [];
-            const planItemsWithKeys = planItems.map((item, idx) => ({
-              item,
-              itemKey: item.planItemKey ?? `${item.id}-${idx}`,
-            }));
-            const planCarriedItems = member.plan?.carriedItems ?? [];
-            const planCarryOverPoints = member.plan?.carryOverPoints ?? 0;
-            const allPlanItems = [...planCarriedItems, ...planItems];
-            const totalPlanPoints = allPlanItems.reduce(
-              (sum, item) => sum + (item.promotedPoints ?? item.points),
-              0
-            ) + planCarryOverPoints;
-            const targetLevel = member.currentLevel != null ? member.currentLevel + 1 : null;
-            const reqCheck = targetLevel ? checkPlanRequirements(allPlanItems, targetLevel, planCarryOverPoints) : null;
-
-            return (
-              <div key={member.uid} className="approval-card">
-                {/* Member Info */}
-                <div className="approval-header">
-                  <div className="member-avatar">
-                    {member.photoURL ? (
-                      <img
-                        src={member.photoURL}
-                        alt={member.displayName}
-                        referrerPolicy="no-referrer"
-                      />
-                    ) : (
-                      <div className="avatar-placeholder">
-                        <i className="ri-user-line"></i>
-                      </div>
-                    )}
-                  </div>
-                  <div className="member-info">
-                    <div className="member-name-row">
-                      <h3>{member.displayName}</h3>
-                      <span className="approval-type-badge approval-type-quarterly">
-                        <i className="ri-calendar-check-line"></i> Quarterly Plan
-                      </span>
-                    </div>
-                    <p className="member-email">{member.email}</p>
-                    {member.plan?.planSubmittedAt && (
-                      <p className="request-date">
-                        <i className="ri-calendar-line"></i>
-                        Submitted {formatDate(member.plan.planSubmittedAt)}
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                {/* Plan Details */}
-                <div className="employee-submission">
-                  {/* Target Level */}
-                  <div className="submission-section">
-                    <div className="submission-label">
-                      <i className="ri-bar-chart-line"></i>
-                      Target level
-                    </div>
-                    {targetLevel ? (
-                      <div className="submission-level-badge">
-                        Level {member.currentLevel} → Level {targetLevel}
-                      </div>
-                    ) : (
-                      <span className="submission-empty">Not set</span>
-                    )}
-                  </div>
-
-                  {/* Carried items from previous quarter */}
-                  {planCarriedItems.length > 0 && (
-                    <div className="submission-section">
-                      <div className="submission-label">
-                        <i className="ri-lock-2-line"></i>
-                        Carried from {member.plan?.carriedFromQuarter ?? 'previous quarter'}
-                        <span className="submission-count">{planCarriedItems.length}</span>
-                      </div>
-                      <ul className="submission-certs">
-                        {planCarriedItems.map((item) => (
-                          <li key={item.id} className="submission-cert-item cert-completed">
-                            <div className="cert-main">
-                              <i className="ri-checkbox-circle-fill cert-done-icon"></i>
-                              <span className="cert-name">{item.name}</span>
-                              <span className="cert-points">{item.promotedPoints ?? item.points} pts</span>
-                            </div>
-                          </li>
-                        ))}
-                      </ul>
-                      <div className="plan-total-points">
-                        Carried: <strong>{planCarriedItems.reduce((s, i) => s + (i.promotedPoints ?? i.points), 0)} pts</strong>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Planned Items */}
-                  <div className="submission-section">
-                    <div className="submission-label">
-                      <i className="ri-list-check"></i>
-                      Planned items
-                      {planItems.length > 0 && (
-                        <span className="submission-count">{planItems.length}</span>
-                      )}
-                    </div>
-                    {planItemsWithKeys.length > 0 ? (
-                      <>
-                        <div className="pillar-groups">
-                          {PILLAR_ORDER.filter((p) => planItemsWithKeys.some(({ item }) => item.category === p)).map((pillar) => (
-                            <div key={pillar} className="pillar-group">
-                              <div className="pillar-group-header">
-                                <i className={PILLAR_ICON[pillar] ?? 'ri-star-line'}></i>
-                                {PILLAR_LABEL[pillar] ?? pillar}
-                              </div>
-                              <ul className="submission-certs">
-                                {planItemsWithKeys.filter(({ item }) => item.category === pillar).map(({ item, itemKey }) => {
-                                  const proofs = member.plan?.proofEntries?.[itemKey] ?? [];
-                                  const proofKey = `${member.uid}-plan-${itemKey}`;
-                                  const proofExpanded = expandedProofKey === proofKey;
-                                  return (
-                                    <li key={itemKey} className="submission-cert-item">
-                                      <div className="cert-main">
-                                        <span className="cert-name">{item.name}</span>
-                                        <span className="cert-points">{item.promotedPoints ?? item.points} pts</span>
-                                        {proofs.length > 0 && (
-                                          <button
-                                            className={`cert-proof-count${proofExpanded ? ' active' : ''}`}
-                                            onClick={() => toggleProofs(proofKey)}
-                                            title={proofExpanded ? 'Hide attachments' : 'View attachments'}
-                                          >
-                                            <i className="ri-attachment-2-line"></i> {proofs.length}
-                                            <i className={`ri-arrow-${proofExpanded ? 'up' : 'down'}-s-line`}></i>
-                                          </button>
-                                        )}
-                                      </div>
-                                      {proofExpanded && renderProofEntries(proofs)}
-                                    </li>
-                                  );
-                                })}
-                              </ul>
-                            </div>
-                          ))}
-                        </div>
-                        <div className="plan-total-points">
-                          {planCarriedItems.length > 0 || planCarryOverPoints > 0 ? 'New items: ' : 'Total: '}<strong>{planItems.reduce((s, i) => s + (i.promotedPoints ?? i.points), 0)} pts</strong>
-                        </div>
-                        {planCarryOverPoints > 0 && (
-                          <div className="plan-total-points">
-                            Previous level points: <strong>{planCarryOverPoints} pts</strong>
-                          </div>
-                        )}
-                        {(planCarriedItems.length > 0 || planCarryOverPoints > 0) && (
-                          <div className="plan-total-points">
-                            Combined total: <strong>{totalPlanPoints} pts</strong>
-                          </div>
-                        )}
-                      </>
-                    ) : (
-                      <span className="submission-empty">{planCarriedItems.length > 0 ? 'No additional items' : 'No items in plan'}</span>
-                    )}
-                  </div>
-                </div>
-
-                {/* Requirements warning */}
-                {reqCheck && !reqCheck.meetsRequirements && (
-                  <div className="plan-requirements-warning">
-                    <i className="ri-alert-line"></i>
-                    <div>
-                      <div className="plan-requirements-warning-title">
-                        Plan is insufficient for {reqCheck.level.label}
-                      </div>
-                      <ul className="plan-requirements-warning-list">
-                        {reqCheck.shortfalls.map((s) => (
-                          <li key={s}>{s}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                )}
-
-                {/* Actions */}
-                <div className="approval-actions">
-                  <button
-                    className="btn-success"
-                    onClick={() => handleApprovePlan(member)}
-                    disabled={isProcessing}
-                  >
-                    {isProcessing ? (
-                      <>
-                        <div className="spinner-small"></div>
-                        Processing...
-                      </>
-                    ) : (
-                      <>
-                        <i className="ri-check-line"></i>
-                        Approve Plan
-                      </>
-                    )}
-                  </button>
-                  <button
-                    className="btn-danger"
-                    onClick={() => handleRejectPlan(member)}
-                    disabled={isProcessing}
-                  >
-                    <i className="ri-close-line"></i>
-                    Reject
-                  </button>
-                </div>
-              </div>
-            );
-          }
-
-          // Initial registration card (existing behavior)
-          const memberAchievements = member.achieved?.items ?? [];
-
-          return (
-            <div key={member.uid} className="approval-card">
-              {/* Member Info */}
-              <div className="approval-header">
-                <div className="member-avatar">
-                  {member.photoURL ? (
-                    <img
-                      src={member.photoURL}
-                      alt={member.displayName}
-                      referrerPolicy="no-referrer"
-                    />
-                  ) : (
-                    <div className="avatar-placeholder">
-                      <i className="ri-user-line"></i>
-                    </div>
-                  )}
-                </div>
-                <div className="member-info">
-                  <div className="member-name-row">
-                    <h3>{member.displayName}</h3>
-                    <span className={`approval-type-badge approval-type-${member.pendingApprovalType ?? 'initial'}`}>
-                      {(member.pendingApprovalType ?? 'initial') === 'initial' ? (
-                        <><i className="ri-user-add-line"></i> Initial Registration</>
-                      ) : (
-                        <><i className="ri-calendar-check-line"></i> Quarterly Plan</>
-                      )}
-                    </span>
-                  </div>
-                  <p className="member-email">{member.email}</p>
-                  <p className="request-date">
-                    <i className="ri-calendar-line"></i>
-                    Requested {formatDate(member.createdAt)}
-                  </p>
-                </div>
-              </div>
-
-              {/* Employee's Submission */}
-              <div className="employee-submission">
-                {/* Reported Level */}
-                <div className="submission-section">
-                  <div className="submission-label">
-                    <i className="ri-bar-chart-line"></i>
-                    Self-reported level
-                  </div>
-                  <div className="submission-level-badge">
-                    Level {member.currentLevel ?? 0}
-                  </div>
-                </div>
-
-                {/* Historical Certifications */}
-                <div className="submission-section">
-                  <div className="submission-label">
-                    <i className="ri-trophy-line"></i>
-                    Historical certifications
-                    {memberAchievements.length > 0 && (
-                      <span className="submission-count">{memberAchievements.length}</span>
-                    )}
-                  </div>
-                  {memberAchievements.length > 0 ? (
-                    <ul className="submission-certs">
-                      {memberAchievements.map((a) => (
-                        <li key={a.itemId} className="submission-cert-item">
-                          <div className="cert-main">
-                            <span className="cert-name">{a.item.name}</span>
-                            <span className="cert-points">{a.item.points} pts</span>
-                          </div>
-                          {(a.completionDate || a.proofLink) && (
-                            <div className="cert-meta">
-                              {a.completionDate && (
-                                <span className="cert-date">
-                                  <i className="ri-calendar-line"></i>
-                                  {formatDate(a.completionDate)}
-                                </span>
-                              )}
-                              {a.proofLink && (
-                                <a
-                                  href={a.proofLink}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="cert-proof"
-                                >
-                                  <i className="ri-external-link-line"></i>
-                                  Attachment
-                                </a>
-                              )}
-                            </div>
-                          )}
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <span className="submission-empty">None submitted</span>
-                  )}
-                </div>
-              </div>
-
-              {/* Actions */}
-              <div className="approval-actions">
-                <button
-                  className="btn-success"
-                  onClick={() => handleApproveInitial(member)}
-                  disabled={isProcessing}
-                >
-                  {isProcessing ? (
-                    <>
-                      <div className="spinner-small"></div>
-                      Processing...
-                    </>
-                  ) : (
-                    <>
-                      <i className="ri-check-line"></i>
-                      Approve Level {member.currentLevel ?? 0}
-                    </>
-                  )}
-                </button>
-                <button
-                  className="btn-danger"
-                  onClick={() => handleRejectInitial(member)}
-                  disabled={isProcessing}
-                >
-                  <i className="ri-close-line"></i>
-                  Reject
-                </button>
-              </div>
-            </div>
-          );
-        })}
-      </div>}
-
-      {/* Level-up approval requests (admin only) */}
       {pendingLevelUps.length > 0 && (
-        <>
-          <div className="tab-section-divider">
-            <i className="ri-medal-line"></i>
-            Level-Up Approvals
-            <span className="submission-count">{pendingLevelUps.length}</span>
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center gap-2">
+            <Medal className="size-4 text-muted-foreground" />
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+              Level-Up Approvals
+            </h3>
+            <Badge variant="secondary" size="sm">
+              {pendingLevelUps.length}
+            </Badge>
           </div>
-          <div className="approval-cards">
-            {pendingLevelUps.map((req) => {
-              const isProcessing = processingIds.has(req.id);
-              const proofs = req.proofEntries ?? {};
-              return (
-                <div key={req.id} className="approval-card">
-                  <div className="approval-header">
-                    <div className="member-avatar">
-                      {req.userPhotoURL ? (
-                        <img src={req.userPhotoURL} alt={req.userDisplayName} referrerPolicy="no-referrer" />
-                      ) : (
-                        <div className="avatar-placeholder"><i className="ri-user-line"></i></div>
-                      )}
-                    </div>
-                    <div className="member-info">
-                      <div className="member-name-row">
-                        <h3>{req.userDisplayName}</h3>
-                        <span className="approval-type-badge approval-type-completion">
-                          <i className="ri-medal-line"></i> Level-Up Request
-                        </span>
-                      </div>
-                      <p className="member-email">{req.userEmail}</p>
-                      <p className="request-date">
-                        <i className="ri-calendar-line"></i>
-                        {req.quarter} · Recommended by {req.teamLeaderName} on {formatDate(req.requestedAt)}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="employee-submission">
-                    <div className="submission-section">
-                      <div className="submission-label">
-                        <i className="ri-bar-chart-line"></i>
-                        Level-up
-                      </div>
-                      <div className="submission-level-badge">
-                        Level {req.levelFrom} → Level {req.levelTo}
-                      </div>
-                    </div>
-
-                    {req.planItems && req.planItems.length > 0 && (
-                      <div className="submission-section">
-                        <div className="submission-label">
-                          <i className="ri-checkbox-multiple-line"></i>
-                          Completed items
-                          <span className="submission-count">
-                            {req.completedItemKeys.length}/{req.planItems.length}
-                          </span>
-                        </div>
-                        <div className="pillar-groups">
-                          {PILLAR_ORDER.filter((p) => req.planItems.some((item) => item.category === p)).map((pillar) => (
-                            <div key={pillar} className="pillar-group">
-                              <div className="pillar-group-header">
-                                <i className={PILLAR_ICON[pillar] ?? 'ri-star-line'}></i>
-                                {PILLAR_LABEL[pillar] ?? pillar}
-                              </div>
-                              <ul className="submission-certs">
-                                {req.planItems.map((item, idx) => {
-                                  if (item.category !== pillar) return null;
-                                  const itemKey = item.planItemKey ?? `${item.id}-${idx}`;
-                                  const done = req.completedItemKeys.includes(itemKey);
-                                  const itemProofs = proofs[itemKey] ?? [];
-                                  const proofKey = `lu-${req.id}-${itemKey}`;
-                                  const proofExpanded = expandedProofKey === proofKey;
-                                  return (
-                                    <li key={itemKey} className={`submission-cert-item${done ? ' cert-completed' : ' cert-incomplete'}`}>
-                                      <div className="cert-main">
-                                        <i className={done ? 'ri-checkbox-circle-fill cert-done-icon' : 'ri-checkbox-blank-circle-line cert-todo-icon'}></i>
-                                        <span className="cert-name">{item.name}</span>
-                                        <span className="cert-points">{item.promotedPoints ?? item.points} pts</span>
-                                        {itemProofs.length > 0 && (
-                                          <button
-                                            className={`cert-proof-count${proofExpanded ? ' active' : ''}`}
-                                            onClick={() => toggleProofs(proofKey)}
-                                          >
-                                            <i className="ri-attachment-2-line"></i> {itemProofs.length}
-                                            <i className={`ri-arrow-${proofExpanded ? 'up' : 'down'}-s-line`}></i>
-                                          </button>
-                                        )}
-                                      </div>
-                                      {proofExpanded && renderProofEntries(itemProofs)}
-                                    </li>
-                                  );
-                                })}
-                              </ul>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="approval-actions">
-                    <button
-                      className="btn-success"
-                      onClick={() => handleApproveLevelUp(req)}
-                      disabled={isProcessing}
-                    >
-                      {isProcessing ? (
-                        <><div className="spinner-small"></div> Processing...</>
-                      ) : (
-                        <><i className="ri-checkbox-circle-line"></i> Approve Level-Up</>
-                      )}
-                    </button>
-                    <button
-                      className="btn-danger"
-                      onClick={() => handleRejectLevelUp(req)}
-                      disabled={isProcessing}
-                    >
-                      <i className="ri-close-line"></i> Reject
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+            {pendingLevelUps.map((req) => (
+              <LevelUpApprovalCard
+                key={req.id}
+                req={req}
+                isProcessing={processingIds.has(req.id)}
+                expandedProofKey={expandedProofKey}
+                onToggleProofs={toggleProofs}
+                onApprove={handleApproveLevelUp}
+                onReject={handleRejectLevelUp}
+              />
+            ))}
           </div>
-        </>
+        </div>
       )}
     </div>
+  );
+}
+
+/* ── Card subcomponents ──────────────────────────────────────────────── */
+
+interface PendingMemberCardProps {
+  member: UserDocument & { uid: string };
+  isProcessing: boolean;
+  isCompletion: boolean;
+  isQuarterly: boolean;
+  expandedProofKey: string | null;
+  onToggleProofs: (key: string) => void;
+  checkPlanRequirements: (
+    items: CatalogItem[],
+    targetLevelId: number,
+    carryOverPoints?: number,
+  ) => { meetsRequirements: boolean; shortfalls: string[]; level: { id: number; label: string } } | null;
+  onApproveInitial: (m: UserDocument & { uid: string }) => void;
+  onRejectInitial: (m: UserDocument & { uid: string }) => void;
+  onApprovePlan: (m: UserDocument & { uid: string }) => void;
+  onRejectPlan: (m: UserDocument & { uid: string }) => void;
+  onApproveCompletion: (m: UserDocument & { uid: string }) => void;
+  onRejectCompletion: (m: UserDocument & { uid: string }) => void;
+}
+
+function PendingMemberCard({
+  member,
+  isProcessing,
+  isCompletion,
+  isQuarterly,
+  expandedProofKey,
+  onToggleProofs,
+  checkPlanRequirements,
+  onApproveInitial,
+  onRejectInitial,
+  onApprovePlan,
+  onRejectPlan,
+  onApproveCompletion,
+  onRejectCompletion,
+}: PendingMemberCardProps) {
+  if (isCompletion) {
+    return (
+      <CompletionReviewCard
+        member={member}
+        isProcessing={isProcessing}
+        expandedProofKey={expandedProofKey}
+        onToggleProofs={onToggleProofs}
+        checkPlanRequirements={checkPlanRequirements}
+        onApprove={onApproveCompletion}
+        onReject={onRejectCompletion}
+      />
+    );
+  }
+  if (isQuarterly) {
+    return (
+      <QuarterlyPlanCard
+        member={member}
+        isProcessing={isProcessing}
+        expandedProofKey={expandedProofKey}
+        onToggleProofs={onToggleProofs}
+        checkPlanRequirements={checkPlanRequirements}
+        onApprove={onApprovePlan}
+        onReject={onRejectPlan}
+      />
+    );
+  }
+  return (
+    <InitialRegistrationCard
+      member={member}
+      isProcessing={isProcessing}
+      onApprove={onApproveInitial}
+      onReject={onRejectInitial}
+    />
+  );
+}
+
+function MemberCardHeader({
+  member,
+  badge,
+  date,
+  dateLabel = 'Submitted',
+}: {
+  member: UserDocument & { uid: string };
+  badge: ReactNode;
+  date?: string;
+  dateLabel?: string;
+}) {
+  return (
+    <div className="flex items-start gap-3">
+      <Avatar src={member.photoURL} name={member.displayName} size="lg" />
+      <div className="flex-1 min-w-0 flex flex-col gap-1">
+        <div className="flex items-center gap-2 flex-wrap">
+          <h3 className="text-base font-semibold text-foreground">{member.displayName}</h3>
+          {badge}
+        </div>
+        <p className="text-xs text-muted-foreground truncate">{member.email}</p>
+        {date && (
+          <p className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+            <Calendar className="size-3.5" />
+            {dateLabel} {formatDate(date)}
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function ApprovalCardShell({ children }: { children: ReactNode }) {
+  return (
+    <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-5 shadow-sm">
+      {children}
+    </div>
+  );
+}
+
+function SubmissionLabel({ icon, children, count }: { icon: ReactNode; children: ReactNode; count?: number }) {
+  return (
+    <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground [&_svg]:size-3.5">
+      {icon}
+      <span>{children}</span>
+      {count != null && (
+        <Badge variant="secondary" size="sm">
+          {count}
+        </Badge>
+      )}
+    </div>
+  );
+}
+
+function LevelArrowBadge({ from, to }: { from: number | null | undefined; to: number }) {
+  return (
+    <div className="inline-flex items-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-3 py-1.5">
+      {from != null && (
+        <>
+          <Badge variant="default" size="sm">{from}</Badge>
+          <ArrowRight className="size-3.5 text-muted-foreground" />
+        </>
+      )}
+      <Badge variant="primary" size="sm">Level {to}</Badge>
+    </div>
+  );
+}
+
+function ProofEntries({ proofs }: { proofs: ProofEntry[] }) {
+  return (
+    <ul className="flex flex-col gap-1.5 mt-2 pl-7">
+      {proofs.map((p) => (
+        <li key={p.id} className="text-xs">
+          {p.type === 'url' && p.url && (
+            <a
+              href={p.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-primary hover:underline break-all"
+            >
+              <ExternalLink className="size-3.5 shrink-0" />
+              <span>{p.url}</span>
+            </a>
+          )}
+          {p.type === 'file' && p.fileUrl && (
+            <a
+              href={p.fileUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-primary hover:underline"
+            >
+              <Paperclip className="size-3.5" />
+              <span>{p.fileName ?? 'Download file'}</span>
+            </a>
+          )}
+          {p.type === 'note' && p.note && (
+            <span className="inline-flex items-start gap-1.5 text-muted-foreground">
+              <StickyNote className="size-3.5 shrink-0 mt-0.5" />
+              {p.note}
+            </span>
+          )}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+interface PillarItemRowProps {
+  itemKey: string;
+  name: string;
+  points: number;
+  done?: boolean | null;
+  proofs?: ProofEntry[];
+  proofKey?: string;
+  expandedProofKey: string | null;
+  onToggleProofs: (key: string) => void;
+}
+
+function PillarItemRow({
+  itemKey,
+  name,
+  points,
+  done,
+  proofs = [],
+  proofKey,
+  expandedProofKey,
+  onToggleProofs,
+}: PillarItemRowProps) {
+  const proofExpanded = proofKey != null && expandedProofKey === proofKey;
+  const showStatusIcon = done != null;
+  return (
+    <li
+      key={itemKey}
+      className={cn(
+        'flex flex-col gap-1.5 rounded-xl border px-3 py-2 transition-colors',
+        done === true && 'border-green-600/30 bg-green-600/5',
+        done === false && 'border-border bg-muted/20',
+        !showStatusIcon && 'border-border bg-muted/10',
+      )}
+    >
+      <div className="flex items-center gap-2">
+        {showStatusIcon &&
+          (done ? (
+            <CheckCircle2 className="size-4 text-green-600 dark:text-green-400 shrink-0" />
+          ) : (
+            <Circle className="size-4 text-muted-foreground shrink-0" />
+          ))}
+        <span className="flex-1 min-w-0 text-sm font-medium text-foreground truncate">{name}</span>
+        <span className="shrink-0 text-xs font-semibold tabular-nums text-foreground">{points} pts</span>
+        {proofs.length > 0 && proofKey && (
+          <button
+            type="button"
+            onClick={() => onToggleProofs(proofKey)}
+            className={cn(
+              'inline-flex items-center gap-1 rounded-lg px-2 h-7 text-xs font-medium transition-colors',
+              proofExpanded
+                ? 'bg-primary text-primary-foreground'
+                : 'bg-muted/40 text-muted-foreground hover:bg-muted',
+            )}
+            aria-label={proofExpanded ? 'Hide attachments' : 'View attachments'}
+          >
+            <Paperclip className="size-3" />
+            {proofs.length}
+            {proofExpanded ? <ChevronUp className="size-3" /> : <ChevronDown className="size-3" />}
+          </button>
+        )}
+      </div>
+      {proofExpanded && <ProofEntries proofs={proofs} />}
+    </li>
+  );
+}
+
+interface PillarGroupedItemsProps {
+  items: { item: CatalogItem; itemKey: string; done?: boolean | null }[];
+  proofEntries?: Record<string, ProofEntry[]>;
+  proofKeyPrefix: string;
+  expandedProofKey: string | null;
+  onToggleProofs: (key: string) => void;
+}
+
+function PillarGroupedItems({
+  items,
+  proofEntries = {},
+  proofKeyPrefix,
+  expandedProofKey,
+  onToggleProofs,
+}: PillarGroupedItemsProps) {
+  return (
+    <div className="flex flex-col gap-3">
+      {PILLAR_ORDER.filter((p) => items.some(({ item }) => item.category === p)).map((pillar) => (
+        <div key={pillar} className="flex flex-col gap-1.5">
+          <div className="inline-flex items-center gap-1.5 text-[0.65rem] font-semibold uppercase tracking-wider text-muted-foreground">
+            {PILLAR_ICON[pillar]}
+            {PILLAR_LABEL[pillar] ?? pillar}
+          </div>
+          <ul className="flex flex-col gap-1.5">
+            {items
+              .filter(({ item }) => item.category === pillar)
+              .map(({ item, itemKey, done }) => {
+                const proofs = proofEntries[itemKey] ?? [];
+                const proofKey = `${proofKeyPrefix}-${itemKey}`;
+                return (
+                  <PillarItemRow
+                    key={itemKey}
+                    itemKey={itemKey}
+                    name={item.name}
+                    points={item.promotedPoints ?? item.points}
+                    done={done}
+                    proofs={proofs}
+                    proofKey={proofKey}
+                    expandedProofKey={expandedProofKey}
+                    onToggleProofs={onToggleProofs}
+                  />
+                );
+              })}
+          </ul>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function RequirementsWarning({
+  shortfalls,
+  title,
+}: {
+  shortfalls: string[];
+  title: string;
+}) {
+  return (
+    <Alert variant="warning" icon={<AlertTriangle className="size-4" />} title={title}>
+      <ul className="mt-1 list-disc pl-4 space-y-0.5">
+        {shortfalls.map((s) => (
+          <li key={s}>{s}</li>
+        ))}
+      </ul>
+    </Alert>
+  );
+}
+
+function ApprovalActions({
+  approveLabel,
+  approveIcon,
+  rejectLabel = 'Reject',
+  rejectIcon,
+  isProcessing,
+  onApprove,
+  onReject,
+}: {
+  approveLabel: ReactNode;
+  approveIcon: ReactNode;
+  rejectLabel?: ReactNode;
+  rejectIcon?: ReactNode;
+  isProcessing: boolean;
+  onApprove: () => void;
+  onReject: () => void;
+}) {
+  return (
+    <div className="flex flex-wrap items-center gap-2 pt-1">
+      <Button onClick={onApprove} disabled={isProcessing}>
+        {isProcessing ? (
+          <>
+            <span className="size-3.5 rounded-full border-2 border-primary-foreground border-t-transparent animate-spin" />
+            Processing…
+          </>
+        ) : (
+          <>
+            {approveIcon}
+            {approveLabel}
+          </>
+        )}
+      </Button>
+      <Button variant="destructive" onClick={onReject} disabled={isProcessing}>
+        {rejectIcon ?? <X />}
+        {rejectLabel}
+      </Button>
+    </div>
+  );
+}
+
+/* ── Card variants ───────────────────────────────────────────────────── */
+
+function InitialRegistrationCard({
+  member,
+  isProcessing,
+  onApprove,
+  onReject,
+}: {
+  member: UserDocument & { uid: string };
+  isProcessing: boolean;
+  onApprove: (m: UserDocument & { uid: string }) => void;
+  onReject: (m: UserDocument & { uid: string }) => void;
+}) {
+  const memberAchievements = member.achieved?.items ?? [];
+
+  return (
+    <ApprovalCardShell>
+      <MemberCardHeader
+        member={member}
+        badge={
+          <Badge variant="primary" size="sm">
+            <UserPlus className="size-3" /> Initial Registration
+          </Badge>
+        }
+        date={member.createdAt}
+        dateLabel="Requested"
+      />
+
+      <div className="flex flex-col gap-2">
+        <SubmissionLabel icon={<UserCircle />}>Self-reported level</SubmissionLabel>
+        <div>
+          <Badge variant="primary" size="lg">Level {member.currentLevel ?? 0}</Badge>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <SubmissionLabel
+          icon={<Trophy />}
+          count={memberAchievements.length > 0 ? memberAchievements.length : undefined}
+        >
+          Historical certifications
+        </SubmissionLabel>
+        {memberAchievements.length > 0 ? (
+          <ul className="flex flex-col gap-1.5">
+            {memberAchievements.map((a) => (
+              <li
+                key={a.itemId}
+                className="flex flex-col gap-1 rounded-xl border border-border bg-muted/10 px-3 py-2"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="flex-1 min-w-0 text-sm font-medium text-foreground truncate">
+                    {a.item.name}
+                  </span>
+                  <span className="shrink-0 text-xs font-semibold tabular-nums text-foreground">
+                    {a.item.points} pts
+                  </span>
+                </div>
+                {(a.completionDate || a.proofLink) && (
+                  <div className="flex items-center gap-3 pl-0 text-xs text-muted-foreground">
+                    {a.completionDate && (
+                      <span className="inline-flex items-center gap-1">
+                        <Calendar className="size-3" />
+                        {formatDate(a.completionDate)}
+                      </span>
+                    )}
+                    {a.proofLink && (
+                      <a
+                        href={a.proofLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-primary hover:underline"
+                      >
+                        <ExternalLink className="size-3" />
+                        Attachment
+                      </a>
+                    )}
+                  </div>
+                )}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-sm text-muted-foreground italic">None submitted</p>
+        )}
+      </div>
+
+      <ApprovalActions
+        approveLabel={`Approve Level ${member.currentLevel ?? 0}`}
+        approveIcon={<Check />}
+        isProcessing={isProcessing}
+        onApprove={() => onApprove(member)}
+        onReject={() => onReject(member)}
+      />
+    </ApprovalCardShell>
+  );
+}
+
+function QuarterlyPlanCard({
+  member,
+  isProcessing,
+  expandedProofKey,
+  onToggleProofs,
+  checkPlanRequirements,
+  onApprove,
+  onReject,
+}: {
+  member: UserDocument & { uid: string };
+  isProcessing: boolean;
+  expandedProofKey: string | null;
+  onToggleProofs: (key: string) => void;
+  checkPlanRequirements: PendingMemberCardProps['checkPlanRequirements'];
+  onApprove: (m: UserDocument & { uid: string }) => void;
+  onReject: (m: UserDocument & { uid: string }) => void;
+}) {
+  const planItems = member.plan?.items ?? [];
+  const planItemsWithKeys = planItems.map((item, idx) => ({
+    item,
+    itemKey: item.planItemKey ?? `${item.id}-${idx}`,
+  }));
+  const planCarriedItems = member.plan?.carriedItems ?? [];
+  const planCarryOverPoints = member.plan?.carryOverPoints ?? 0;
+  const allPlanItems = [...planCarriedItems, ...planItems];
+  const totalPlanPoints =
+    allPlanItems.reduce((sum, item) => sum + (item.promotedPoints ?? item.points), 0) + planCarryOverPoints;
+  const targetLevel = member.currentLevel != null ? member.currentLevel + 1 : null;
+  const reqCheck = targetLevel ? checkPlanRequirements(allPlanItems, targetLevel, planCarryOverPoints) : null;
+  const newItemsTotal = planItems.reduce((s, i) => s + (i.promotedPoints ?? i.points), 0);
+
+  return (
+    <ApprovalCardShell>
+      <MemberCardHeader
+        member={member}
+        badge={
+          <Badge variant="secondary" size="sm">
+            <Calendar className="size-3" /> Quarterly Plan
+          </Badge>
+        }
+        date={member.plan?.planSubmittedAt}
+      />
+
+      <div className="flex flex-col gap-2">
+        <SubmissionLabel icon={<UserCircle />}>Target level</SubmissionLabel>
+        {targetLevel != null ? (
+          <div>
+            <LevelArrowBadge from={member.currentLevel} to={targetLevel} />
+          </div>
+        ) : (
+          <p className="text-sm text-muted-foreground italic">Not set</p>
+        )}
+      </div>
+
+      {planCarriedItems.length > 0 && (
+        <div className="flex flex-col gap-2">
+          <SubmissionLabel icon={<Lock />} count={planCarriedItems.length}>
+            Carried from {member.plan?.carriedFromQuarter ?? 'previous quarter'}
+          </SubmissionLabel>
+          <ul className="flex flex-col gap-1.5">
+            {planCarriedItems.map((item) => (
+              <PillarItemRow
+                key={item.id}
+                itemKey={item.id}
+                name={item.name}
+                points={item.promotedPoints ?? item.points}
+                done={true}
+                expandedProofKey={null}
+                onToggleProofs={() => undefined}
+              />
+            ))}
+          </ul>
+          <p className="text-xs text-muted-foreground">
+            Carried:{' '}
+            <span className="font-semibold text-foreground tabular-nums">
+              {planCarriedItems.reduce((s, i) => s + (i.promotedPoints ?? i.points), 0)} pts
+            </span>
+          </p>
+        </div>
+      )}
+
+      <div className="flex flex-col gap-2">
+        <SubmissionLabel
+          icon={<ListChecks />}
+          count={planItems.length > 0 ? planItems.length : undefined}
+        >
+          Planned items
+        </SubmissionLabel>
+        {planItemsWithKeys.length > 0 ? (
+          <>
+            <PillarGroupedItems
+              items={planItemsWithKeys}
+              proofEntries={member.plan?.proofEntries}
+              proofKeyPrefix={`${member.uid}-plan`}
+              expandedProofKey={expandedProofKey}
+              onToggleProofs={onToggleProofs}
+            />
+            <div className="flex flex-col gap-0.5 text-xs text-muted-foreground">
+              <p>
+                {planCarriedItems.length > 0 || planCarryOverPoints > 0 ? 'New items: ' : 'Total: '}
+                <span className="font-semibold text-foreground tabular-nums">{newItemsTotal} pts</span>
+              </p>
+              {planCarryOverPoints > 0 && (
+                <p>
+                  Previous level points:{' '}
+                  <span className="font-semibold text-foreground tabular-nums">{planCarryOverPoints} pts</span>
+                </p>
+              )}
+              {(planCarriedItems.length > 0 || planCarryOverPoints > 0) && (
+                <p>
+                  Combined total:{' '}
+                  <span className="font-semibold text-foreground tabular-nums">{totalPlanPoints} pts</span>
+                </p>
+              )}
+            </div>
+          </>
+        ) : (
+          <p className="text-sm text-muted-foreground italic">
+            {planCarriedItems.length > 0 ? 'No additional items' : 'No items in plan'}
+          </p>
+        )}
+      </div>
+
+      {reqCheck && !reqCheck.meetsRequirements && (
+        <RequirementsWarning
+          title={`Plan is insufficient for ${reqCheck.level.label}`}
+          shortfalls={reqCheck.shortfalls}
+        />
+      )}
+
+      <ApprovalActions
+        approveLabel="Approve Plan"
+        approveIcon={<Check />}
+        isProcessing={isProcessing}
+        onApprove={() => onApprove(member)}
+        onReject={() => onReject(member)}
+      />
+    </ApprovalCardShell>
+  );
+}
+
+function CompletionReviewCard({
+  member,
+  isProcessing,
+  expandedProofKey,
+  onToggleProofs,
+  checkPlanRequirements,
+  onApprove,
+  onReject,
+}: {
+  member: UserDocument & { uid: string };
+  isProcessing: boolean;
+  expandedProofKey: string | null;
+  onToggleProofs: (key: string) => void;
+  checkPlanRequirements: PendingMemberCardProps['checkPlanRequirements'];
+  onApprove: (m: UserDocument & { uid: string }) => void;
+  onReject: (m: UserDocument & { uid: string }) => void;
+}) {
+  const plan = member.plan;
+  const allPlanItems = plan?.items ?? [];
+  const allPlanItemsWithKeys = allPlanItems.map((item, idx) => ({
+    item,
+    itemKey: item.planItemKey ?? `${item.id}-${idx}`,
+  }));
+  const completedItemKeys = plan?.completedItemKeys ?? [];
+  const completedItems = allPlanItems.filter((item, idx) => {
+    const itemKey = item.planItemKey ?? `${item.id}-${idx}`;
+    return completedItemKeys.includes(itemKey);
+  });
+  const planCarryOverPoints = plan?.carryOverPoints ?? 0;
+  const completedPts = completedItems.reduce((s, i) => s + (i.promotedPoints ?? i.points), 0);
+  const totalCompletedPts = completedPts + planCarryOverPoints;
+  const prevLevel = member.currentLevel ?? 0;
+  const targetLevel = plan?.selectedLevelId || prevLevel + 1;
+  const reqCheck = checkPlanRequirements(completedItems, targetLevel, planCarryOverPoints);
+  const itemsWithStatus = allPlanItemsWithKeys.map(({ item, itemKey }) => ({
+    item,
+    itemKey,
+    done: completedItemKeys.includes(itemKey),
+  }));
+
+  return (
+    <ApprovalCardShell>
+      <MemberCardHeader
+        member={member}
+        badge={
+          <Badge variant="warning" size="sm">
+            <Medal className="size-3" /> Level-Up Review
+          </Badge>
+        }
+        date={plan?.completionSubmittedAt}
+      />
+
+      <div className="flex flex-col gap-2">
+        <SubmissionLabel icon={<UserCircle />}>Requesting level-up</SubmissionLabel>
+        {targetLevel ? (
+          <div>
+            <LevelArrowBadge from={prevLevel} to={targetLevel} />
+          </div>
+        ) : (
+          <p className="text-sm text-muted-foreground italic">Not set</p>
+        )}
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <SubmissionLabel icon={<CheckCheck />}>
+          Completed items
+          <Badge variant="secondary" size="sm" className="ml-1">
+            {completedItems.length}/{allPlanItems.length}
+          </Badge>
+        </SubmissionLabel>
+        {allPlanItemsWithKeys.length > 0 ? (
+          <PillarGroupedItems
+            items={itemsWithStatus}
+            proofEntries={plan?.proofEntries}
+            proofKeyPrefix={member.uid}
+            expandedProofKey={expandedProofKey}
+            onToggleProofs={onToggleProofs}
+          />
+        ) : (
+          <p className="text-sm text-muted-foreground italic">No items in plan</p>
+        )}
+        {allPlanItemsWithKeys.length > 0 && (
+          <div className="flex flex-col gap-0.5 text-xs text-muted-foreground">
+            <p>
+              {planCarryOverPoints > 0 ? 'Completed items: ' : 'Total completed: '}
+              <span className="font-semibold text-foreground tabular-nums">{completedPts} pts</span>
+            </p>
+            {planCarryOverPoints > 0 && (
+              <>
+                <p>
+                  Previous level carry-over:{' '}
+                  <span className="font-semibold text-foreground tabular-nums">{planCarryOverPoints} pts</span>
+                </p>
+                <p>
+                  Combined total:{' '}
+                  <span className="font-semibold text-foreground tabular-nums">{totalCompletedPts} pts</span>
+                </p>
+              </>
+            )}
+          </div>
+        )}
+      </div>
+
+      {reqCheck && !reqCheck.meetsRequirements && (
+        <RequirementsWarning
+          title={`Completed items may not meet ${reqCheck.level.label} requirements`}
+          shortfalls={reqCheck.shortfalls}
+        />
+      )}
+
+      <ApprovalActions
+        approveLabel="Recommend Level-Up"
+        approveIcon={<Send />}
+        rejectLabel="Request Revision"
+        isProcessing={isProcessing}
+        onApprove={() => onApprove(member)}
+        onReject={() => onReject(member)}
+      />
+    </ApprovalCardShell>
+  );
+}
+
+function LevelUpApprovalCard({
+  req,
+  isProcessing,
+  expandedProofKey,
+  onToggleProofs,
+  onApprove,
+  onReject,
+}: {
+  req: LevelUpRequest;
+  isProcessing: boolean;
+  expandedProofKey: string | null;
+  onToggleProofs: (key: string) => void;
+  onApprove: (req: LevelUpRequest) => void;
+  onReject: (req: LevelUpRequest) => void;
+}) {
+  const itemsWithStatus = (req.planItems ?? []).map((item, idx) => {
+    const itemKey = item.planItemKey ?? `${item.id}-${idx}`;
+    return {
+      item,
+      itemKey,
+      done: req.completedItemKeys.includes(itemKey),
+    };
+  });
+
+  return (
+    <ApprovalCardShell>
+      <div className="flex items-start gap-3">
+        <Avatar src={req.userPhotoURL} name={req.userDisplayName} size="lg" />
+        <div className="flex-1 min-w-0 flex flex-col gap-1">
+          <div className="flex items-center gap-2 flex-wrap">
+            <h3 className="text-base font-semibold text-foreground">{req.userDisplayName}</h3>
+            <Badge variant="warning" size="sm">
+              <Medal className="size-3" /> Level-Up Request
+            </Badge>
+          </div>
+          <p className="text-xs text-muted-foreground truncate">{req.userEmail}</p>
+          <p className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+            <Calendar className="size-3.5" />
+            {req.quarter} · Recommended by {req.teamLeaderName} on {formatDate(req.requestedAt)}
+          </p>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <SubmissionLabel icon={<UserCircle />}>Level-up</SubmissionLabel>
+        <div>
+          <LevelArrowBadge from={req.levelFrom} to={req.levelTo} />
+        </div>
+      </div>
+
+      {req.planItems && req.planItems.length > 0 && (
+        <div className="flex flex-col gap-2">
+          <SubmissionLabel icon={<CheckCheck />}>
+            Completed items
+            <Badge variant="secondary" size="sm" className="ml-1">
+              {req.completedItemKeys.length}/{req.planItems.length}
+            </Badge>
+          </SubmissionLabel>
+          <PillarGroupedItems
+            items={itemsWithStatus}
+            proofEntries={req.proofEntries ?? {}}
+            proofKeyPrefix={`lu-${req.id}`}
+            expandedProofKey={expandedProofKey}
+            onToggleProofs={onToggleProofs}
+          />
+        </div>
+      )}
+
+      <ApprovalActions
+        approveLabel="Approve Level-Up"
+        approveIcon={<CheckCircle2 />}
+        isProcessing={isProcessing}
+        onApprove={() => onApprove(req)}
+        onReject={() => onReject(req)}
+      />
+    </ApprovalCardShell>
   );
 }

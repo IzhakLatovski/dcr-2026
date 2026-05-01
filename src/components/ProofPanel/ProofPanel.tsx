@@ -1,6 +1,20 @@
 import { useState, useRef } from 'react';
+import {
+  Paperclip,
+  Lock,
+  Link as LinkIcon,
+  FileText,
+  Image as ImageIcon,
+  Upload,
+  UploadCloud,
+  Check,
+  Trash2,
+  Loader2,
+  AlertCircle,
+} from 'lucide-react';
 import type { ProofEntry, ProofType } from '../../data/types';
-import './ProofPanel.css';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 interface ProofPanelProps {
   itemId: string;
@@ -23,12 +37,11 @@ function formatBytes(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
-function proofIcon(proof: ProofEntry): string {
-  if (proof.type === 'url') return 'ri-links-line';
-  if (proof.type === 'note') return 'ri-file-text-line';
-  if (proof.fileMimeType?.startsWith('image/')) return 'ri-image-line';
-  if (proof.fileMimeType === 'application/pdf') return 'ri-file-pdf-line';
-  return 'ri-attachment-2-line';
+function ProofIcon({ proof }: { proof: ProofEntry }) {
+  if (proof.type === 'url') return <LinkIcon className="size-4" />;
+  if (proof.type === 'note') return <FileText className="size-4" />;
+  if (proof.fileMimeType?.startsWith('image/')) return <ImageIcon className="size-4" />;
+  return <Paperclip className="size-4" />;
 }
 
 interface ProofEntryRowProps {
@@ -52,58 +65,71 @@ function ProofEntryRow({ proof, onDelete, isReadOnly }: ProofEntryRowProps) {
   };
 
   return (
-    <li className="proof-entry-row">
-      <i className={`proof-entry-icon ${proofIcon(proof)}`} />
-      <div className="proof-entry-content">
+    <li className="flex items-start gap-2.5 rounded-xl border border-border bg-card px-3 py-2">
+      <span className="inline-flex size-7 shrink-0 items-center justify-center rounded-lg bg-muted/40 text-muted-foreground mt-0.5">
+        <ProofIcon proof={proof} />
+      </span>
+      <div className="flex-1 min-w-0 text-sm text-foreground">
         {proof.type === 'url' && proof.url && (
           <a
             href={proof.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="proof-entry-link"
+            className="text-primary hover:underline break-all"
             title={proof.url}
           >
             {proof.url}
           </a>
         )}
         {proof.type === 'note' && proof.note && (
-          <div
-            className={`proof-entry-note ${expanded ? 'expanded' : ''}`}
+          <button
+            type="button"
             onClick={() => setExpanded((v) => !v)}
             title={expanded ? 'Click to collapse' : 'Click to expand'}
+            className={cn(
+              'text-left text-foreground/90 leading-relaxed whitespace-pre-wrap',
+              !expanded && 'line-clamp-2',
+            )}
           >
             {proof.note}
-          </div>
+          </button>
         )}
         {proof.type === 'file' && (
-          <div className="proof-entry-file">
+          <div className="flex items-center gap-2 flex-wrap">
             {proof.fileUrl ? (
               <a
                 href={proof.fileUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="proof-entry-link"
+                className="text-primary hover:underline truncate"
               >
                 {proof.fileName}
               </a>
             ) : (
-              <span>{proof.fileName}</span>
+              <span className="truncate">{proof.fileName}</span>
             )}
             {proof.fileSizeBytes != null && (
-              <span className="proof-entry-size">{formatBytes(proof.fileSizeBytes)}</span>
+              <span className="text-xs text-muted-foreground tabular-nums">
+                {formatBytes(proof.fileSizeBytes)}
+              </span>
             )}
           </div>
         )}
       </div>
       {!isReadOnly && (
         <button
-          className="proof-entry-delete"
+          type="button"
           onClick={handleDelete}
           disabled={deleting}
           title="Remove attachment"
           aria-label="Remove attachment"
+          className="inline-flex size-7 shrink-0 items-center justify-center rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors disabled:opacity-50"
         >
-          <i className={deleting ? 'ri-loader-4-line proof-spin' : 'ri-delete-bin-line'} />
+          {deleting ? (
+            <Loader2 className="size-3.5 animate-spin" />
+          ) : (
+            <Trash2 className="size-3.5" />
+          )}
         </button>
       )}
     </li>
@@ -182,22 +208,29 @@ export function ProofPanel({
   };
 
   return (
-    <div className="proof-panel" onClick={(e) => e.stopPropagation()}>
-      <div className="proof-panel-header">
-        <span className="proof-panel-title">
-          <i className="ri-attachment-2-line" />
+    <div
+      className="rounded-2xl border border-border bg-muted/20 p-3 space-y-3"
+      onClick={(e) => e.stopPropagation()}
+    >
+      {/* Header */}
+      <div className="flex items-center gap-2 flex-wrap">
+        <span className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          <Paperclip className="size-3.5" />
           Attachments
         </span>
-        <span className="proof-panel-item-name">{itemName}</span>
+        <span className="text-xs text-muted-foreground truncate flex-1 min-w-0">
+          {itemName}
+        </span>
         {isReadOnly && (
-          <span className="proof-panel-readonly-badge">
-            <i className="ri-lock-line" /> Locked
+          <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2 h-5 text-[0.65rem] font-medium text-muted-foreground">
+            <Lock className="size-3" /> Locked
           </span>
         )}
       </div>
 
+      {/* List */}
       {proofs.length > 0 ? (
-        <ul className="proof-list">
+        <ul className="flex flex-col gap-1.5">
           {proofs.map((proof) => (
             <ProofEntryRow
               key={proof.id}
@@ -208,115 +241,155 @@ export function ProofPanel({
           ))}
         </ul>
       ) : (
-        <p className="proof-empty">
-          {isReadOnly ? 'No attachments.' : 'No attachments yet. Add a link, write a note, or upload a file.'}
+        <p className="text-xs text-muted-foreground italic px-1">
+          {isReadOnly
+            ? 'No attachments.'
+            : 'No attachments yet. Add a link, write a note, or upload a file.'}
         </p>
       )}
 
+      {/* Add section */}
       {!isReadOnly && (
-        <div className="proof-add-section">
-          <div className="proof-tabs" role="tablist">
-            <button
-              role="tab"
-              className={activeTab === 'url' ? 'active' : ''}
-              onClick={() => { setActiveTab('url'); setInputError(null); }}
-            >
-              <i className="ri-links-line" />
-              Add Link
-            </button>
-            <button
-              role="tab"
-              className={activeTab === 'note' ? 'active' : ''}
-              onClick={() => { setActiveTab('note'); setInputError(null); }}
-            >
-              <i className="ri-file-text-line" />
-              Write Note
-            </button>
-            <button
-              role="tab"
-              className={activeTab === 'file' ? 'active' : ''}
-              onClick={() => { setActiveTab('file'); setInputError(null); }}
-            >
-              <i className="ri-upload-cloud-line" />
-              Upload File
-            </button>
+        <div className="space-y-2">
+          {/* Tab strip */}
+          <div
+            role="tablist"
+            className="inline-flex items-center gap-1 rounded-lg bg-muted p-0.5"
+          >
+            {(
+              [
+                { id: 'url' as ProofType, label: 'Add Link', Icon: LinkIcon },
+                { id: 'note' as ProofType, label: 'Write Note', Icon: FileText },
+                { id: 'file' as ProofType, label: 'Upload File', Icon: UploadCloud },
+              ]
+            ).map(({ id, label, Icon }) => {
+              const isActive = activeTab === id;
+              return (
+                <button
+                  key={id}
+                  type="button"
+                  role="tab"
+                  aria-selected={isActive}
+                  onClick={() => {
+                    setActiveTab(id);
+                    setInputError(null);
+                  }}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 rounded-md px-2.5 h-7 text-xs font-medium transition-all duration-150 outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                    isActive
+                      ? 'bg-card text-foreground shadow-sm'
+                      : 'text-muted-foreground hover:text-foreground',
+                  )}
+                >
+                  <Icon className="size-3.5" />
+                  {label}
+                </button>
+              );
+            })}
           </div>
 
-          <div className="proof-form">
+          {/* Form area */}
+          <div className="space-y-2">
             {activeTab === 'url' && (
-              <div className="proof-form-row">
+              <div className="flex gap-2 flex-wrap">
                 <input
                   type="url"
-                  className="proof-input"
                   placeholder="https://credly.com/badges/..."
                   value={urlInput}
                   onChange={(e) => setUrlInput(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleAddUrl()}
                   disabled={isAdding}
+                  className="flex-1 min-w-0 rounded-lg border border-border bg-card px-3 h-9 text-sm outline-none focus:border-primary focus:ring-3 focus:ring-ring/30 disabled:opacity-50"
                 />
-                <button
-                  className="proof-add-btn"
+                <Button
+                  variant="default"
+                  size="sm"
                   onClick={handleAddUrl}
                   disabled={isAdding || !urlInput.trim()}
                 >
-                  {isAdding
-                    ? <><i className="ri-loader-4-line proof-spin" /> Saving…</>
-                    : <><i className="ri-check-line" /> Add Link</>}
-                </button>
+                  {isAdding ? (
+                    <>
+                      <Loader2 className="size-3.5 animate-spin" /> Saving…
+                    </>
+                  ) : (
+                    <>
+                      <Check className="size-3.5" /> Add Link
+                    </>
+                  )}
+                </Button>
               </div>
             )}
 
             {activeTab === 'note' && (
-              <div className="proof-form-col">
+              <div className="flex flex-col gap-2">
                 <textarea
-                  className="proof-textarea"
                   placeholder="Describe your completion, e.g. 'Finished Q1 billable hours, see timesheet...'"
                   value={noteInput}
                   onChange={(e) => setNoteInput(e.target.value)}
                   maxLength={1000}
                   rows={3}
                   disabled={isAdding}
+                  className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm outline-none focus:border-primary focus:ring-3 focus:ring-ring/30 resize-none disabled:opacity-50"
                 />
-                <div className="proof-form-row proof-form-row-end">
-                  <span className="proof-char-count">{noteInput.length}/1000</span>
-                  <button
-                    className="proof-add-btn"
+                <div className="flex items-center justify-end gap-2">
+                  <span className="text-xs text-muted-foreground tabular-nums">
+                    {noteInput.length}/1000
+                  </span>
+                  <Button
+                    variant="default"
+                    size="sm"
                     onClick={handleAddNote}
                     disabled={isAdding || !noteInput.trim()}
                   >
-                    {isAdding
-                      ? <><i className="ri-loader-4-line proof-spin" /> Saving…</>
-                      : <><i className="ri-check-line" /> Save Note</>}
-                  </button>
+                    {isAdding ? (
+                      <>
+                        <Loader2 className="size-3.5 animate-spin" /> Saving…
+                      </>
+                    ) : (
+                      <>
+                        <Check className="size-3.5" /> Save Note
+                      </>
+                    )}
+                  </Button>
                 </div>
               </div>
             )}
 
             {activeTab === 'file' && (
-              <div className="proof-file-area">
+              <div className="flex flex-col items-start gap-1.5">
                 <input
                   ref={fileInputRef}
                   type="file"
                   accept={ACCEPTED_FILE_TYPES}
                   onChange={handleFileChange}
-                  style={{ display: 'none' }}
+                  className="hidden"
                   aria-hidden="true"
                 />
-                <button
-                  className="proof-file-pick-btn"
+                <Button
+                  variant="outline"
+                  size="default"
                   onClick={() => fileInputRef.current?.click()}
                   disabled={isUploading}
                 >
-                  <i className={isUploading ? 'ri-loader-4-line proof-spin' : 'ri-upload-cloud-2-line'} />
-                  {isUploading ? 'Uploading…' : 'Choose File to Upload'}
-                </button>
-                <p className="proof-file-hint">Images, PDFs, or text files · max 5 MB</p>
+                  {isUploading ? (
+                    <>
+                      <Loader2 className="size-4 animate-spin" /> Uploading…
+                    </>
+                  ) : (
+                    <>
+                      <Upload className="size-4" /> Choose File to Upload
+                    </>
+                  )}
+                </Button>
+                <p className="text-xs text-muted-foreground">
+                  Images, PDFs, or text files · max 5 MB
+                </p>
               </div>
             )}
 
             {inputError && (
-              <p className="proof-input-error">
-                <i className="ri-error-warning-line" /> {inputError}
+              <p className="inline-flex items-start gap-1.5 text-xs text-destructive">
+                <AlertCircle className="size-3.5 shrink-0 mt-0.5" /> {inputError}
               </p>
             )}
           </div>
@@ -324,8 +397,8 @@ export function ProofPanel({
       )}
 
       {isReadOnly && (
-        <p className="proof-locked-note">
-          <i className="ri-lock-line" /> Attachments are locked while your plan is pending review.
+        <p className="inline-flex items-center gap-1.5 text-xs text-muted-foreground italic">
+          <Lock className="size-3.5" /> Attachments are locked while your plan is pending review.
         </p>
       )}
     </div>

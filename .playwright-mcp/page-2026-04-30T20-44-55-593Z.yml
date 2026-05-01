@@ -1,0 +1,156 @@
+- generic [ref=e3]:
+  - complementary [ref=e4]:
+    - heading "DCR" [level=1] [ref=e6] [cursor=pointer]
+    - navigation [ref=e7]:
+      - generic [ref=e8]:
+        - heading "Personal Zone" [level=3]
+        - list [ref=e9]:
+          - listitem [ref=e10]:
+            - button " Home" [ref=e11] [cursor=pointer]:
+              - generic [ref=e13]: 
+              - generic: Home
+          - listitem [ref=e14]:
+            - button " My Plan" [ref=e15] [cursor=pointer]:
+              - generic [ref=e17]: 
+              - generic: My Plan
+          - listitem [ref=e18]:
+            - button " My Profile" [ref=e19] [cursor=pointer]:
+              - generic [ref=e21]: 
+              - generic: My Profile
+      - generic [ref=e22]:
+        - heading "Catalog" [level=3]
+        - generic [ref=e23]:
+          - heading "Pillars" [level=4]
+          - list [ref=e24]:
+            - listitem [ref=e25]:
+              - button " Professionalism" [ref=e26] [cursor=pointer]:
+                - generic [ref=e28]: 
+                - generic: Professionalism
+            - listitem [ref=e29]:
+              - button " Tech" [ref=e30] [cursor=pointer]:
+                - generic [ref=e32]: 
+                - generic: Tech
+            - listitem [ref=e33]:
+              - button " Knowledge Unlock" [ref=e34] [cursor=pointer]:
+                - generic [ref=e36]: 
+                - generic: Knowledge Unlock
+            - listitem [ref=e37]:
+              - button " Collaboration" [ref=e38] [cursor=pointer]:
+                - generic [ref=e40]: 
+                - generic: Collaboration
+        - generic [ref=e41]:
+          - heading "Badges" [level=4]
+          - list [ref=e42]:
+            - listitem [ref=e43]:
+              - button " Roadmaps" [ref=e44] [cursor=pointer]:
+                - generic [ref=e46]: 
+                - generic: Roadmaps
+        - generic [ref=e47]:
+          - heading "Extra" [level=4]
+          - list [ref=e48]:
+            - listitem [ref=e49]:
+              - button " Extra" [ref=e50] [cursor=pointer]:
+                - generic [ref=e52]: 
+                - generic: Extra
+      - generic [ref=e53]:
+        - heading "Resources" [level=3]
+        - list [ref=e54]:
+          - listitem [ref=e55]:
+            - button " Guidelines" [ref=e56] [cursor=pointer]:
+              - generic [ref=e58]: 
+              - generic: Guidelines
+          - listitem [ref=e59]:
+            - button " FAQ" [active] [ref=e60] [cursor=pointer]:
+              - generic [ref=e62]: 
+              - generic: FAQ
+          - listitem [ref=e63]:
+            - button " Forms" [ref=e64] [cursor=pointer]:
+              - generic [ref=e66]: 
+              - generic: Forms
+    - button "" [ref=e67] [cursor=pointer]:
+      - generic [ref=e68]: 
+  - main [ref=e69]:
+    - generic [ref=e71]:
+      - text: 
+      - heading "FAQ" [level=2] [ref=e460]
+      - generic [ref=e73]:
+        - button " Search ⌘K" [ref=e74] [cursor=pointer]:
+          - generic [ref=e75]: 
+          - generic [ref=e76]: Search
+          - generic [ref=e77]: ⌘K
+        - button "" [ref=e78] [cursor=pointer]:
+          - generic [ref=e79]: 
+        - button " Sign in" [ref=e80] [cursor=pointer]:
+          - generic [ref=e81]: 
+          - generic [ref=e82]: Sign in
+    - generic [ref=e461]:
+      - paragraph [ref=e462]: Find answers to common questions about the DCR program, requirements, and processes.
+      - generic [ref=e463]:
+        - img
+        - textbox "Search questions..." [ref=e464]
+      - generic [ref=e465]:
+        - button "Q When can I start the DCR program?" [ref=e467]:
+          - generic [ref=e468]: Q
+          - heading "When can I start the DCR program?" [level=3] [ref=e469]
+          - img [ref=e471]
+        - button "Q Do achievements I completed before starting DCR count?" [ref=e473]:
+          - generic [ref=e474]: Q
+          - heading "Do achievements I completed before starting DCR count?" [level=3] [ref=e475]
+          - img [ref=e477]
+        - button "Q How many points do I need to level up?" [ref=e479]:
+          - generic [ref=e480]: Q
+          - heading "How many points do I need to level up?" [level=3] [ref=e481]
+          - img [ref=e483]
+        - button "Q When do I get paid for leveling up?" [ref=e485]:
+          - generic [ref=e486]: Q
+          - heading "When do I get paid for leveling up?" [level=3] [ref=e487]
+          - img [ref=e489]
+        - button "Q What happens to extra points if I exceed my level requirement?" [ref=e491]:
+          - generic [ref=e492]: Q
+          - heading "What happens to extra points if I exceed my level requirement?" [level=3] [ref=e493]
+          - img [ref=e495]
+        - button "Q Can I work on DCR achievements during customer time?" [ref=e497]:
+          - generic [ref=e498]: Q
+          - heading "Can I work on DCR achievements during customer time?" [level=3] [ref=e499]
+          - img [ref=e501]
+        - button "Q What documentation do I need for achievements?" [ref=e503]:
+          - generic [ref=e504]: Q
+          - heading "What documentation do I need for achievements?" [level=3] [ref=e505]
+          - img [ref=e507]
+        - button "Q What are certification circles and how do they work?" [ref=e509]:
+          - generic [ref=e510]: Q
+          - heading "What are certification circles and how do they work?" [level=3] [ref=e511]
+          - img [ref=e513]
+        - button "Q I'm doing miluim (military reserves) - are there special rules?" [ref=e515]:
+          - generic [ref=e516]: Q
+          - heading "I'm doing miluim (military reserves) - are there special rules?" [level=3] [ref=e517]
+          - img [ref=e519]
+        - button "Q What are roadmap badges and how do I earn them?" [ref=e521]:
+          - generic [ref=e522]: Q
+          - heading "What are roadmap badges and how do I earn them?" [level=3] [ref=e523]
+          - img [ref=e525]
+        - button "Q Can I change my achievement goals during a level?" [ref=e527]:
+          - generic [ref=e528]: Q
+          - heading "Can I change my achievement goals during a level?" [level=3] [ref=e529]
+          - img [ref=e531]
+        - button "Q Are weekly reports really mandatory now?" [ref=e533]:
+          - generic [ref=e534]: Q
+          - heading "Are weekly reports really mandatory now?" [level=3] [ref=e535]
+          - img [ref=e537]
+        - button "Q What are promoted items and how do I know about them?" [ref=e539]:
+          - generic [ref=e540]: Q
+          - heading "What are promoted items and how do I know about them?" [level=3] [ref=e541]
+          - img [ref=e543]
+        - button "Q How are billable hours calculated?" [ref=e545]:
+          - generic [ref=e546]: Q
+          - heading "How are billable hours calculated?" [level=3] [ref=e547]
+          - img [ref=e549]
+        - button "Q Who approves my level up?" [ref=e551]:
+          - generic [ref=e552]: Q
+          - heading "Who approves my level up?" [level=3] [ref=e553]
+          - img [ref=e555]
+        - button "Q How should I plan my points strategy for different levels?" [ref=e557]:
+          - generic [ref=e558]: Q
+          - heading "How should I plan my points strategy for different levels?" [level=3] [ref=e559]
+          - img [ref=e561]
+  - region "Notifications alt+T"
