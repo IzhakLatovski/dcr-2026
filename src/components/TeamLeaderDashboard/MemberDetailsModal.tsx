@@ -1,9 +1,45 @@
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
+import {
+  Activity,
+  Award,
+  ArrowRight,
+  ArrowUpCircle,
+  BarChart3,
+  Calendar,
+  CheckCircle2,
+  ChevronDown,
+  ChevronUp,
+  Circle,
+  Clock,
+  Eye,
+  EyeOff,
+  FileText,
+  Heart,
+  History,
+  Info,
+  ListChecks,
+  MonitorSmartphone,
+  Newspaper,
+  Pencil,
+  Route,
+  Shield,
+  Trophy,
+  Users,
+  XCircle,
+} from 'lucide-react';
 import { useAchievements } from '../../hooks/useAchievements';
 import { usePlanHistory } from '../../hooks/usePlanHistory';
 import { levels, MANDATORY_ITEM_IDS } from '../../data/levels';
 import type { UserDocument, Achievement, PlanHistoryEntry, AchievedItem } from '../../data/types';
-import './MemberDetailsModal.css';
+import { Avatar } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Alert } from '@/components/ui/alert';
+import { Dialog, DialogBody, DialogHeader } from '@/components/ui/dialog';
+import { ProgressBar } from '@/components/ui/progress-bar';
+import { Tabs, TabList, Tab, TabPanel } from '@/components/ui/tabs';
+import { EmptyState } from '@/components/ui/empty-state';
+import { StatCard, type IconTint } from '@/components/composed/stat-card';
+import { cn } from '@/lib/utils';
 
 type MemberWithUid = UserDocument & { uid: string };
 
@@ -12,12 +48,12 @@ interface MemberDetailsModalProps {
   onClose: () => void;
 }
 
-const PILLAR_ICON: Record<string, string> = {
-  tech: 'ri-computer-line',
-  professionalism: 'ri-shield-check-line',
-  'knowledge-unlock': 'ri-edit-line',
-  collaboration: 'ri-hearts-line',
-  roadmaps: 'ri-route-line',
+const PILLAR_ICON: Record<string, ReactNode> = {
+  tech: <MonitorSmartphone className="size-3.5" />,
+  professionalism: <Shield className="size-3.5" />,
+  'knowledge-unlock': <Pencil className="size-3.5" />,
+  collaboration: <Heart className="size-3.5" />,
+  roadmaps: <Route className="size-3.5" />,
 };
 
 const PILLAR_LABEL: Record<string, string> = {
@@ -30,19 +66,23 @@ const PILLAR_LABEL: Record<string, string> = {
 
 const PILLAR_ORDER = ['tech', 'knowledge-unlock', 'collaboration', 'professionalism', 'roadmaps'];
 
+function formatDate(iso: string) {
+  try {
+    return new Date(iso).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    });
+  } catch {
+    return iso;
+  }
+}
+
 export function MemberDetailsModal({ member, onClose }: MemberDetailsModalProps) {
-  const [activeTab, setActiveTab] = useState<'plan' | 'plans' | 'summary'>('plan');
   const [showCertList, setShowCertList] = useState(false);
   const [expandedHistoryQuarter, setExpandedHistoryQuarter] = useState<string | null>(null);
   const { achievements, isLoading } = useAchievements(member.uid);
   const { planHistory, isLoading: histLoading } = usePlanHistory(member.uid);
-
-  const getLevelColor = (level: number | null) => {
-    if (!level) return 'level-0';
-    if (level <= 3) return 'level-low';
-    if (level <= 6) return 'level-mid';
-    return 'level-high';
-  };
 
   const planItems = member.plan?.items || [];
   const planStatus = member.plan?.planStatus;
@@ -52,7 +92,6 @@ export function MemberDetailsModal({ member, onClose }: MemberDetailsModalProps)
   const totalPoints =
     planItems.reduce((sum, item) => sum + (item.promotedPoints ?? item.points), 0) + carryOverPoints;
 
-  // Pillar point breakdown from plan items
   const pillarPoints = { tech: 0, 'knowledge-unlock': 0, collaboration: 0 };
   for (const item of planItems) {
     const pts = item.promotedPoints ?? item.points;
@@ -61,7 +100,6 @@ export function MemberDetailsModal({ member, onClose }: MemberDetailsModalProps)
     else if (item.category === 'collaboration') pillarPoints.collaboration += pts;
   }
 
-  // Mandatory items check
   const planItemIds = new Set(planItems.map((i) => i.id));
   const mandatoryStatus = MANDATORY_ITEM_IDS.map((id) => ({
     id,
@@ -72,28 +110,17 @@ export function MemberDetailsModal({ member, onClose }: MemberDetailsModalProps)
       .replace(/\b\w/g, (c) => c.toUpperCase()),
   }));
 
-  // Level requirements for target level
   const targetLevelData = targetLevel ? levels.find((l) => l.id === targetLevel) : null;
 
-  // Level history — last level-up
   const levelHistory = member.levelHistory ?? [];
-  const lastLevelEntry =
-    levelHistory.length > 0 ? levelHistory[levelHistory.length - 1] : null;
+  const lastLevelEntry = levelHistory.length > 0 ? levelHistory[levelHistory.length - 1] : null;
 
-  const getProgressClass = (actual: number, required: number) => {
-    if (actual >= required) return 'req-met';
-    if (actual >= required * 0.8) return 'req-close';
-    return 'req-miss';
-  };
-
-  // Summary stats (2026+ approved achievements)
   const year2026Approved = achievements.filter(
     (a: Achievement) =>
       a.status === 'approved' &&
       a.quarter &&
       parseInt(a.quarter.split('-')[1]) >= 2026,
   );
-  // Tech certs: quarterly achievements collection + historical inline field
   const historicalTechCerts: AchievedItem[] = (member.achieved?.items ?? []).filter(
     (a) => a.status === 'approved' && a.item.category === 'tech',
   );
@@ -116,450 +143,472 @@ export function MemberDetailsModal({ member, onClose }: MemberDetailsModalProps)
     reviewee: year2026Approved.filter((a: Achievement) => a.item.id === 'col-peer-reviewee').length,
   };
 
-  const summaryStatItems = [
-    { icon: 'ri-trophy-line', value: yearStats.points.toLocaleString(), label: 'Points earned' },
-    { icon: 'ri-award-line', value: String(yearStats.certs), label: 'Certifications', clickable: true },
-    { icon: 'ri-newspaper-line', value: String(yearStats.magazineArticles), label: 'Magazine articles' },
-    { icon: 'ri-article-line', value: String(yearStats.externalArticles), label: 'External articles' },
-    { icon: 'ri-eye-line', value: String(yearStats.reviewer), label: 'Code reviews done' },
-    { icon: 'ri-eye-2-line', value: String(yearStats.reviewee), label: 'Reviews received' },
+  const summaryStatItems: { icon: ReactNode; iconTint: IconTint; value: string; label: string; clickable?: boolean }[] = [
+    { icon: <Trophy />, iconTint: 'primary', value: yearStats.points.toLocaleString(), label: 'Points earned' },
+    { icon: <Award />, iconTint: 'success', value: String(yearStats.certs), label: 'Certifications', clickable: true },
+    { icon: <Newspaper />, iconTint: 'warning', value: String(yearStats.magazineArticles), label: 'Magazine articles' },
+    { icon: <FileText />, iconTint: 'muted', value: String(yearStats.externalArticles), label: 'External articles' },
+    { icon: <Eye />, iconTint: 'primary', value: String(yearStats.reviewer), label: 'Code reviews done' },
+    { icon: <Users />, iconTint: 'muted', value: String(yearStats.reviewee), label: 'Reviews received' },
   ];
 
-  const getPlanStatusProps = (status: PlanHistoryEntry['status']) => {
-    if (status === 'approved') return { icon: 'ri-checkbox-circle-line', cls: 'plan-hist-approved' };
-    if (status === 'rejected') return { icon: 'ri-close-circle-line', cls: 'plan-hist-rejected' };
-    return { icon: 'ri-time-line', cls: 'plan-hist-pending' };
-  };
+  const planStatusBadge = (() => {
+    if (planStatus === 'draft') return <Badge variant="default" size="md"><Pencil className="size-3" /> Draft</Badge>;
+    if (planStatus === 'pending') return <Badge variant="warning" size="md"><Clock className="size-3" /> Pending approval</Badge>;
+    if (planStatus === 'approved') return <Badge variant="success" size="md"><CheckCircle2 className="size-3" /> Approved</Badge>;
+    if (planStatus === 'rejected') return <Badge variant="destructive" size="md"><XCircle className="size-3" /> Rejected</Badge>;
+    return null;
+  })();
 
   return (
-    <div className="member-details-backdrop" onClick={onClose}>
-      <div className="member-details-modal" onClick={(e) => e.stopPropagation()}>
-        {/* Header */}
-        <div className="member-details-header">
-          <div className="member-details-identity">
-            <div className="member-avatar-lg">
-              {member.photoURL ? (
-                <img
-                  src={member.photoURL}
-                  alt={member.displayName}
-                  referrerPolicy="no-referrer"
-                />
-              ) : (
-                <div className="avatar-placeholder">
-                  <i className="ri-user-line"></i>
-                </div>
-              )}
-            </div>
-            <div className="member-details-info">
-              <h2>{member.displayName}</h2>
-              <p className="member-email">{member.email}</p>
-              {lastLevelEntry && (
-                <p className="level-history-note">
-                  <i className="ri-arrow-up-circle-line"></i>
-                  At Level {lastLevelEntry.level} since{' '}
-                  {lastLevelEntry.quarter ??
-                    new Date(lastLevelEntry.date).toLocaleDateString('en-US', {
-                      month: 'short',
-                      year: 'numeric',
-                    })}
-                </p>
-              )}
-            </div>
-          </div>
-          <div className="member-details-header-right">
-            <div className={`level-badge ${getLevelColor(member.currentLevel)}`}>
-              <span className="level-number">{member.currentLevel ?? '?'}</span>
-              <span className="level-label">Level</span>
-            </div>
-            <button className="modal-close-btn" onClick={onClose} aria-label="Close">
-              <i className="ri-close-line"></i>
-            </button>
-          </div>
-        </div>
-
-        {/* Tabs */}
-        <div className="member-details-tabs">
-          <button
-            className={`details-tab-btn ${activeTab === 'plan' ? 'active' : ''}`}
-            onClick={() => setActiveTab('plan')}
-          >
-            <i className="ri-list-check-3"></i>
-            Current Plan
-            {planStatus === 'pending' && <span className="tab-badge-dot"></span>}
-          </button>
-          <button
-            className={`details-tab-btn ${activeTab === 'plans' ? 'active' : ''}`}
-            onClick={() => setActiveTab('plans')}
-          >
-            <i className="ri-history-line"></i>
-            Plans History
-            {planHistory.length > 0 && (
-              <span className="tab-count">({planHistory.length})</span>
+    <Dialog open onClose={onClose} size="xl">
+      <DialogHeader className="pr-12">
+        <div className="flex items-center gap-4">
+          <Avatar src={member.photoURL} name={member.displayName} size="lg" />
+          <div className="flex-1 min-w-0 flex flex-col gap-1">
+            <h2 className="text-xl font-bold tracking-tight text-foreground truncate">
+              {member.displayName}
+            </h2>
+            <p className="text-sm text-muted-foreground truncate">{member.email}</p>
+            {lastLevelEntry && (
+              <p className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+                <ArrowUpCircle className="size-3.5" />
+                At Level {lastLevelEntry.level} since{' '}
+                {lastLevelEntry.quarter ??
+                  new Date(lastLevelEntry.date).toLocaleDateString('en-US', {
+                    month: 'short',
+                    year: 'numeric',
+                  })}
+              </p>
             )}
-          </button>
-          <button
-            className={`details-tab-btn ${activeTab === 'summary' ? 'active' : ''}`}
-            onClick={() => setActiveTab('summary')}
-          >
-            <i className="ri-bar-chart-2-line"></i>
-            Summary
-          </button>
+          </div>
+          <div className="shrink-0 flex flex-col items-center justify-center size-16 rounded-2xl bg-primary/10 text-primary">
+            <span className="text-2xl font-bold tabular-nums leading-none">{member.currentLevel ?? '?'}</span>
+            <span className="text-[0.6rem] font-semibold uppercase tracking-wider text-primary/80 mt-0.5">Level</span>
+          </div>
         </div>
+      </DialogHeader>
 
-        {/* Tab Content */}
-        <div className="member-details-body">
-          {activeTab === 'plan' && (
-            <div className="plan-tab">
-              {/* Level Progression */}
-              <div className="plan-level-progression">
-                <div className="progression-side">
-                  <span className="progression-label">Current</span>
-                  <div className={`level-badge-sm ${getLevelColor(member.currentLevel)}`}>
-                    Level {member.currentLevel != null ? member.currentLevel : '?'}
-                  </div>
-                </div>
-                <i className="ri-arrow-right-line progression-arrow"></i>
-                <div className="progression-side">
-                  <span className="progression-label">Target</span>
-                  <div className={`level-badge-sm ${targetLevel ? getLevelColor(targetLevel) : 'level-0'}`}>
-                    {targetLevel ? `Level ${targetLevel}` : '—'}
-                  </div>
-                </div>
-                <div className="progression-status">
-                  {planStatus === 'draft' && (
-                    <span className="plan-chip plan-chip-none">
-                      <i className="ri-draft-line"></i> Draft
-                    </span>
-                  )}
-                  {planStatus === 'pending' && (
-                    <span className="plan-chip plan-chip-pending">
-                      <i className="ri-time-line"></i> Pending approval
-                    </span>
-                  )}
-                  {planStatus === 'approved' && (
-                    <span className="plan-chip plan-chip-approved">
-                      <i className="ri-checkbox-circle-line"></i> Approved
-                    </span>
-                  )}
-                  {planStatus === 'rejected' && (
-                    <span className="plan-chip plan-chip-rejected">
-                      <i className="ri-close-circle-line"></i> Rejected
-                    </span>
-                  )}
-                  {member.plan?.planSubmittedAt && (
-                    <span className="plan-submitted-date">
-                      <i className="ri-calendar-line"></i>
-                      {new Date(member.plan.planSubmittedAt).toLocaleDateString('en-US', {
-                        month: 'short',
-                        day: 'numeric',
-                        year: 'numeric',
-                      })}
-                    </span>
-                  )}
-                </div>
+      <DialogBody className="px-6 pb-6">
+        <Tabs defaultValue="plan">
+          <TabList className="w-full grid grid-cols-3 sm:inline-flex sm:w-auto">
+            <Tab value="plan">
+              <ListChecks className="size-4 mr-1.5" />
+              Current Plan
+              {planStatus === 'pending' && (
+                <span className="ml-1.5 inline-block size-2 rounded-full bg-amber-500" />
+              )}
+            </Tab>
+            <Tab value="plans">
+              <History className="size-4 mr-1.5" />
+              Plans History
+              {planHistory.length > 0 && (
+                <span className="ml-1.5 text-xs text-muted-foreground">({planHistory.length})</span>
+              )}
+            </Tab>
+            <Tab value="summary">
+              <BarChart3 className="size-4 mr-1.5" />
+              Summary
+            </Tab>
+          </TabList>
+
+          <TabPanel value="plan" className="flex flex-col gap-4">
+            {/* Level progression */}
+            <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-border bg-muted/20 p-4">
+              <div className="flex flex-col gap-1">
+                <span className="text-[0.65rem] font-semibold uppercase tracking-wider text-muted-foreground">Current</span>
+                <Badge variant="default" size="lg">Level {member.currentLevel ?? '?'}</Badge>
               </div>
+              <ArrowRight className="size-4 text-muted-foreground" />
+              <div className="flex flex-col gap-1">
+                <span className="text-[0.65rem] font-semibold uppercase tracking-wider text-muted-foreground">Target</span>
+                {targetLevel ? (
+                  <Badge variant="primary" size="lg">Level {targetLevel}</Badge>
+                ) : (
+                  <Badge variant="outline" size="lg">—</Badge>
+                )}
+              </div>
+              <div className="ml-auto flex items-center gap-2 flex-wrap">
+                {planStatusBadge}
+                {member.plan?.planSubmittedAt && (
+                  <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+                    <Calendar className="size-3.5" />
+                    {formatDate(member.plan.planSubmittedAt)}
+                  </span>
+                )}
+              </div>
+            </div>
 
-              {/* Requirements Alignment */}
-              {targetLevelData && planItems.length > 0 && (
-                <div className="plan-requirements-panel">
-                  <div className="requirements-panel-title">
-                    <i className="ri-bar-chart-grouped-line"></i>
-                    Level {targetLevelData.id} Requirements
-                  </div>
+            {/* Requirements panel */}
+            {targetLevelData && planItems.length > 0 && (
+              <div className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-4 shadow-sm">
+                <h3 className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                  <Activity className="size-4 text-muted-foreground" />
+                  Level {targetLevelData.id} Requirements
+                </h3>
 
-                  {/* Total Points */}
-                  <div className="requirement-row">
-                    <span className="req-row-label">Total Points</span>
-                    <div className="req-progress-bar">
-                      <div
-                        className={`req-progress-fill ${getProgressClass(totalPoints, targetLevelData.points)}`}
-                        style={{ width: `${Math.min(100, (totalPoints / targetLevelData.points) * 100)}%` }}
-                      ></div>
-                    </div>
-                    <span className={`req-fraction ${getProgressClass(totalPoints, targetLevelData.points)}`}>
-                      {totalPoints} / {targetLevelData.points}
-                    </span>
-                  </div>
-                  {carryOverPoints > 0 && (
-                    <div className="requirement-row carry-over-row">
-                      <span className="req-row-label">
-                        <i className="ri-arrow-right-up-line"></i> Prev. level carry-over
-                      </span>
-                      <div className="req-progress-bar"></div>
-                      <span className="req-fraction carry-over-pts">+{carryOverPoints}</span>
-                    </div>
-                  )}
-
-                  {/* Pillars */}
-                  <div className="requirement-row">
-                    <span className="req-row-label">
-                      <i className="ri-computer-line"></i> Tech
-                    </span>
-                    <div className="req-progress-bar">
-                      <div
-                        className={`req-progress-fill ${getProgressClass(pillarPoints.tech, targetLevelData.pillarRequirements.tech)}`}
-                        style={{ width: `${Math.min(100, (pillarPoints.tech / targetLevelData.pillarRequirements.tech) * 100)}%` }}
-                      ></div>
-                    </div>
-                    <span className={`req-fraction ${getProgressClass(pillarPoints.tech, targetLevelData.pillarRequirements.tech)}`}>
-                      {pillarPoints.tech} / {targetLevelData.pillarRequirements.tech}
+                <RequirementRow
+                  label="Total Points"
+                  actual={totalPoints}
+                  required={targetLevelData.points}
+                />
+                {carryOverPoints > 0 && (
+                  <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                    <ArrowUpCircle className="size-3.5" />
+                    <span>Prev. level carry-over</span>
+                    <span className="ml-auto tabular-nums font-semibold text-green-600 dark:text-green-400">
+                      +{carryOverPoints}
                     </span>
                   </div>
+                )}
+                <RequirementRow
+                  label="Tech"
+                  icon={<MonitorSmartphone className="size-3.5" />}
+                  actual={pillarPoints.tech}
+                  required={targetLevelData.pillarRequirements.tech}
+                />
+                <RequirementRow
+                  label="Knowledge"
+                  icon={<Pencil className="size-3.5" />}
+                  actual={pillarPoints['knowledge-unlock']}
+                  required={targetLevelData.pillarRequirements['knowledge-unlock']}
+                />
+                <RequirementRow
+                  label="Collaboration"
+                  icon={<Heart className="size-3.5" />}
+                  actual={pillarPoints.collaboration}
+                  required={targetLevelData.pillarRequirements.collaboration}
+                />
 
-                  <div className="requirement-row">
-                    <span className="req-row-label">
-                      <i className="ri-book-open-line"></i> Knowledge
-                    </span>
-                    <div className="req-progress-bar">
-                      <div
-                        className={`req-progress-fill ${getProgressClass(pillarPoints['knowledge-unlock'], targetLevelData.pillarRequirements['knowledge-unlock'])}`}
-                        style={{ width: `${Math.min(100, (pillarPoints['knowledge-unlock'] / targetLevelData.pillarRequirements['knowledge-unlock']) * 100)}%` }}
-                      ></div>
-                    </div>
-                    <span className={`req-fraction ${getProgressClass(pillarPoints['knowledge-unlock'], targetLevelData.pillarRequirements['knowledge-unlock'])}`}>
-                      {pillarPoints['knowledge-unlock']} / {targetLevelData.pillarRequirements['knowledge-unlock']}
-                    </span>
-                  </div>
-
-                  <div className="requirement-row">
-                    <span className="req-row-label">
-                      <i className="ri-team-line"></i> Collaboration
-                    </span>
-                    <div className="req-progress-bar">
-                      <div
-                        className={`req-progress-fill ${getProgressClass(pillarPoints.collaboration, targetLevelData.pillarRequirements.collaboration)}`}
-                        style={{ width: `${Math.min(100, (pillarPoints.collaboration / targetLevelData.pillarRequirements.collaboration) * 100)}%` }}
-                      ></div>
-                    </div>
-                    <span className={`req-fraction ${getProgressClass(pillarPoints.collaboration, targetLevelData.pillarRequirements.collaboration)}`}>
-                      {pillarPoints.collaboration} / {targetLevelData.pillarRequirements.collaboration}
-                    </span>
-                  </div>
-
-                  {/* Mandatory Items Checklist */}
-                  <div className="mandatory-checklist-label">
-                    <i className="ri-shield-check-line"></i>
-                    Mandatory Items
-                  </div>
-                  <ul className="mandatory-checklist">
+                <div className="mt-2 flex flex-col gap-2">
+                  <span className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    <Shield className="size-3.5" />
+                    Mandatory items
+                  </span>
+                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
                     {mandatoryStatus.map(({ id, present, label }) => (
-                      <li key={id} className={`mandatory-item ${present ? 'present' : 'missing'}`}>
-                        <i className={present ? 'ri-checkbox-circle-fill' : 'ri-close-circle-fill'}></i>
-                        {label}
+                      <li
+                        key={id}
+                        className={cn(
+                          'inline-flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs',
+                          present
+                            ? 'bg-green-600/10 text-green-700 dark:text-green-400'
+                            : 'bg-destructive/10 text-destructive',
+                        )}
+                      >
+                        {present ? (
+                          <CheckCircle2 className="size-3.5 shrink-0" />
+                        ) : (
+                          <XCircle className="size-3.5 shrink-0" />
+                        )}
+                        <span className="truncate">{label}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
-              )}
+              </div>
+            )}
 
-              {/* Rejection reason */}
-              {member.plan?.planRejectionReason && (
-                <div className="plan-rejection-note">
-                  <i className="ri-information-line"></i>
-                  <div>
-                    <strong>Rejection reason:</strong>{' '}
-                    {member.plan.planRejectionReason}
-                  </div>
+            {/* Rejection reason */}
+            {member.plan?.planRejectionReason && (
+              <Alert variant="destructive" icon={<Info className="size-4" />} title="Rejection reason">
+                {member.plan.planRejectionReason}
+              </Alert>
+            )}
+
+            {/* Plan items list */}
+            {planItems.length > 0 ? (
+              <div className="flex flex-col gap-3">
+                <div className="flex items-center gap-2">
+                  <ListChecks className="size-4 text-muted-foreground" />
+                  <h3 className="text-sm font-semibold text-foreground">Plan items</h3>
+                  <Badge variant="secondary" size="sm">{planItems.length}</Badge>
                 </div>
-              )}
-
-              {/* Plan items list */}
-              {planItems.length > 0 ? (
-                <div className="achievement-group">
-                  <div className="achievement-group-label">
-                    <i className="ri-list-check-3"></i>
-                    Plan Items
-                    <span className="submission-count">{planItems.length}</span>
-                  </div>
-                  {PILLAR_ORDER.filter((p) => planItems.some((i) => i.category === p)).map((pillar) => (
-                    <div key={pillar} className="pillar-group">
-                      <div className="pillar-group-header">
-                        <i className={PILLAR_ICON[pillar] ?? 'ri-star-line'}></i>
-                        {PILLAR_LABEL[pillar] ?? pillar}
-                      </div>
-                      <ul className="submission-certs">
-                        {planItems.filter((i) => i.category === pillar).map((item, i) => (
-                          <li key={`${item.id}-${i}`} className="submission-cert-item">
-                            <div className="cert-main">
-                              <span className="cert-name">{item.name}</span>
-                              <span className="cert-points">+{item.promotedPoints ?? item.points} pts</span>
-                            </div>
+                {PILLAR_ORDER.filter((p) => planItems.some((i) => i.category === p)).map((pillar) => (
+                  <div key={pillar} className="flex flex-col gap-1.5">
+                    <div className="inline-flex items-center gap-1.5 text-[0.65rem] font-semibold uppercase tracking-wider text-muted-foreground">
+                      {PILLAR_ICON[pillar]}
+                      {PILLAR_LABEL[pillar] ?? pillar}
+                    </div>
+                    <ul className="flex flex-col gap-1.5">
+                      {planItems
+                        .filter((i) => i.category === pillar)
+                        .map((item, i) => (
+                          <li
+                            key={`${item.id}-${i}`}
+                            className="flex items-center gap-2 rounded-xl border border-border bg-muted/10 px-3 py-2"
+                          >
+                            <span className="flex-1 min-w-0 text-sm font-medium text-foreground truncate">
+                              {item.name}
+                            </span>
+                            <span className="shrink-0 text-xs font-semibold tabular-nums text-foreground">
+                              +{item.promotedPoints ?? item.points} pts
+                            </span>
                           </li>
                         ))}
-                      </ul>
-                    </div>
-                  ))}
-                  <p className="plan-total-points">Total: {totalPoints} points</p>
-                </div>
-              ) : (
-                !planStatus && (
-                  <div className="details-empty">
-                    <i className="ri-file-list-line"></i>
-                    <p>No plan submitted yet</p>
+                    </ul>
                   </div>
-                )
-              )}
-            </div>
-          )}
+                ))}
+                <p className="text-xs text-muted-foreground">
+                  Total: <span className="font-semibold text-foreground tabular-nums">{totalPoints} points</span>
+                </p>
+              </div>
+            ) : (
+              !planStatus && (
+                <EmptyState
+                  icon={<FileText />}
+                  title="No plan submitted yet"
+                />
+              )
+            )}
+          </TabPanel>
 
-          {activeTab === 'plans' && (
-            <div className="plans-history-tab">
-              {histLoading ? (
-                <div className="details-loading">
-                  <div className="spinner"></div>
-                  <p>Loading plan history…</p>
-                </div>
-              ) : planHistory.length === 0 ? (
-                <div className="details-empty">
-                  <i className="ri-history-line"></i>
-                  <p>No plan history yet</p>
-                  <span className="details-empty-sub">Submitted quarterly plans will appear here</span>
-                </div>
-              ) : (
-                <ul className="modal-plans-list">
-                  {planHistory.map((entry: PlanHistoryEntry) => {
-                    const { icon, cls } = getPlanStatusProps(entry.status);
-                    const isExpanded = expandedHistoryQuarter === entry.quarter;
-                    return (
-                      <li key={entry.quarter} className="modal-plan-row modal-plan-row-expandable">
-                        <button
-                          className="modal-plan-row-header"
-                          onClick={() => setExpandedHistoryQuarter(isExpanded ? null : entry.quarter)}
-                        >
-                          <span className={`modal-plan-status-icon ${cls}`}>
-                            <i className={icon}></i>
-                          </span>
-                          <div className="modal-plan-row-content">
-                            <div className="modal-plan-row-top">
-                              <span className="modal-plan-quarter">{entry.quarter}</span>
-                              {entry.levelAchieved && (
-                                <span className="modal-plan-level-up">
-                                  <i className="ri-arrow-up-circle-line"></i>
-                                  Level {entry.levelAchieved}
-                                </span>
-                              )}
-                            </div>
-                            <div className="modal-plan-meta">
-                              <span>{entry.items.length} items · {entry.totalPoints.toLocaleString()} pts</span>
-                              {entry.resolvedAt && (
-                                <span>
-                                  <i className="ri-calendar-line"></i>
-                                  {new Date(entry.resolvedAt).toLocaleDateString('en-US', {
-                                    month: 'short',
-                                    day: 'numeric',
-                                    year: 'numeric',
-                                  })}
-                                </span>
-                              )}
-                            </div>
-                            {entry.rejectionReason && !isExpanded && (
-                              <div className="modal-plan-rejection">
-                                <i className="ri-information-line"></i>
-                                {entry.rejectionReason}
-                              </div>
+          <TabPanel value="plans" className="flex flex-col gap-3">
+            {histLoading ? (
+              <LoadingRow label="Loading plan history…" />
+            ) : planHistory.length === 0 ? (
+              <EmptyState
+                icon={<History />}
+                title="No plan history yet"
+                description="Submitted quarterly plans will appear here."
+              />
+            ) : (
+              <ul className="flex flex-col gap-2">
+                {planHistory.map((entry: PlanHistoryEntry) => {
+                  const isExpanded = expandedHistoryQuarter === entry.quarter;
+                  const StatusIcon =
+                    entry.status === 'approved'
+                      ? CheckCircle2
+                      : entry.status === 'rejected'
+                        ? XCircle
+                        : Clock;
+                  const statusTone =
+                    entry.status === 'approved'
+                      ? 'text-green-600 dark:text-green-400'
+                      : entry.status === 'rejected'
+                        ? 'text-destructive'
+                        : 'text-amber-600 dark:text-amber-400';
+
+                  return (
+                    <li
+                      key={entry.quarter}
+                      className={cn(
+                        'rounded-2xl border bg-card overflow-hidden transition-all duration-200',
+                        isExpanded ? 'border-primary/30 shadow-sm' : 'border-border',
+                      )}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => setExpandedHistoryQuarter(isExpanded ? null : entry.quarter)}
+                        className="w-full flex items-center gap-3 p-3 text-left outline-none focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:ring-inset"
+                      >
+                        <span className={cn('inline-flex size-9 shrink-0 items-center justify-center rounded-xl bg-muted', statusTone)}>
+                          <StatusIcon className="size-4" />
+                        </span>
+
+                        <div className="flex-1 min-w-0 flex flex-col">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="text-sm font-semibold text-foreground">{entry.quarter}</span>
+                            {entry.levelAchieved && (
+                              <Badge variant="success" size="sm">
+                                <ArrowUpCircle className="size-3" />
+                                Level {entry.levelAchieved}
+                              </Badge>
                             )}
                           </div>
-                          <i className={`modal-plan-chevron ri-arrow-${isExpanded ? 'up' : 'down'}-s-line`}></i>
-                        </button>
-                        {isExpanded && (
-                          <div className="modal-plan-body">
-                            {entry.rejectionReason && (
-                              <div className="modal-plan-rejection">
-                                <i className="ri-information-line"></i>
-                                {entry.rejectionReason}
-                              </div>
+                          <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                            <span>{entry.items.length} items · {entry.totalPoints.toLocaleString()} pts</span>
+                            {entry.resolvedAt && (
+                              <span className="inline-flex items-center gap-1">
+                                <Calendar className="size-3" />
+                                {formatDate(entry.resolvedAt)}
+                              </span>
                             )}
-                            <div className="modal-plan-items-grouped">
-                              {PILLAR_ORDER.filter((p) => entry.items.some((i) => i.category === p)).map((pillar) => (
-                                <div key={pillar} className="pillar-group">
-                                  <div className="pillar-group-header modal-pillar-group-header">
-                                    <i className={PILLAR_ICON[pillar] ?? 'ri-star-line'}></i>
-                                    {PILLAR_LABEL[pillar] ?? pillar}
-                                  </div>
-                                  <ul className="modal-plan-items-list">
-                                    {entry.items.filter((i) => i.category === pillar).map((item, idx) => {
+                          </div>
+                          {entry.rejectionReason && !isExpanded && (
+                            <p className="inline-flex items-center gap-1.5 text-xs text-destructive mt-1">
+                              <Info className="size-3" />
+                              {entry.rejectionReason}
+                            </p>
+                          )}
+                        </div>
+
+                        {isExpanded ? (
+                          <ChevronUp className="size-4 text-muted-foreground shrink-0" />
+                        ) : (
+                          <ChevronDown className="size-4 text-muted-foreground shrink-0" />
+                        )}
+                      </button>
+
+                      {isExpanded && (
+                        <div className="border-t border-border p-3 space-y-3 bg-muted/20">
+                          {entry.rejectionReason && (
+                            <Alert variant="destructive" icon={<Info className="size-4" />}>
+                              {entry.rejectionReason}
+                            </Alert>
+                          )}
+                          <div className="flex flex-col gap-3">
+                            {PILLAR_ORDER.filter((p) => entry.items.some((i) => i.category === p)).map((pillar) => (
+                              <div key={pillar} className="flex flex-col gap-1.5">
+                                <div className="inline-flex items-center gap-1.5 text-[0.65rem] font-semibold uppercase tracking-wider text-muted-foreground">
+                                  {PILLAR_ICON[pillar]}
+                                  {PILLAR_LABEL[pillar] ?? pillar}
+                                </div>
+                                <ul className="flex flex-col gap-1">
+                                  {entry.items
+                                    .filter((i) => i.category === pillar)
+                                    .map((item, idx) => {
                                       const pts = item.promotedPoints ?? item.points;
                                       return (
-                                        <li key={`${item.id}-${idx}`} className="modal-plan-item-row">
-                                          <span className="modal-plan-item-name">{item.name}</span>
+                                        <li
+                                          key={`${item.id}-${idx}`}
+                                          className="flex items-center gap-2 rounded-lg bg-card px-3 py-1.5 border border-border/60"
+                                        >
+                                          <span className="flex-1 min-w-0 text-sm text-foreground truncate">
+                                            {item.name}
+                                          </span>
                                           {pts > 0 && (
-                                            <span className="modal-plan-item-pts">+{pts.toLocaleString()}</span>
+                                            <span className="text-xs font-semibold tabular-nums text-foreground">
+                                              +{pts.toLocaleString()}
+                                            </span>
                                           )}
                                         </li>
                                       );
                                     })}
-                                  </ul>
-                                </div>
-                              ))}
-                            </div>
+                                </ul>
+                              </div>
+                            ))}
                           </div>
-                        )}
-                      </li>
-                    );
-                  })}
-                </ul>
-              )}
-            </div>
-          )}
+                        </div>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </TabPanel>
 
-          {activeTab === 'summary' && (
-            <div className="summary-tab">
-              {isLoading ? (
-                <div className="details-loading">
-                  <div className="spinner"></div>
-                  <p>Loading achievements…</p>
+          <TabPanel value="summary" className="flex flex-col gap-4">
+            {isLoading ? (
+              <LoadingRow label="Loading achievements…" />
+            ) : (
+              <>
+                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  2026 and on
+                </p>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  {summaryStatItems.map(({ icon, iconTint, value, label, clickable }) => (
+                    <StatCard
+                      key={label}
+                      icon={icon}
+                      iconTint={iconTint}
+                      value={value}
+                      label={label}
+                      onClick={clickable ? () => setShowCertList((v) => !v) : undefined}
+                    />
+                  ))}
                 </div>
-              ) : (
-                <>
-                  <p className="modal-summary-subtitle">2026 and on</p>
-                  <div className="modal-summary-stats">
-                    {summaryStatItems.map(({ icon, value, label, clickable }) => (
-                      <div
-                        key={label}
-                        className={`modal-summary-stat${clickable ? ' modal-summary-stat-clickable' : ''}`}
-                        onClick={clickable ? () => setShowCertList((v) => !v) : undefined}
-                        role={clickable ? 'button' : undefined}
-                        tabIndex={clickable ? 0 : undefined}
-                        onKeyDown={clickable ? (e) => e.key === 'Enter' && setShowCertList((v) => !v) : undefined}
+
+                {showCertList && approvedTechCerts.length > 0 && (
+                  <ul className="flex flex-col gap-1.5 rounded-2xl border border-border bg-muted/10 p-3">
+                    {approvedTechCerts.map((c) => (
+                      <li
+                        key={c.key}
+                        className="flex items-center gap-3 rounded-xl bg-card px-3 py-2 border border-border/60"
                       >
-                        <i className={`${icon} modal-summary-stat-icon`}></i>
-                        <span className="modal-summary-stat-value">{value}</span>
-                        <span className="modal-summary-stat-label">
-                          {label}
-                          {clickable && (
-                            <i className={`ri-arrow-${showCertList ? 'up' : 'down'}-s-line modal-summary-stat-arrow`}></i>
-                          )}
+                        {c.item.image ? (
+                          <img
+                            src={c.item.image}
+                            alt={c.item.name}
+                            className="size-8 rounded-lg object-contain bg-muted/30 p-1"
+                          />
+                        ) : (
+                          <span className="inline-flex size-8 items-center justify-center rounded-lg bg-muted/40 text-muted-foreground">
+                            <Award className="size-4" />
+                          </span>
+                        )}
+                        <span className="flex-1 min-w-0 text-sm font-medium text-foreground truncate">
+                          {c.item.name}
                         </span>
-                      </div>
+                        <span className="shrink-0 text-xs text-muted-foreground tabular-nums">
+                          {c.quarter ?? 'Historical'}
+                        </span>
+                      </li>
                     ))}
-                  </div>
-                  {showCertList && approvedTechCerts.length > 0 && (
-                    <ul className="modal-cert-list">
-                      {approvedTechCerts.map((c) => (
-                        <li key={c.key} className="modal-cert-row">
-                          {c.item.image ? (
-                            <img src={c.item.image} alt={c.item.name} className="modal-cert-img" />
-                          ) : (
-                            <i className="ri-award-line modal-cert-icon"></i>
-                          )}
-                          <span className="modal-cert-name">{c.item.name}</span>
-                          <span className="modal-cert-quarter">{c.quarter ?? 'Historical'}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                  {achievements.length === 0 && (
-                    <div className="details-empty" style={{ paddingTop: '1.5rem' }}>
-                      <i className="ri-bar-chart-2-line"></i>
-                      <p>No achievements recorded yet</p>
-                    </div>
-                  )}
-                </>
-              )}
-            </div>
-          )}
-        </div>
-      </div>
+                  </ul>
+                )}
+
+                {showCertList && approvedTechCerts.length === 0 && (
+                  <p className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+                    <EyeOff className="size-4" />
+                    No certifications recorded.
+                  </p>
+                )}
+
+                {achievements.length === 0 && !isLoading && (
+                  <EmptyState
+                    icon={<BarChart3 />}
+                    title="No achievements recorded yet"
+                  />
+                )}
+              </>
+            )}
+          </TabPanel>
+        </Tabs>
+      </DialogBody>
+    </Dialog>
+  );
+}
+
+/* ── Helpers ────────────────────────────────────────────────────────── */
+
+function progressVariant(actual: number, required: number): 'primary' | 'success' | 'warning' | 'default' {
+  if (actual >= required) return 'success';
+  if (actual >= required * 0.8) return 'warning';
+  return 'default';
+}
+
+function progressTone(actual: number, required: number) {
+  if (actual >= required) return 'text-green-600 dark:text-green-400';
+  if (actual >= required * 0.8) return 'text-amber-600 dark:text-amber-400';
+  return 'text-muted-foreground';
+}
+
+function RequirementRow({
+  label,
+  icon,
+  actual,
+  required,
+}: {
+  label: string;
+  icon?: ReactNode;
+  actual: number;
+  required: number;
+}) {
+  return (
+    <div className="grid grid-cols-[7rem_1fr_5rem] items-center gap-3">
+      <span className="inline-flex items-center gap-1.5 text-xs font-medium text-foreground [&_svg]:size-3.5 [&_svg]:text-muted-foreground">
+        {icon}
+        {label}
+      </span>
+      <ProgressBar
+        value={actual}
+        max={required}
+        size="sm"
+        variant={progressVariant(actual, required)}
+      />
+      <span className={cn('text-xs font-semibold tabular-nums text-right', progressTone(actual, required))}>
+        {actual} / {required}
+      </span>
+    </div>
+  );
+}
+
+function LoadingRow({ label }: { label: string }) {
+  return (
+    <div className="flex items-center justify-center gap-3 rounded-2xl border border-border bg-card p-12">
+      <Circle className="size-5 text-muted-foreground animate-spin" />
+      <p className="text-sm text-muted-foreground">{label}</p>
     </div>
   );
 }

@@ -119,9 +119,15 @@ export default function Sidebar({
 
       {/* Mode toggle */}
       {user && !collapsed && onToggleMode && (
-        <div className="inline-flex items-center rounded-xl border border-border bg-muted/30 p-0.5 w-full">
+        <div
+          role="tablist"
+          aria-label="Plan mode"
+          className="inline-flex items-center rounded-xl border border-border bg-muted/30 p-0.5 w-full"
+        >
           <button
             type="button"
+            role="tab"
+            aria-selected={isSimulatorMode}
             onClick={() => isSimulatorMode || onToggleMode()}
             className={cn(
               'flex-1 inline-flex items-center justify-center rounded-lg h-7 text-[0.65rem] font-semibold uppercase tracking-wider transition-all duration-150',
@@ -130,10 +136,12 @@ export default function Sidebar({
                 : 'text-muted-foreground hover:text-foreground',
             )}
           >
-            Sim
+            Simulator
           </button>
           <button
             type="button"
+            role="tab"
+            aria-selected={!isSimulatorMode}
             onClick={() => !isSimulatorMode || onToggleMode()}
             className={cn(
               'flex-1 inline-flex items-center justify-center rounded-lg h-7 text-[0.65rem] font-semibold uppercase tracking-wider transition-all duration-150',
@@ -142,7 +150,7 @@ export default function Sidebar({
                 : 'text-muted-foreground hover:text-foreground',
             )}
           >
-            Real
+            Real Plan
           </button>
         </div>
       )}
@@ -174,9 +182,10 @@ export default function Sidebar({
         type="button"
         onClick={onToggleCollapse}
         title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-        className="inline-flex items-center justify-center rounded-lg h-8 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors duration-150 outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+        className="inline-flex items-center justify-center rounded-lg size-9 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors duration-150 outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
-        {collapsed ? <ChevronRight className="size-4" /> : <ChevronLeft className="size-4" />}
+        {collapsed ? <ChevronRight className="size-5" /> : <ChevronLeft className="size-5" />}
       </button>
     </div>
   );

@@ -35,7 +35,7 @@ const HeroBanner = forwardRef<HTMLDivElement, HeroBannerProps>(
             {eyebrow && (
               <p className="text-xs font-medium text-muted-foreground">{eyebrow}</p>
             )}
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight leading-tight text-foreground truncate">
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight leading-tight text-foreground sm:truncate">
               {title}
             </h1>
             {subtitle && (

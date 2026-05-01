@@ -583,7 +583,7 @@ export default function HomePage({
               </Badge>
             }
           />
-          <div className="flex gap-3 overflow-x-auto -mx-1 px-1 pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div className="flex gap-3 overflow-x-auto -mx-1 px-1 pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [mask-image:linear-gradient(to_right,black_calc(100%-3rem),transparent)]">
             {ALL_PROMOTED.map((item) => {
               const basePts = item.points;
               const bonusPts = item.promotedPoints ?? item.points;
@@ -612,7 +612,7 @@ export default function HomePage({
                     inCart && 'border-primary/30 bg-primary/5',
                   )}
                 >
-                  <div className="relative flex h-24 items-center justify-center rounded-xl bg-gradient-to-br from-muted/60 to-muted/20">
+                  <div className="relative flex h-24 items-center justify-center rounded-xl bg-gradient-to-br from-muted to-muted/40 ring-1 ring-inset ring-border/40">
                     {item.image ? (
                       <img src={item.image} alt={item.name} className="h-full max-w-full object-contain p-2" />
                     ) : (

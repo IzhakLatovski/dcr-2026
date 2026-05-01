@@ -81,23 +81,28 @@ function PillarProgressCard({
           <CheckCircle2 className="size-4 text-green-600 dark:text-green-400 shrink-0" />
         )}
       </div>
-      <div className="relative">
+      {/* Completion mode renders a single track with two stacked fills at
+          different heights — no overlap means no flicker. The thicker green
+          fill (completed) sits inside a thinner muted fill (planned). */}
+      {completed != null ? (
+        <div className="relative h-1.5 w-full overflow-hidden rounded-full bg-muted">
+          <div
+            className="absolute inset-y-0 left-0 rounded-full bg-primary/50 transition-all duration-500"
+            style={{ width: `${Math.min(100, (value / Math.max(required, value, 1)) * 100)}%` }}
+          />
+          <div
+            className="absolute inset-y-0 left-0 rounded-full bg-green-600 dark:bg-green-500 transition-all duration-500"
+            style={{ width: `${Math.min(100, (completed / Math.max(required, value, 1)) * 100)}%` }}
+          />
+        </div>
+      ) : (
         <ProgressBar
-          value={completed != null ? value : value}
+          value={value}
           max={Math.max(required, value, 1)}
           size="sm"
           variant={met ? "success" : styles.bar}
         />
-        {/* Completed overlay (when in completion mode) */}
-        {completed != null && completed > 0 && completed < value && (
-          <div
-            className="absolute inset-y-0 left-0 h-full rounded-full bg-green-600 dark:bg-green-500 transition-all duration-500"
-            style={{
-              width: `${Math.min(100, (completed / Math.max(required, value, 1)) * 100)}%`,
-            }}
-          />
-        )}
-      </div>
+      )}
     </div>
   );
 }

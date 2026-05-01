@@ -24,7 +24,6 @@ import {
   Shield,
   StickyNote,
   Trophy,
-  User,
   UserCircle,
   UserPlus,
   X,

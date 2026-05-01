@@ -281,7 +281,7 @@ function FilterPillGroup({
       <div
         role="group"
         aria-label={`${label} filters`}
-        className="flex-1 flex items-center gap-1.5 overflow-x-auto -mx-1 px-1 py-0.5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="flex-1 flex flex-wrap items-center gap-1.5 -mx-1 px-1 py-0.5"
       >
         {tags.map((tag) => {
           const active = activeIds.has(tag.id);
@@ -675,8 +675,8 @@ function ItemDetailDialog({
     <Dialog
       open={true}
       onClose={onClose}
-      size="lg"
-      className="!max-w-4xl overflow-y-auto"
+      size="xl"
+      className="overflow-y-auto"
     >
       <ItemDetail
         title={item.name}

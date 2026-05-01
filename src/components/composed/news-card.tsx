@@ -73,7 +73,7 @@ const NewsCard = forwardRef<HTMLDivElement, NewsCardProps>(
               {TYPE_LABEL[type]}
             </Badge>
             {isNew && (
-              <Badge variant="destructive" size="sm">
+              <Badge variant="primary" size="sm">
                 NEW
               </Badge>
             )}

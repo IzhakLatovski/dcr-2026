@@ -2,10 +2,10 @@
 import {
   forwardRef,
   useEffect,
-  useRef,
   type ReactNode,
 } from "react"
 import { X } from "lucide-react"
+import { FocusTrap } from "focus-trap-react"
 import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
@@ -41,6 +41,7 @@ const dialogContentVariants = cva(
         sm: "w-[90vw] max-w-sm rounded-2xl",
         md: "w-[90vw] max-w-lg rounded-2xl",
         lg: "w-[90vw] max-w-2xl rounded-2xl",
+        xl: "w-[90vw] max-w-4xl rounded-2xl",
         full: "w-screen h-screen rounded-none",
       },
     },
@@ -173,8 +174,6 @@ interface DialogProps {
 }
 
 function Dialog({ open, onClose, children, size, className }: DialogProps) {
-  const contentRef = useRef<HTMLDivElement>(null)
-
   useEffect(() => {
     if (!open) return
     const handleKey = (e: KeyboardEvent) => {
@@ -191,13 +190,23 @@ function Dialog({ open, onClose, children, size, className }: DialogProps) {
   if (!open) return null
 
   return (
-    <>
-      <DialogOverlay onClick={onClose} />
-      <DialogContent ref={contentRef} size={size} className={className}>
-        <DialogClose onClose={onClose} />
-        {children}
-      </DialogContent>
-    </>
+    <FocusTrap
+      focusTrapOptions={{
+        escapeDeactivates: false,
+        clickOutsideDeactivates: true,
+        allowOutsideClick: true,
+        returnFocusOnDeactivate: true,
+        fallbackFocus: '[data-slot="dialog-content"]',
+      }}
+    >
+      <div>
+        <DialogOverlay onClick={onClose} />
+        <DialogContent size={size} className={className}>
+          <DialogClose onClose={onClose} />
+          {children}
+        </DialogContent>
+      </div>
+    </FocusTrap>
   )
 }
 

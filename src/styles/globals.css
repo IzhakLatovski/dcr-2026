@@ -2,8 +2,7 @@
 @import "tw-animate-css";
 
 /* Use the .dark class for the dark variant (instead of prefers-color-scheme).
- * Matches temp/src/app/globals.css. During transition, useTheme also sets
- * `data-theme="dark"` so legacy component .css files keep working. */
+ * Matches temp/src/app/globals.css. */
 @custom-variant dark (&:is(.dark *));
 
 /* ────────────────────────────────────────────────────────────────────────────
@@ -89,52 +88,12 @@
   --sidebar-accent-foreground: oklch(0.3 0.1 277);
   --sidebar-border: oklch(0.9 0.015 277);
   --sidebar-ring: oklch(0.54 0.26 277);
-
-  /* ── Legacy tokens (transition only — removed in cleanup task 17) ────────── */
-  --primary-gradient: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 35%, #e9eef5 70%, #dde4ee 100%);
-  --glass-bg: rgba(255, 255, 255, 0.82);
-  --glass-border: rgba(30, 41, 59, 0.08);
-  --glass-hover: rgba(255, 255, 255, 0.96);
-  --glass-bg-light: rgba(255, 255, 255, 0.92);
-  --glass-border-light: rgba(30, 41, 59, 0.1);
-  --glass-hover-light: rgba(255, 255, 255, 1);
-  --glass-surface: rgba(255, 255, 255, 0.72);
-  --glass-elevated: rgba(255, 255, 255, 0.96);
-  --text-primary: #0f172a;
-  --text-secondary: #1e293b;
-  --text-muted: #64748b;
-  --accent-color: #3b5bdb;
-  --accent-hover: #2f4bc4;
-  --accent-light: #748ffc;
-  --accent-glow: rgba(59, 91, 219, 0.15);
-  --pending-color: #0ea5e9;
-  --pending-glow: rgba(14, 165, 233, 0.15);
-  --success-color: #10b981;
-  --error-color: #ef4444;
-  --warning-color: #f59e0b;
-  --shadow-light: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.06);
-  --shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.05);
-  --shadow-heavy: 0 20px 40px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
-  --shadow-glow: 0 0 0 1px rgba(59, 91, 219, 0.15);
-  --refractive-edge: inset 0 1px 0 0 rgba(116, 143, 252, 0.2);
-  --blur-light: blur(8px);
-  --blur-medium: blur(16px);
-  --blur-heavy: blur(24px);
-  --surface: #f8fafc;
-  --surface-container-low: #f1f5f9;
-  --surface-container: #e9eef5;
-  --surface-container-high: #dde4ee;
-  --surface-container-highest: #cfd8e8;
-  --outline-variant: rgba(30, 41, 59, 0.12);
 }
 
 /* ────────────────────────────────────────────────────────────────────────────
  * Dark mode — violet-based modern tech palette (oklch)
- * Both .dark (Tailwind variant target) and [data-theme="dark"] (legacy CSS
- * selectors) so old and new components both render correctly during transition.
  * ──────────────────────────────────────────────────────────────────────────── */
-.dark,
-[data-theme="dark"] {
+.dark {
   --background: oklch(0.1 0.015 277);
   --foreground: oklch(0.96 0.005 277);
   --card: oklch(0.14 0.02 277);
@@ -166,49 +125,10 @@
   --sidebar-accent-foreground: oklch(0.9 0.02 277);
   --sidebar-border: oklch(1 0 0 / 8%);
   --sidebar-ring: oklch(0.68 0.24 277);
-
-  /* ── Legacy tokens (transition only — removed in cleanup task 17) ────────── */
-  --primary-gradient: linear-gradient(135deg, #060e20 0%, #0b1326 40%, #111b30 100%);
-  --glass-bg: rgba(11, 19, 38, 0.82);
-  --glass-border: rgba(70, 69, 85, 0.15);
-  --glass-hover: rgba(23, 31, 51, 0.96);
-  --glass-bg-light: rgba(19, 27, 46, 0.9);
-  --glass-border-light: rgba(70, 69, 85, 0.18);
-  --glass-hover-light: rgba(34, 42, 61, 0.98);
-  --glass-surface: rgba(11, 19, 38, 0.72);
-  --glass-elevated: rgba(23, 31, 51, 0.96);
-  --text-primary: #e2e8f0;
-  --text-secondary: #cbd5e1;
-  --text-muted: #94a3b8;
-  --accent-color: #748ffc;
-  --accent-hover: #91a7ff;
-  --accent-light: #bac8ff;
-  --accent-glow: rgba(116, 143, 252, 0.15);
-  --pending-color: #38bdf8;
-  --pending-glow: rgba(56, 189, 248, 0.15);
-  --success-color: #6ee7b7;
-  --error-color: #fca5a5;
-  --warning-color: #fcd34d;
-  --shadow-light: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.25), 0 20px 40px rgba(0, 0, 0, 0.1);
-  --shadow-heavy: 0 20px 40px rgba(0, 0, 0, 0.3), 0 4px 6px rgba(0, 0, 0, 0.3);
-  --shadow-glow: 0 0 0 1px rgba(116, 143, 252, 0.12);
-  --refractive-edge: inset 0 1px 0 0 rgba(116, 143, 252, 0.12);
-  --surface: #0b1326;
-  --surface-container-low: #131b2e;
-  --surface-container: #171f33;
-  --surface-container-high: #222a3d;
-  --surface-container-highest: #2d3449;
-  --outline-variant: rgba(70, 69, 85, 0.4);
 }
 
 /* ────────────────────────────────────────────────────────────────────────────
- * Base layer — minimal additions; legacy body styling preserved during transition
- * ──────────────────────────────────────────────────────────────────────────── */
-/* ────────────────────────────────────────────────────────────────────────────
- * Base layer — universal reset + body styling. Both Tailwind utilities and
- * deferred legacy `.css` files (TeamLeaderDashboard.css, MemberDetailsModal.css)
- * still depend on the legacy CSS variables defined in :root / .dark above.
+ * Base layer — universal reset + body styling.
  * ──────────────────────────────────────────────────────────────────────────── */
 @layer base {
   * {

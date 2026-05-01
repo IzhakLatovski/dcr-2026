@@ -30,29 +30,33 @@ _None._ No broken functionality, no major brief deviations, no a11y regressions.
 
 ## Should Fix
 
-1. **Dialog doesn't trap focus.** The temp `Dialog` primitive handles ESC + body scroll lock + `role="dialog"` + `aria-modal`, but Tab can escape to the page below. See `src/components/ui/dialog.tsx`. _Fix: integrate `focus-trap-react` or rebuild Dialog atop `@base-ui/react/dialog` (already a dependency)._
+> All four items resolved in the 2026-05-01 follow-up pass. See `.design/visual-refresh/FOLLOW_UP.md` for change details.
 
-2. **Two dashboard files still on legacy CSS.** `PendingApprovalsTab.tsx` (1215 lines) and `MemberDetailsModal.tsx` (565 lines) keep their original `.css` and were skipped this pass to fit context budget. Memory file `~/.claude/projects/.../project_visual_refresh_deferred.md` has the exact follow-up steps. _Fix: redesign in a dedicated session, delete `TeamLeaderDashboard.css` + `MemberDetailsModal.css`, drop the legacy variable section in `globals.css` + `data-theme` write in `useTheme.ts`._
+1. ✅ **Dialog doesn't trap focus.** Resolved: integrated `focus-trap-react` in `src/components/ui/dialog.tsx`. ESC still closes via the existing handler; clicking the overlay still closes; focus initially lands on the close button and Tab cycles within the dialog.
 
-3. **Header title truncates aggressively at 375px.** "Development Career Roadmap" → "Development Ca..." in HomePage hero on mobile. See `screenshots/review-home-mobile-375.png`. The `<h1 truncate>` cuts mid-word. _Fix: drop `truncate` on the hero title at small breakpoints (`sm:truncate` or remove); accept 2-line wrap on mobile._
+2. ✅ **Two dashboard files still on legacy CSS.** Resolved: `PendingApprovalsTab.tsx` (1,216 → 870 lines) and `MemberDetailsModal.tsx` (565 → 530 lines) rewritten on the new primitives. Deleted `TeamLeaderDashboard.css` + `MemberDetailsModal.css`. Stripped the legacy variable section from `globals.css` and the `root.dataset.theme = theme;` write from `useTheme.ts`.
 
-4. **CatalogToolbar filter pills overflow on far right at 1280px+ (minor).** With the sidebar expanded, the rightmost provider pills (e.g. HashiCorp) clip to "Networ..." when the screen narrows; horizontal scroll works but the truncation is jarring. See `screenshots/review-catalog-desktop-1280.png`. _Fix: either wrap pills onto a second row at this width or reduce label length when space is tight._
+3. ✅ **Header title truncates aggressively at 375px.** Resolved: `hero-banner.tsx:38` changed `truncate` → `sm:truncate`. Title wraps to 2 lines on mobile.
+
+4. ✅ **CatalogToolbar filter pills overflow on far right at 1280px+ (minor).** Resolved: `CatalogPage.tsx` `FilterPillGroup` swapped horizontal scroll for `flex flex-wrap`. Pills wrap to a 2nd row instead of clipping.
 
 ## Could Improve
 
-1. **HomePage Featured Quarter cards' images sit on a near-white tile in light mode** — the Google Cloud / AWS badges have white backgrounds that blend into the card surface. _Suggestion: keep the gradient `from-muted/60 to-muted/20` background but darken slightly, or apply a subtle inner ring._
+> All seven items resolved in the 2026-05-01 follow-up pass.
 
-2. **NewsCard "NEW" badge color is destructive (red).** This works visually but reads as urgent/error. _Suggestion: use `secondary` or a custom subtle "fresh" tint — red-on-amber feels like an alert chain._
+1. ✅ **HomePage Featured Quarter cards' images sit on a near-white tile in light mode** — fixed by deepening the gradient (`from-muted to-muted/40`) and adding `ring-1 ring-inset ring-border/40`.
 
-3. **Dialog's `!max-w-4xl` override** is set inline at the call site in `CatalogPage.tsx`. _Suggestion: either add an `xl` size variant to the Dialog primitive, or accept the inline override as-is (low impact)._
+2. ✅ **NewsCard "NEW" badge color is destructive (red)** — switched to `variant="primary"` (violet).
 
-4. **Sidebar's Sim/Real mode toggle uses only "Sim" / "Real" labels** when expanded. Original UX showed full "Simulator" / "Real Plan." _Suggestion: when sidebar is at full width, show full labels; current truncation feels overly compact._
+3. ✅ **Dialog's `!max-w-4xl` override** — added an `xl` size variant to `dialogContentVariants`. Inline overrides removed from `CatalogPage.tsx` and `MemberDetailsModal.tsx`.
 
-5. **PillarProgressCard `completed` overlay (when in completion mode)** uses two stacked `<ProgressBar>` fills which flicker at the same width. _Suggestion: a single bar with a green-on-violet gradient or two distinct heights._
+4. ✅ **Sidebar's Sim/Real mode toggle uses only "Sim" / "Real" labels** — now shows full "Simulator" / "Real Plan" labels when expanded; added `role="tablist"` / `role="tab"` / `aria-selected` for a11y.
 
-6. **Footer of the Profile gallery / Sidebar collapse arrow** appears at bottom but the icon is small. _Suggestion: increase to `size-9` for easier targeting._
+5. ✅ **PillarProgressCard `completed` overlay (when in completion mode)** — replaced the two stacked ProgressBars with a single track + two non-overlapping fills (muted-violet planned + green completed on top).
 
-7. **Featured cards horizontally overflow at 1280** (cut off at right edge of the layout — see `review-home-desktop-1280.png` last card). The content scrolls, but visually the partial card looks unintended. _Suggestion: add gradient mask on the right edge or pad the row to align with whole cards._
+6. ✅ **Sidebar collapse arrow target** — bumped from `h-8` / `size-4` chevron to `size-9` / `size-5` chevron with `aria-label`.
+
+7. ✅ **Featured cards horizontally overflow at 1280** — added `[mask-image:linear-gradient(to_right,black_calc(100%-3rem),transparent)]` on the scroll wrapper. Last card now fades cleanly at the right edge.
 
 ## What Works Well
 
