@@ -1,0 +1,151 @@
+- generic [ref=e3]:
+  - complementary [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e7]:
+        - button "Develeap Career Roadmap DCR — Develeap Career Roadmap" [ref=e486]:
+          - generic [ref=e9]: DCR
+          - generic [ref=e487]:
+            - generic [ref=e488]: Develeap
+            - generic [ref=e489]: Career Roadmap
+          - generic [ref=e10]: DCR — Develeap Career Roadmap
+        - button "Search" [ref=e11]:
+          - img [ref=e12]
+          - generic [ref=e490]: Search
+          - generic [ref=e491]: ⌘K
+      - separator [ref=e15]
+      - generic [ref=e16]:
+        - paragraph [ref=e492]: Personal Zone
+        - button " Home" [ref=e493]:
+          - generic [ref=e495]: 
+          - generic [ref=e496]: Home
+        - button " My Plan" [ref=e497]:
+          - generic [ref=e499]: 
+          - generic [ref=e500]: My Plan
+        - button " My Profile" [ref=e501]:
+          - generic [ref=e503]: 
+          - generic [ref=e504]: My Profile
+        - separator [ref=e32]
+        - paragraph [ref=e505]: Catalog
+        - paragraph [ref=e506]: Pillars
+        - button " Professionalism" [active] [ref=e507]:
+          - generic [ref=e509]: 
+          - generic [ref=e510]: Professionalism
+        - button " Tech" [ref=e511]:
+          - generic [ref=e513]: 
+          - generic [ref=e514]: Tech
+        - button " Knowledge Unlock" [ref=e515]:
+          - generic [ref=e517]: 
+          - generic [ref=e518]: Knowledge Unlock
+        - button " Collaboration" [ref=e519]:
+          - generic [ref=e521]: 
+          - generic [ref=e522]: Collaboration
+        - paragraph [ref=e523]: Badges
+        - button " Roadmaps" [ref=e524]:
+          - generic [ref=e526]: 
+          - generic [ref=e527]: Roadmaps
+        - paragraph [ref=e528]: Extra
+        - button " Extra" [ref=e529]:
+          - generic [ref=e531]: 
+          - generic [ref=e532]: Extra
+        - separator [ref=e65]
+        - paragraph [ref=e533]: Resources
+        - button " Guidelines" [ref=e534]:
+          - generic [ref=e536]: 
+          - generic [ref=e537]: Guidelines
+        - button " FAQ" [ref=e538]:
+          - generic [ref=e540]: 
+          - generic [ref=e541]: FAQ
+        - button " Forms" [ref=e542]:
+          - generic [ref=e544]: 
+          - generic [ref=e545]: Forms
+      - separator [ref=e81]
+      - generic [ref=e83]:
+        - generic [ref=e84]:
+          - button " Sign in" [ref=e546]:
+            - generic [ref=e86]: 
+            - generic [ref=e547]: Sign in
+          - button "Switch to light mode" [ref=e87]:
+            - img [ref=e88]
+        - button "Collapse sidebar" [ref=e548]:
+          - img [ref=e549]
+  - main [ref=e98]:
+    - generic [ref=e551]:
+      - heading "Professionalism" [level=1] [ref=e1396]
+      - generic [ref=e553]:
+        - generic [ref=e555]:
+          - generic [ref=e557]:
+            - img [ref=e558]
+            - textbox "Search items..." [ref=e561]
+          - button "Category Order" [ref=e564]:
+            - generic [ref=e565]: Category Order
+            - img [ref=e566]
+          - radiogroup "View mode" [ref=e568]:
+            - radio "Grid view" [checked] [ref=e569] [cursor=pointer]:
+              - img [ref=e570]
+            - radio "List view" [ref=e575] [cursor=pointer]:
+              - img [ref=e576]
+        - button "Add all required items" [ref=e1398]:
+          - img
+          - text: Add all required items
+      - generic [ref=e648]:
+        - button "Billable hours Required Billable hours Professional Standards 515 PTS Add Billable hours to plan" [ref=e1399] [cursor=pointer]:
+          - generic [ref=e1400]:
+            - img "Billable hours" [ref=e1401]
+            - generic:
+              - generic: Required
+          - generic [ref=e1402]:
+            - heading "Billable hours" [level=3] [ref=e1403]
+            - paragraph [ref=e1404]: Professional Standards
+          - generic [ref=e1405]:
+            - generic [ref=e1406]:
+              - img [ref=e1408]
+              - generic [ref=e1410]: "515"
+              - generic [ref=e1411]: PTS
+            - button "Add Billable hours to plan" [ref=e1412]:
+              - img [ref=e1413]
+        - button "Weekly reports Required Weekly reports Professional Standards 0 PTS Add Weekly reports to plan" [ref=e1414] [cursor=pointer]:
+          - generic [ref=e1415]:
+            - img "Weekly reports" [ref=e1416]
+            - generic:
+              - generic: Required
+          - generic [ref=e1417]:
+            - heading "Weekly reports" [level=3] [ref=e1418]
+            - paragraph [ref=e1419]: Professional Standards
+          - generic [ref=e1420]:
+            - generic [ref=e1421]:
+              - img [ref=e1423]
+              - generic [ref=e1425]: "0"
+              - generic [ref=e1426]: PTS
+            - button "Add Weekly reports to plan" [ref=e1427]:
+              - img [ref=e1428]
+        - button "Weekly performance forms Required Weekly performance forms Professional Standards 0 PTS Add Weekly performance forms to plan" [ref=e1429] [cursor=pointer]:
+          - generic [ref=e1430]:
+            - img "Weekly performance forms" [ref=e1431]
+            - generic:
+              - generic: Required
+          - generic [ref=e1432]:
+            - heading "Weekly performance forms" [level=3] [ref=e1433]
+            - paragraph [ref=e1434]: Professional Standards
+          - generic [ref=e1435]:
+            - generic [ref=e1436]:
+              - img [ref=e1438]
+              - generic [ref=e1440]: "0"
+              - generic [ref=e1441]: PTS
+            - button "Add Weekly performance forms to plan" [ref=e1442]:
+              - img [ref=e1443]
+        - button "Toggle regular filling Required Toggle regular filling Professional Standards 0 PTS Add Toggle regular filling to plan" [ref=e1444] [cursor=pointer]:
+          - generic [ref=e1445]:
+            - img "Toggle regular filling" [ref=e1446]
+            - generic:
+              - generic: Required
+          - generic [ref=e1447]:
+            - heading "Toggle regular filling" [level=3] [ref=e1448]
+            - paragraph [ref=e1449]: Professional Standards
+          - generic [ref=e1450]:
+            - generic [ref=e1451]:
+              - img [ref=e1453]
+              - generic [ref=e1455]: "0"
+              - generic [ref=e1456]: PTS
+            - button "Add Toggle regular filling to plan" [ref=e1457]:
+              - img [ref=e1458]
+  - region "Notifications alt+T"

@@ -961,9 +961,9 @@ export default function Layout() {
         toastOptions={{
           classNames: {
             success:
-              "!bg-green-600/10 !border-green-600/30 !text-green-700 dark:!bg-green-500/15 dark:!border-green-500/30 dark:!text-green-300 [&_[data-icon]]:!text-green-600 dark:[&_[data-icon]]:!text-green-400",
+              "!bg-green-50 !border-green-600/50 !text-green-900 dark:!bg-green-950 dark:!border-green-500/50 dark:!text-green-100 [&_[data-icon]]:!text-green-600 dark:[&_[data-icon]]:!text-green-400",
             error:
-              "!bg-destructive/10 !border-destructive/30 !text-destructive dark:!bg-destructive/15 dark:!border-destructive/40 [&_[data-icon]]:!text-destructive",
+              "!bg-red-50 !border-destructive/60 !text-red-900 dark:!bg-red-950 dark:!border-destructive/60 dark:!text-red-100 [&_[data-icon]]:!text-destructive dark:[&_[data-icon]]:!text-red-400",
           },
         }}
       />

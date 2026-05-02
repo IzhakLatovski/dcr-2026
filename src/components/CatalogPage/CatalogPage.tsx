@@ -129,11 +129,11 @@ export default function CatalogPage({
           item.subcategory?.toLowerCase().includes(lower),
       );
     }
-    if (selectedTags.size > 0) {
+    if (hasTags && selectedTags.size > 0) {
       result = result.filter((item) => item.tags?.some((t) => selectedTags.has(t)));
     }
     return result;
-  }, [items, search, selectedTags, hideAchieved, isAchieved]);
+  }, [items, search, selectedTags, hideAchieved, isAchieved, hasTags]);
 
   const sorted = useMemo(() => {
     const copy = [...filtered];
