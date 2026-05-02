@@ -1,0 +1,258 @@
+- generic [ref=e3]:
+  - complementary [ref=e4]:
+    - generic [ref=e5]:
+      - button "Develeap Career Roadmap DCR — Develeap Career Roadmap" [ref=e8]:
+        - generic [ref=e9]: DCR
+        - generic [ref=e10]:
+          - generic [ref=e11]: Develeap
+          - generic [ref=e12]: Career Roadmap
+        - generic [ref=e13]: DCR — Develeap Career Roadmap
+      - separator [ref=e14]
+      - generic [ref=e15]:
+        - paragraph [ref=e16]: Personal Zone
+        - button " Home" [ref=e18]:
+          - generic [ref=e20]: 
+          - generic [ref=e21]: Home
+        - button " My Plan" [ref=e23]:
+          - generic [ref=e25]: 
+          - generic [ref=e26]: My Plan
+        - button " Notifications" [ref=e28]:
+          - generic [ref=e30]: 
+          - generic [ref=e31]: Notifications
+        - button " My Profile" [ref=e33]:
+          - generic [ref=e35]: 
+          - generic [ref=e36]: My Profile
+        - separator [ref=e37]
+        - paragraph [ref=e38]: Catalog
+        - paragraph [ref=e39]: Pillars
+        - button " Professionalism" [ref=e41]:
+          - generic [ref=e43]: 
+          - generic [ref=e44]: Professionalism
+        - button " Tech" [ref=e46]:
+          - generic [ref=e48]: 
+          - generic [ref=e49]: Tech
+        - button " Knowledge Unlock" [ref=e51]:
+          - generic [ref=e53]: 
+          - generic [ref=e54]: Knowledge Unlock
+        - button " Collaboration" [active] [ref=e56]:
+          - generic [ref=e58]: 
+          - generic [ref=e59]: Collaboration
+        - paragraph [ref=e60]: Badges
+        - button " Roadmaps" [ref=e62]:
+          - generic [ref=e64]: 
+          - generic [ref=e65]: Roadmaps
+        - paragraph [ref=e66]: Extra
+        - button " Extra" [ref=e68]:
+          - generic [ref=e70]: 
+          - generic [ref=e71]: Extra
+        - separator [ref=e72]
+        - paragraph [ref=e73]: Resources
+        - button " Guidelines" [ref=e75]:
+          - generic [ref=e77]: 
+          - generic [ref=e78]: Guidelines
+        - button " FAQ" [ref=e80]:
+          - generic [ref=e82]: 
+          - generic [ref=e83]: FAQ
+        - button " Forms" [ref=e85]:
+          - generic [ref=e87]: 
+          - generic [ref=e88]: Forms
+      - separator [ref=e89]
+      - generic [ref=e91]:
+        - button " Sign in" [ref=e92]:
+          - generic [ref=e93]: 
+          - generic [ref=e94]: Sign in
+        - button "Collapse sidebar" [ref=e96]:
+          - img [ref=e97]
+  - main [ref=e99]:
+    - generic [ref=e101]:
+      - heading "Collaboration" [level=2] [ref=e1343]
+      - generic [ref=e103]:
+        - button "Search ⌘K" [ref=e104]:
+          - img [ref=e105]
+          - generic [ref=e108]: Search
+          - generic [ref=e109]: ⌘K
+        - button "Switch to light mode" [ref=e110]:
+          - img [ref=e111]
+    - generic [ref=e505]:
+      - generic [ref=e507]:
+        - generic [ref=e509]:
+          - img [ref=e510]
+          - textbox "Search items..." [ref=e513]
+        - button "Category Order" [ref=e516]:
+          - generic [ref=e517]: Category Order
+          - img [ref=e518]
+        - radiogroup "View mode" [ref=e520]:
+          - radio "Grid view" [checked] [ref=e521] [cursor=pointer]:
+            - img [ref=e522]
+          - radio "List view" [ref=e527] [cursor=pointer]:
+            - img [ref=e528]
+      - generic [ref=e597]:
+        - button "Interview Training (interviewer) Interview Training (interviewer) Training 30 PTS Interview Training (interviewer) quantity" [ref=e1344] [cursor=pointer]:
+          - img "Interview Training (interviewer)" [ref=e1346]
+          - generic [ref=e1347]:
+            - heading "Interview Training (interviewer)" [level=3] [ref=e1348]
+            - paragraph [ref=e1349]: Training
+          - generic [ref=e1350]:
+            - generic [ref=e1351]:
+              - img [ref=e1353]
+              - generic [ref=e1355]: "30"
+              - generic [ref=e1356]: PTS
+            - group "Interview Training (interviewer) quantity" [ref=e1357]:
+              - button "Add" [ref=e1358]:
+                - img [ref=e1359]
+        - button "DevOps candidates review DevOps candidates review HR Coordination 30 PTS DevOps candidates review quantity" [ref=e1360] [cursor=pointer]:
+          - img "DevOps candidates review" [ref=e1362]
+          - generic [ref=e1363]:
+            - heading "DevOps candidates review" [level=3] [ref=e1364]
+            - paragraph [ref=e1365]: HR Coordination
+          - generic [ref=e1366]:
+            - generic [ref=e1367]:
+              - img [ref=e1369]
+              - generic [ref=e1371]: "30"
+              - generic [ref=e1372]: PTS
+            - group "DevOps candidates review quantity" [ref=e1373]:
+              - button "Add" [ref=e1374]:
+                - img [ref=e1375]
+        - button "Peer Code Reviewee Peer Code Reviewee Code Review 10 PTS Peer Code Reviewee quantity" [ref=e1376] [cursor=pointer]:
+          - img "Peer Code Reviewee" [ref=e1378]
+          - generic [ref=e1379]:
+            - heading "Peer Code Reviewee" [level=3] [ref=e1380]
+            - paragraph [ref=e1381]: Code Review
+          - generic [ref=e1382]:
+            - generic [ref=e1383]:
+              - img [ref=e1385]
+              - generic [ref=e1387]: "10"
+              - generic [ref=e1388]: PTS
+            - group "Peer Code Reviewee quantity" [ref=e1389]:
+              - button "Add" [ref=e1390]:
+                - img [ref=e1391]
+        - button "Peer Code Reviewer Peer Code Reviewer Code Review 10 PTS Peer Code Reviewer quantity" [ref=e1392] [cursor=pointer]:
+          - img "Peer Code Reviewer" [ref=e1394]
+          - generic [ref=e1395]:
+            - heading "Peer Code Reviewer" [level=3] [ref=e1396]
+            - paragraph [ref=e1397]: Code Review
+          - generic [ref=e1398]:
+            - generic [ref=e1399]:
+              - img [ref=e1401]
+              - generic [ref=e1403]: "10"
+              - generic [ref=e1404]: PTS
+            - group "Peer Code Reviewer quantity" [ref=e1405]:
+              - button "Add" [ref=e1406]:
+                - img [ref=e1407]
+        - 'button "Architecture: Analyze, Create, Mentor & Present Architecture: Analyze, Create, Mentor & Present Architecture 100 PTS Architecture: Analyze, Create, Mentor & Present quantity" [ref=e1408] [cursor=pointer]':
+          - 'img "Architecture: Analyze, Create, Mentor & Present" [ref=e1410]'
+          - generic [ref=e1411]:
+            - 'heading "Architecture: Analyze, Create, Mentor & Present" [level=3] [ref=e1412]'
+            - paragraph [ref=e1413]: Architecture
+          - generic [ref=e1414]:
+            - generic [ref=e1415]:
+              - img [ref=e1417]
+              - generic [ref=e1419]: "100"
+              - generic [ref=e1420]: PTS
+            - 'group "Architecture: Analyze, Create, Mentor & Present quantity" [ref=e1421]':
+              - button "Add" [ref=e1422]:
+                - img [ref=e1423]
+        - button "Buddies Buddies Mentorship 40 PTS Buddies quantity" [ref=e1424] [cursor=pointer]:
+          - img "Buddies" [ref=e1426]
+          - generic [ref=e1427]:
+            - heading "Buddies" [level=3] [ref=e1428]
+            - paragraph [ref=e1429]: Mentorship
+          - generic [ref=e1430]:
+            - generic [ref=e1431]:
+              - img [ref=e1433]
+              - generic [ref=e1435]: "40"
+              - generic [ref=e1436]: PTS
+            - group "Buddies quantity" [ref=e1437]:
+              - button "Add" [ref=e1438]:
+                - img [ref=e1439]
+        - button "AWS Hero AWS Hero AWS Community 1000 PTS Add AWS Hero to plan" [ref=e1440] [cursor=pointer]:
+          - img "AWS Hero" [ref=e1442]
+          - generic [ref=e1443]:
+            - heading "AWS Hero" [level=3] [ref=e1444]
+            - paragraph [ref=e1445]: AWS Community
+          - generic [ref=e1446]:
+            - generic [ref=e1447]:
+              - img [ref=e1449]
+              - generic [ref=e1451]: "1000"
+              - generic [ref=e1452]: PTS
+            - button "Add AWS Hero to plan" [ref=e1453]:
+              - img [ref=e1454]
+        - button "Internal project management Internal project management Project Management 100 PTS Internal project management quantity" [ref=e1455] [cursor=pointer]:
+          - img "Internal project management" [ref=e1457]
+          - generic [ref=e1458]:
+            - heading "Internal project management" [level=3] [ref=e1459]
+            - paragraph [ref=e1460]: Project Management
+          - generic [ref=e1461]:
+            - generic [ref=e1462]:
+              - img [ref=e1464]
+              - generic [ref=e1466]: "100"
+              - generic [ref=e1467]: PTS
+            - group "Internal project management quantity" [ref=e1468]:
+              - button "Add" [ref=e1469]:
+                - img [ref=e1470]
+        - button "AWS service delivery process AWS service delivery process AWS Partnership 70 PTS AWS service delivery process quantity" [ref=e1471] [cursor=pointer]:
+          - img "AWS service delivery process" [ref=e1473]
+          - generic [ref=e1474]:
+            - heading "AWS service delivery process" [level=3] [ref=e1475]
+            - paragraph [ref=e1476]: AWS Partnership
+          - generic [ref=e1477]:
+            - generic [ref=e1478]:
+              - img [ref=e1480]
+              - generic [ref=e1482]: "70"
+              - generic [ref=e1483]: PTS
+            - group "AWS service delivery process quantity" [ref=e1484]:
+              - button "Add" [ref=e1485]:
+                - img [ref=e1486]
+        - button "DevOps Evening Course Q&A DevOps Evening Course Q&A Education Support 40 PTS DevOps Evening Course Q&A quantity" [ref=e1487] [cursor=pointer]:
+          - img "DevOps Evening Course Q&A" [ref=e1489]
+          - generic [ref=e1490]:
+            - heading "DevOps Evening Course Q&A" [level=3] [ref=e1491]
+            - paragraph [ref=e1492]: Education Support
+          - generic [ref=e1493]:
+            - generic [ref=e1494]:
+              - img [ref=e1496]
+              - generic [ref=e1498]: "40"
+              - generic [ref=e1499]: PTS
+            - group "DevOps Evening Course Q&A quantity" [ref=e1500]:
+              - button "Add" [ref=e1501]:
+                - img [ref=e1502]
+        - button "Bootcamp lecture Bootcamp lecture Bootcamp 50 PTS Bootcamp lecture quantity" [ref=e1503] [cursor=pointer]:
+          - img "Bootcamp lecture" [ref=e1505]
+          - generic [ref=e1506]:
+            - heading "Bootcamp lecture" [level=3] [ref=e1507]
+            - paragraph [ref=e1508]: Bootcamp
+          - generic [ref=e1509]:
+            - generic [ref=e1510]:
+              - img [ref=e1512]
+              - generic [ref=e1514]: "50"
+              - generic [ref=e1515]: PTS
+            - group "Bootcamp lecture quantity" [ref=e1516]:
+              - button "Add" [ref=e1517]:
+                - img [ref=e1518]
+        - button "Bootcamp Q&A session Bootcamp Q&A session Bootcamp Support 25 PTS Bootcamp Q&A session quantity" [ref=e1519] [cursor=pointer]:
+          - img "Bootcamp Q&A session" [ref=e1521]
+          - generic [ref=e1522]:
+            - heading "Bootcamp Q&A session" [level=3] [ref=e1523]
+            - paragraph [ref=e1524]: Bootcamp Support
+          - generic [ref=e1525]:
+            - generic [ref=e1526]:
+              - img [ref=e1528]
+              - generic [ref=e1530]: "25"
+              - generic [ref=e1531]: PTS
+            - group "Bootcamp Q&A session quantity" [ref=e1532]:
+              - button "Add" [ref=e1533]:
+                - img [ref=e1534]
+        - button "Bootcamp interview Bootcamp interview Bootcamp Recruitment 15 PTS Bootcamp interview quantity" [ref=e1535] [cursor=pointer]:
+          - img "Bootcamp interview" [ref=e1537]
+          - generic [ref=e1538]:
+            - heading "Bootcamp interview" [level=3] [ref=e1539]
+            - paragraph [ref=e1540]: Bootcamp Recruitment
+          - generic [ref=e1541]:
+            - generic [ref=e1542]:
+              - img [ref=e1544]
+              - generic [ref=e1546]: "15"
+              - generic [ref=e1547]: PTS
+            - group "Bootcamp interview quantity" [ref=e1548]:
+              - button "Add" [ref=e1549]:
+                - img [ref=e1550]
+  - region "Notifications alt+T"

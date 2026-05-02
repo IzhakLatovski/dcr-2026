@@ -18,7 +18,6 @@ import {
 } from "../ProfileSetupModal/ProfileSetupModal";
 import { PendingApprovalPage } from "../PendingApprovalPage/PendingApprovalPage";
 import HomePage from "../HomePage/HomePage";
-import { getAllNavItems } from "../../data/navigation";
 import { professionalism } from "../../data/catalog/professionalism";
 import { tech } from "../../data/catalog/tech";
 import { knowledge } from "../../data/catalog/knowledge";
@@ -36,127 +35,17 @@ import { useLevelUpRequests } from "../../hooks/useLevelUpRequests";
 import { usePlanHistory } from "../../hooks/usePlanHistory";
 import { useNotifications } from "../../hooks/useNotifications";
 import { useAuth } from "../../hooks/useAuth";
-import type { AuthUser } from "../../hooks/useAuth";
-import type { CatalogItem, RoadmapItem, UserDocument } from "../../data/types";
+import type { CatalogItem, RoadmapItem } from "../../data/types";
 import { levels } from "../../data/levels";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Menu, Search, Sun, Moon, LogOut, UserStar, Clock as ClockIcon, XCircle } from "lucide-react";
+import { Menu, Search } from "lucide-react";
 
-function HeaderUser({
-  user,
-  userProfile,
-  teamLeaderName,
-  onSignIn,
-  onSignOut,
-}: {
-  user: AuthUser | null;
-  userProfile: UserDocument | null;
-  teamLeaderName: string | null;
-  onSignIn: () => void;
-  onSignOut: () => void;
-}) {
-  const [open, setOpen] = useState(false);
-  const [imgError, setImgError] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    setImgError(false);
-  }, [user]);
-
-  useEffect(() => {
-    if (!open) return;
-    const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node))
-        setOpen(false);
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, [open]);
-
-  const getInitials = (name: string) => {
-    const parts = name.trim().split(/\s+/);
-    return parts.length === 1
-      ? parts[0][0].toUpperCase()
-      : (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-  };
-
-  if (!user) {
-    return (
-      <Button variant="outline" size="sm" onClick={onSignIn}>
-        <i className="ri-google-fill" />
-        <span>Sign in</span>
-      </Button>
-    );
-  }
-
-  return (
-    <div className="relative" ref={ref}>
-      <button
-        type="button"
-        onClick={() => setOpen((o) => !o)}
-        title={user.email}
-        className="inline-flex size-9 items-center justify-center rounded-full overflow-hidden bg-primary/10 text-primary outline-none transition-all duration-150 hover:ring-2 hover:ring-ring/50 focus-visible:ring-3 focus-visible:ring-ring/50"
-      >
-        {user.photoURL && !imgError ? (
-          <img
-            src={user.photoURL}
-            alt={user.displayName}
-            className="size-full object-cover"
-            onError={() => setImgError(true)}
-          />
-        ) : (
-          <span className="text-sm font-semibold">{getInitials(user.displayName)}</span>
-        )}
-      </button>
-      {open && (
-        <div className="absolute right-0 top-full mt-2 w-64 rounded-2xl border border-border bg-popover text-popover-foreground shadow-xl overflow-hidden z-50 animate-in fade-in-0 zoom-in-95 duration-150">
-          <div className="px-4 py-3 border-b border-border">
-            <p className="text-sm font-semibold text-foreground truncate">{user.displayName}</p>
-            <p className="text-xs text-muted-foreground truncate">{user.email}</p>
-          </div>
-          <div className="px-4 py-2 flex flex-col gap-1.5">
-            {userProfile?.role === "team_leader" && (
-              <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
-                <UserStar className="size-3.5" /> Team Leader
-              </span>
-            )}
-            {userProfile?.role === "employee" &&
-              userProfile?.approvalStatus === "approved" &&
-              teamLeaderName && (
-                <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
-                  <UserStar className="size-3.5" />
-                  Reports to <strong className="text-foreground">{teamLeaderName}</strong>
-                </span>
-              )}
-            {userProfile?.role === "employee" &&
-              userProfile?.approvalStatus === "pending" && (
-                <Badge variant="warning" size="sm" className="self-start">
-                  <ClockIcon className="size-3" /> Awaiting approval
-                </Badge>
-              )}
-            {userProfile?.role === "employee" &&
-              userProfile?.approvalStatus === "rejected" && (
-                <Badge variant="destructive" size="sm" className="self-start">
-                  <XCircle className="size-3" /> Approval rejected
-                </Badge>
-              )}
-          </div>
-          <button
-            type="button"
-            onClick={() => {
-              setOpen(false);
-              onSignOut();
-            }}
-            className="w-full flex items-center gap-2 border-t border-border px-4 py-3 text-sm text-foreground hover:bg-accent transition-colors duration-150 outline-none focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:ring-inset"
-          >
-            <LogOut className="size-4" /> Sign out
-          </button>
-        </div>
-      )}
-    </div>
-  );
-}
+const CATEGORY_TITLES: Record<string, string> = {
+  professionalism: "Professionalism",
+  tech: "Tech",
+  "knowledge-unlock": "Knowledge Unlock",
+  collaboration: "Collaboration",
+  roadmaps: "Roadmaps",
+};
 
 function isRoadmapComplete(
   roadmap: RoadmapItem,
@@ -181,7 +70,6 @@ function isRoadmapComplete(
 
 export default function Layout() {
   const [activeId, setActiveId] = useState("home");
-  const [activeLabel, setActiveLabel] = useState("Home");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(() => {
     return localStorage.getItem("dcr-sidebar-collapsed") === "true";
@@ -356,7 +244,6 @@ export default function Layout() {
         if (profile?.approvalStatus !== "approved") {
           setIsSimulatorMode(false);
           setActiveId("simulator");
-          setActiveLabel("My Plan");
           showToast("Switched to Real Plan mode", "added");
           return;
         }
@@ -702,9 +589,8 @@ export default function Layout() {
     return () => document.removeEventListener("keydown", handler);
   }, []);
 
-  const handleNavigate = useCallback((id: string, label: string) => {
+  const handleNavigate = useCallback((id: string) => {
     setActiveId(id);
-    setActiveLabel(label);
     setCertBackNav(null);
     setSimulatorBackNav(false);
 
@@ -713,7 +599,7 @@ export default function Layout() {
 
   const handleNavigateToCert = useCallback(
     (certId: string, roadmapId: string, roadmapName: string) => {
-      handleNavigate("tech", "Tech");
+      handleNavigate("tech");
       setFocusCatalogItemId(certId);
       setCertBackNav({
         id: "roadmaps",
@@ -760,56 +646,38 @@ export default function Layout() {
         cartTotalItems={cart.totalItems}
         cartTotalPoints={cart.totalPoints}
         user={auth.user}
+        userProfile={userProfile.profile}
+        teamLeaderName={teamLeaderName}
         isSimulatorMode={isSimulatorMode}
         onToggleMode={handleToggleMode}
         userRole={userProfile.profile?.role}
         pendingTeamCount={teamMembers.pendingCount + pendingLevelUpsCount}
-        unreadNotifications={notifications.unreadCount}
-        onNotificationsClick={() => notifications.markAllAsRead()}
+        notifications={notifications.notifications}
+        theme={theme}
+        onToggleTheme={toggleTheme}
+        onOpenPalette={() => setPaletteOpen(true)}
+        onSignIn={handleSignIn}
+        onSignOut={handleSignOut}
       />
       <main className="flex-1 flex flex-col min-w-0 h-screen">
-        <header className="relative z-40 shrink-0 border-b border-border bg-card/60 backdrop-blur-md">
-          <div className="flex items-center gap-3 px-4 sm:px-6 h-16">
-            <button
-              type="button"
-              onClick={() => setSidebarOpen(true)}
-              className="lg:hidden inline-flex size-9 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              aria-label="Open menu"
-            >
-              <Menu className="size-5" />
-            </button>
-            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground truncate">
-              {activeLabel}
-            </h2>
-            <div className="ml-auto flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => setPaletteOpen(true)}
-                className="hidden sm:inline-flex items-center gap-2 rounded-xl border border-border bg-muted/30 pl-3 pr-1.5 h-9 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
-              >
-                <Search className="size-4" />
-                <span>Search</span>
-                <kbd className="inline-flex items-center rounded-md border border-border bg-card px-1.5 py-0.5 text-[0.6rem] font-mono text-muted-foreground">
-                  ⌘K
-                </kbd>
-              </button>
-              <button
-                type="button"
-                onClick={toggleTheme}
-                title={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
-                className="inline-flex size-9 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              >
-                {theme === "light" ? <Moon className="size-4" /> : <Sun className="size-4" />}
-              </button>
-              <HeaderUser
-                user={auth.user}
-                userProfile={userProfile.profile}
-                teamLeaderName={teamLeaderName}
-                onSignIn={handleSignIn}
-                onSignOut={handleSignOut}
-              />
-            </div>
-          </div>
+        <header className="lg:hidden flex items-center gap-3 h-12 px-4 shrink-0 border-b border-border bg-card/60 backdrop-blur-md">
+          <button
+            type="button"
+            onClick={() => setSidebarOpen(true)}
+            className="inline-flex size-8 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            aria-label="Open menu"
+          >
+            <Menu className="size-5" />
+          </button>
+          <span className="text-sm font-bold tracking-tight text-foreground">DCR</span>
+          <button
+            type="button"
+            onClick={() => setPaletteOpen(true)}
+            className="ml-auto inline-flex size-8 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            aria-label="Search"
+          >
+            <Search className="size-4" />
+          </button>
         </header>
         <div
           className="flex-1 min-h-0 overflow-hidden"
@@ -851,6 +719,7 @@ export default function Layout() {
               />
             ) : (
               <CatalogPage
+                title={CATEGORY_TITLES[activeId] ?? "Catalog"}
                 items={catalogData[activeId]}
                 onToggleItem={handleToggleItem}
                 isInCart={cart.isInCart}
@@ -876,7 +745,7 @@ export default function Layout() {
                         label: certBackNav.label,
                         onClick: () => {
                           const nav = certBackNav;
-                          handleNavigate(nav.id, "Roadmaps");
+                          handleNavigate(nav.id);
                           if (nav.openItemId)
                             setFocusCatalogItemId(nav.openItemId);
                         },
@@ -884,7 +753,7 @@ export default function Layout() {
                     : simulatorBackNav
                       ? {
                           label: "Plan",
-                          onClick: () => handleNavigate("simulator", "Plan"),
+                          onClick: () => handleNavigate("simulator"),
                         }
                       : undefined
                 }
@@ -901,6 +770,7 @@ export default function Layout() {
               />
             ) : (
               <SimulatorPage
+                title={isSimulatorMode ? "Simulator" : "Plan"}
                 items={cart.items}
                 totalPoints={cart.totalPoints}
                 totalItems={cart.totalItems}
@@ -908,31 +778,15 @@ export default function Layout() {
                 onClearAll={cart.clearAll}
                 onAddMissingItems={handleAddMissingItems}
                 onOpenItem={(item) => {
-                  const CATEGORY_NAV: Record<
-                    string,
-                    { id: string; label: string }
-                  > = {
-                    tech: { id: "tech", label: "Tech" },
-                    roadmaps: { id: "roadmaps", label: "Roadmaps" },
-                    professionalism: {
-                      id: "professionalism",
-                      label: "Professionalism",
-                    },
-                    "knowledge-unlock": {
-                      id: "knowledge-unlock",
-                      label: "Knowledge Unlock",
-                    },
-                    collaboration: {
-                      id: "collaboration",
-                      label: "Collaboration",
-                    },
-                    extra: { id: "extra", label: "Extra" },
+                  const CATEGORY_NAV: Record<string, string> = {
+                    tech: "tech",
+                    roadmaps: "roadmaps",
+                    professionalism: "professionalism",
+                    "knowledge-unlock": "knowledge-unlock",
+                    collaboration: "collaboration",
+                    extra: "extra",
                   };
-                  const nav = CATEGORY_NAV[item.category] ?? {
-                    id: "tech",
-                    label: "Tech",
-                  };
-                  handleNavigate(nav.id, nav.label);
+                  handleNavigate(CATEGORY_NAV[item.category] ?? "tech");
                   setSimulatorBackNav(true);
                   setFocusCatalogItemId(item.id);
                 }}
@@ -1062,6 +916,9 @@ export default function Layout() {
               }
               planCarryOverPoints={useRealPlan ? carryOverPoints : undefined}
               planCarryOverLabel={useRealPlan ? carryOverLabel : undefined}
+              notifications={notifications.notifications}
+              onMarkNotificationRead={notifications.markAsRead}
+              onMarkAllNotificationsRead={notifications.markAllAsRead}
               onNavigate={setActiveId}
             />
           )}
@@ -1089,10 +946,7 @@ export default function Layout() {
         isOpen={paletteOpen}
         onClose={() => setPaletteOpen(false)}
         onSelect={(item: SearchItem) => {
-          const navItems = getAllNavItems();
-          const navItem = navItems.find((n) => n.id === item.pageId);
-          const label = navItem?.label ?? item.label;
-          handleNavigate(item.pageId, label);
+          handleNavigate(item.pageId);
           if (item.subId != null) {
             setFocusItemId(item.subId);
           }

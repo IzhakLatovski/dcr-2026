@@ -90,6 +90,7 @@ export default function ExtraPage({ onAddItem, onToggleItem, isInCart, certItems
 
   return (
     <div className="flex flex-col gap-4 p-4 sm:p-6 h-full overflow-y-auto">
+      <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">Extra</h1>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Widget 1: Certification Renewal */}
         <FormCard

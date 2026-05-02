@@ -1,15 +1,26 @@
-import { useMemo } from 'react';
-import { Bell, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import {
+  ChevronLeft,
+  ChevronRight,
+  Clock as ClockIcon,
+  LogOut,
+  Moon,
+  Search,
+  Sun,
+  UserStar,
+  XCircle,
+} from 'lucide-react';
 import { navigation } from '../../data/navigation';
 import type { AuthUser } from '../../hooks/useAuth';
-import type { UserRole } from '../../data/types';
+import type { AppNotification, UserDocument, UserRole } from '../../data/types';
 import { MainMenu, type MainMenuSection } from '@/components/composed/main-menu';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 interface SidebarProps {
   activeId: string;
-  onNavigate: (id: string, label: string) => void;
+  onNavigate: (id: string) => void;
   isOpen: boolean;
   onClose: () => void;
   collapsed: boolean;
@@ -17,12 +28,18 @@ interface SidebarProps {
   cartTotalItems?: number;
   cartTotalPoints?: number;
   user: AuthUser | null;
+  userProfile: UserDocument | null;
+  teamLeaderName: string | null;
   isSimulatorMode?: boolean;
   onToggleMode?: () => void;
   userRole?: UserRole | null;
   pendingTeamCount?: number;
-  unreadNotifications?: number;
-  onNotificationsClick?: () => void;
+  notifications: AppNotification[];
+  theme: 'light' | 'dark';
+  onToggleTheme: () => void;
+  onOpenPalette: () => void;
+  onSignIn: () => void;
+  onSignOut: () => void;
 }
 
 export default function Sidebar({
@@ -34,27 +51,22 @@ export default function Sidebar({
   onToggleCollapse,
   cartTotalItems = 0,
   user,
+  userProfile,
+  teamLeaderName,
   isSimulatorMode,
   onToggleMode,
   userRole,
   pendingTeamCount = 0,
-  unreadNotifications = 0,
-  onNotificationsClick,
+  notifications,
+  theme,
+  onToggleTheme,
+  onOpenPalette,
+  onSignIn,
+  onSignOut,
 }: SidebarProps) {
+  const unreadCount = notifications.filter((n) => !n.read).length;
   const handleSelect = (id: string) => {
-    const flat = [
-      ...navigation.flatMap((s) => s.items ?? []),
-      ...navigation.flatMap((s) => (s.subsections ?? []).flatMap((sub) => sub.items)),
-    ];
-    const item = flat.find((i) => i.id === id);
-    if (!item) return;
-    const label =
-      id === 'simulator' && !isSimulatorMode
-        ? 'Plan'
-        : id === 'team-dashboard' && userRole === 'admin'
-          ? 'All Teams'
-          : item.label;
-    onNavigate(id, label);
+    onNavigate(id);
     onClose();
   };
 
@@ -86,7 +98,9 @@ export default function Sidebar({
             ? cartTotalItems
             : item.id === 'team-dashboard' && pendingTeamCount > 0
               ? pendingTeamCount
-              : undefined,
+              : item.id === 'my-profile' && unreadCount > 0
+                ? unreadCount
+                : undefined,
       })),
       subSections: section.subsections?.map((sub) => ({
         label: sub.title,
@@ -97,15 +111,15 @@ export default function Sidebar({
         })),
       })),
     }));
-  }, [userRole, isSimulatorMode, cartTotalItems, pendingTeamCount]);
+  }, [userRole, isSimulatorMode, cartTotalItems, pendingTeamCount, unreadCount]);
 
   const header = (
-    <div className="flex flex-col gap-2 w-full">
+    <div className="flex flex-col gap-3 w-full">
       {/* Logo */}
       <button
         type="button"
         onClick={() => {
-          onNavigate('home', 'Welcome to DCR');
+          onNavigate('home');
           onClose();
         }}
         className={cn(
@@ -130,6 +144,30 @@ export default function Sidebar({
           </span>
         )}
         <span className="sr-only">DCR — Develeap Career Roadmap</span>
+      </button>
+
+      {/* Search */}
+      <button
+        type="button"
+        onClick={onOpenPalette}
+        title={collapsed ? 'Search ⌘K' : undefined}
+        aria-label="Search"
+        className={cn(
+          'mt-3 inline-flex items-center gap-2 rounded-xl border border-border bg-muted/30 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors duration-150 outline-none focus-visible:ring-2 focus-visible:ring-ring',
+          collapsed
+            ? 'size-9 justify-center self-center'
+            : 'w-full pl-3 pr-1.5 h-9',
+        )}
+      >
+        <Search className="size-4 shrink-0" />
+        {!collapsed && (
+          <>
+            <span className="flex-1 text-left">Search</span>
+            <kbd className="inline-flex items-center rounded-md border border-border bg-card px-1.5 py-0.5 text-[0.6rem] font-mono text-muted-foreground">
+              ⌘K
+            </kbd>
+          </>
+        )}
       </button>
 
       {/* Mode toggle */}
@@ -174,31 +212,18 @@ export default function Sidebar({
 
   const footer = (
     <div className="flex flex-col gap-1.5 w-full">
-      {user && onNotificationsClick && (
-        <button
-          type="button"
-          onClick={onNotificationsClick}
-          title="Notifications"
-          className={cn(
-            'group/notif relative inline-flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors duration-150 outline-none focus-visible:ring-2 focus-visible:ring-ring',
-            collapsed && 'justify-center px-2',
-          )}
-        >
-          <Bell className="size-4 shrink-0" />
-          {!collapsed && <span className="flex-1 text-left">Notifications</span>}
-          {unreadNotifications > 0 && (
-            <Badge variant="destructive" size="sm" className={cn(collapsed && 'absolute -top-0.5 -right-0.5')}>
-              {unreadNotifications}
-            </Badge>
-          )}
-        </button>
-      )}
-      <div
-        className={cn(
-          'flex justify-center w-full',
-          user && onNotificationsClick && 'mt-1 pt-2 border-t border-border/60',
-        )}
-      >
+      <SidebarUser
+        user={user}
+        userProfile={userProfile}
+        teamLeaderName={teamLeaderName}
+        unreadCount={unreadCount}
+        collapsed={collapsed}
+        theme={theme}
+        onToggleTheme={onToggleTheme}
+        onSignIn={onSignIn}
+        onSignOut={onSignOut}
+      />
+      <div className="flex justify-center w-full mt-1 pt-2 border-t border-border/60">
         <button
           type="button"
           onClick={onToggleCollapse}
@@ -229,5 +254,193 @@ export default function Sidebar({
         className="h-full shadow-sm"
       />
     </aside>
+  );
+}
+
+function getInitials(name: string) {
+  const parts = name.trim().split(/\s+/);
+  if (parts.length === 1) return parts[0][0]?.toUpperCase() ?? '?';
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
+
+interface SidebarUserProps {
+  user: AuthUser | null;
+  userProfile: UserDocument | null;
+  teamLeaderName: string | null;
+  unreadCount: number;
+  collapsed: boolean;
+  theme: 'light' | 'dark';
+  onToggleTheme: () => void;
+  onSignIn: () => void;
+  onSignOut: () => void;
+}
+
+function SidebarUser({
+  user,
+  userProfile,
+  teamLeaderName,
+  unreadCount,
+  collapsed,
+  theme,
+  onToggleTheme,
+  onSignIn,
+  onSignOut,
+}: SidebarUserProps) {
+  const [open, setOpen] = useState(false);
+  const [imgError, setImgError] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setImgError(false);
+  }, [user]);
+
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [open]);
+
+  if (!user) {
+    const themeLabel = `Switch to ${theme === 'light' ? 'dark' : 'light'} mode`;
+    return (
+      <div className={cn('flex items-center gap-2', collapsed && 'flex-col')}>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={onSignIn}
+          className={cn('flex-1', collapsed && 'w-full px-0 justify-center')}
+          title={collapsed ? 'Sign in' : undefined}
+        >
+          <i className="ri-google-fill" />
+          {!collapsed && <span>Sign in</span>}
+        </Button>
+        <button
+          type="button"
+          onClick={onToggleTheme}
+          title={themeLabel}
+          aria-label={themeLabel}
+          className="inline-flex size-9 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors duration-150 outline-none focus-visible:ring-2 focus-visible:ring-ring shrink-0"
+        >
+          {theme === 'light' ? <Moon className="size-4" /> : <Sun className="size-4" />}
+        </button>
+      </div>
+    );
+  }
+
+  const role = userProfile?.role;
+  const approval = userProfile?.approvalStatus;
+
+  return (
+    <div className="relative" ref={ref}>
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        title={user.email}
+        className={cn(
+          'group/user inline-flex w-full items-center gap-3 rounded-lg px-2 py-1.5 text-sm transition-colors duration-150 outline-none focus-visible:ring-2 focus-visible:ring-ring hover:bg-muted',
+          collapsed && 'justify-center px-0',
+        )}
+      >
+        <span className="relative inline-flex size-9 items-center justify-center rounded-full overflow-hidden bg-primary/10 text-primary shrink-0">
+          {user.photoURL && !imgError ? (
+            <img
+              src={user.photoURL}
+              alt={user.displayName}
+              className="size-full object-cover"
+              onError={() => setImgError(true)}
+            />
+          ) : (
+            <span className="text-sm font-semibold">{getInitials(user.displayName)}</span>
+          )}
+          {unreadCount > 0 && (
+            <span
+              aria-label={`${unreadCount} unread notifications`}
+              className="absolute -top-0.5 -right-0.5 inline-flex min-w-4 h-4 items-center justify-center rounded-full bg-destructive px-1 text-[0.6rem] font-bold leading-none text-white ring-2 ring-sidebar"
+            >
+              {unreadCount > 9 ? '9+' : unreadCount}
+            </span>
+          )}
+        </span>
+        {!collapsed && (
+          <span className="flex flex-col items-start min-w-0 flex-1">
+            <span className="text-sm font-semibold text-foreground truncate w-full text-left">
+              {user.displayName}
+            </span>
+            <span className="text-xs text-muted-foreground truncate w-full text-left">
+              {user.email}
+            </span>
+          </span>
+        )}
+      </button>
+
+      {open && (
+        <div
+          role="dialog"
+          aria-label="Account"
+          className="absolute bottom-full mb-2 left-0 w-72 rounded-2xl border border-border bg-popover text-popover-foreground shadow-xl overflow-hidden z-50 animate-in fade-in-0 zoom-in-95 duration-150"
+        >
+          {/* Identity */}
+          <div className="px-4 py-3">
+            <p className="text-sm font-semibold text-foreground truncate">{user.displayName}</p>
+            <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+            {(role === 'team_leader' ||
+              (role === 'employee' && approval === 'approved' && teamLeaderName) ||
+              (role === 'employee' && approval === 'pending') ||
+              (role === 'employee' && approval === 'rejected')) && (
+              <div className="mt-2 flex flex-col gap-1.5">
+                {role === 'team_leader' && (
+                  <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+                    <UserStar className="size-3.5" /> Team Leader
+                  </span>
+                )}
+                {role === 'employee' && approval === 'approved' && teamLeaderName && (
+                  <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+                    <UserStar className="size-3.5" />
+                    Reports to <strong className="text-foreground">{teamLeaderName}</strong>
+                  </span>
+                )}
+                {role === 'employee' && approval === 'pending' && (
+                  <Badge variant="warning" size="sm" className="self-start">
+                    <ClockIcon className="size-3" /> Awaiting approval
+                  </Badge>
+                )}
+                {role === 'employee' && approval === 'rejected' && (
+                  <Badge variant="destructive" size="sm" className="self-start">
+                    <XCircle className="size-3" /> Approval rejected
+                  </Badge>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Theme toggle */}
+          <button
+            type="button"
+            onClick={onToggleTheme}
+            className="w-full flex items-center gap-2 border-t border-border px-4 py-3 text-sm text-foreground hover:bg-accent transition-colors duration-150 outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
+          >
+            {theme === 'light' ? <Moon className="size-4" /> : <Sun className="size-4" />}
+            Switch to {theme === 'light' ? 'dark' : 'light'} mode
+          </button>
+
+          {/* Sign out */}
+          <button
+            type="button"
+            onClick={() => {
+              setOpen(false);
+              onSignOut();
+            }}
+            className="w-full flex items-center gap-2 border-t border-border px-4 py-3 text-sm text-foreground hover:bg-accent transition-colors duration-150 outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
+          >
+            <LogOut className="size-4" /> Sign out
+          </button>
+        </div>
+      )}
+    </div>
   );
 }

@@ -38,6 +38,7 @@ export default function GuidelinesPage({ focusId, onFocusConsumed }: GuidelinesP
 
   return (
     <div className="flex flex-col gap-4 p-4 sm:p-6 h-full overflow-y-auto">
+      <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">Guidelines</h1>
       <div className="flex gap-2">
         <Button variant="outline" size="sm" onClick={expandAll}>
           Expand all

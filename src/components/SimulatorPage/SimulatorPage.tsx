@@ -38,6 +38,7 @@ import { EmptyState } from '@/components/ui/empty-state';
 import { cn } from '@/lib/utils';
 
 interface SimulatorPageProps {
+  title: string;
   items: CatalogItem[];
   totalPoints: number;
   totalItems: number;
@@ -83,6 +84,7 @@ const PILLAR_DEFS = [
 ];
 
 export default function SimulatorPage({
+  title,
   items,
   totalPoints,
   totalItems,
@@ -439,6 +441,7 @@ export default function SimulatorPage({
 
   return (
     <div className="flex flex-col gap-4 p-4 sm:p-6 h-full overflow-y-auto">
+      <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">{title}</h1>
       {/* ── Status banners ── */}
       {isRealPlan && isPending && (
         <StatusBanner

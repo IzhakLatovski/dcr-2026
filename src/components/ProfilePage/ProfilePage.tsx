@@ -34,11 +34,13 @@ import type {
   CatalogItem,
   AchievedItem,
   Achievement,
+  AppNotification,
   PlanHistoryEntry,
   LevelHistoryEntry,
   PlanStatus,
 } from '../../data/types';
 import { ProfileHeader } from '@/components/composed/profile-header';
+import { NotificationsSection } from '@/components/composed/notifications-section';
 import { AchievementCard } from '@/components/composed/achievement-card';
 import { ActivityFeed, type TimelineItemProps } from '@/components/composed/activity-feed';
 import { SectionHeader } from '@/components/composed/section-header';
@@ -65,6 +67,9 @@ interface ProfilePageProps {
   planRejectionReason?: string;
   planCarryOverPoints?: number;
   planCarryOverLabel?: string;
+  notifications?: AppNotification[];
+  onMarkNotificationRead?: (id: string) => void;
+  onMarkAllNotificationsRead?: () => void;
   onNavigate?: (id: string) => void;
 }
 
@@ -154,6 +159,9 @@ export default function ProfilePage({
   planSelectedLevelId,
   planSubmittedAt,
   planRejectionReason,
+  notifications,
+  onMarkNotificationRead,
+  onMarkAllNotificationsRead,
   onNavigate,
 }: ProfilePageProps) {
   const currentQuarter = useCurrentQuarter();
@@ -501,6 +509,15 @@ export default function ProfilePage({
           <AlertCircle className="size-4 text-destructive shrink-0 mt-0.5" />
           <p className="text-sm text-foreground">{planRejectionReason}</p>
         </div>
+      )}
+
+      {/* ── Notifications ── */}
+      {notifications && onMarkNotificationRead && onMarkAllNotificationsRead && (
+        <NotificationsSection
+          notifications={notifications}
+          onMarkRead={onMarkNotificationRead}
+          onMarkAllRead={onMarkAllNotificationsRead}
+        />
       )}
 
       {/* ── 2026 Stats Summary ── */}

@@ -41,6 +41,7 @@ export default function FaqPage({ focusId, onFocusConsumed }: FaqPageProps) {
 
   return (
     <div className="flex flex-col gap-4 p-4 sm:p-6 h-full overflow-y-auto">
+      <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">FAQ</h1>
       <p className="text-sm text-muted-foreground">
         Find answers to common questions about the DCR program, requirements, and processes.
       </p>

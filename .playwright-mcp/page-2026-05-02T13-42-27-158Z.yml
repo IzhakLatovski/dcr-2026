@@ -1,0 +1,785 @@
+- generic [ref=e3]:
+  - complementary [ref=e4]:
+    - generic [ref=e5]:
+      - button "Develeap Career Roadmap DCR — Develeap Career Roadmap" [ref=e8]:
+        - generic [ref=e9]: DCR
+        - generic [ref=e10]:
+          - generic [ref=e11]: Develeap
+          - generic [ref=e12]: Career Roadmap
+        - generic [ref=e13]: DCR — Develeap Career Roadmap
+      - separator [ref=e14]
+      - generic [ref=e15]:
+        - paragraph [ref=e16]: Personal Zone
+        - button " Home" [ref=e18]:
+          - generic [ref=e20]: 
+          - generic [ref=e21]: Home
+        - button " My Plan" [ref=e23]:
+          - generic [ref=e25]: 
+          - generic [ref=e26]: My Plan
+        - button " Notifications" [ref=e28]:
+          - generic [ref=e30]: 
+          - generic [ref=e31]: Notifications
+        - button " My Profile" [ref=e33]:
+          - generic [ref=e35]: 
+          - generic [ref=e36]: My Profile
+        - separator [ref=e37]
+        - paragraph [ref=e38]: Catalog
+        - paragraph [ref=e39]: Pillars
+        - button " Professionalism" [ref=e41]:
+          - generic [ref=e43]: 
+          - generic [ref=e44]: Professionalism
+        - button " Tech" [active] [ref=e46]:
+          - generic [ref=e48]: 
+          - generic [ref=e49]: Tech
+        - button " Knowledge Unlock" [ref=e51]:
+          - generic [ref=e53]: 
+          - generic [ref=e54]: Knowledge Unlock
+        - button " Collaboration" [ref=e56]:
+          - generic [ref=e58]: 
+          - generic [ref=e59]: Collaboration
+        - paragraph [ref=e60]: Badges
+        - button " Roadmaps" [ref=e62]:
+          - generic [ref=e64]: 
+          - generic [ref=e65]: Roadmaps
+        - paragraph [ref=e66]: Extra
+        - button " Extra" [ref=e68]:
+          - generic [ref=e70]: 
+          - generic [ref=e71]: Extra
+        - separator [ref=e72]
+        - paragraph [ref=e73]: Resources
+        - button " Guidelines" [ref=e75]:
+          - generic [ref=e77]: 
+          - generic [ref=e78]: Guidelines
+        - button " FAQ" [ref=e80]:
+          - generic [ref=e82]: 
+          - generic [ref=e83]: FAQ
+        - button " Forms" [ref=e85]:
+          - generic [ref=e87]: 
+          - generic [ref=e88]: Forms
+      - separator [ref=e89]
+      - generic [ref=e91]:
+        - button " Sign in" [ref=e92]:
+          - generic [ref=e93]: 
+          - generic [ref=e94]: Sign in
+        - button "Collapse sidebar" [ref=e96]:
+          - img [ref=e97]
+  - main [ref=e99]:
+    - generic [ref=e101]:
+      - heading "Tech" [level=2] [ref=e504]
+      - generic [ref=e103]:
+        - button "Search ⌘K" [ref=e104]:
+          - img [ref=e105]
+          - generic [ref=e108]: Search
+          - generic [ref=e109]: ⌘K
+        - button "Switch to light mode" [ref=e110]:
+          - img [ref=e111]
+    - generic [ref=e505]:
+      - generic [ref=e507]:
+        - generic [ref=e509]:
+          - img [ref=e510]
+          - textbox "Search items..." [ref=e513]
+        - button "Category Order" [ref=e516]:
+          - generic [ref=e517]: Category Order
+          - img [ref=e518]
+        - radiogroup "View mode" [ref=e520]:
+          - radio "Grid view" [checked] [ref=e521] [cursor=pointer]:
+            - img [ref=e522]
+          - radio "List view" [ref=e527] [cursor=pointer]:
+            - img [ref=e528]
+      - generic [ref=e529]:
+        - generic [ref=e531]: Filters
+        - group "Catalog filters" [ref=e532]:
+          - button " Cloud 12" [ref=e533] [cursor=pointer]:
+            - generic [ref=e534]: 
+            - generic [ref=e535]: Cloud
+            - generic [ref=e536]: "12"
+          - button " CI/CD 6" [ref=e537] [cursor=pointer]:
+            - generic [ref=e538]: 
+            - generic [ref=e539]: CI/CD
+            - generic [ref=e540]: "6"
+          - button " GitOps 3" [ref=e541] [cursor=pointer]:
+            - generic [ref=e542]: 
+            - generic [ref=e543]: GitOps
+            - generic [ref=e544]: "3"
+          - button " Security 6" [ref=e545] [cursor=pointer]:
+            - generic [ref=e546]: 
+            - generic [ref=e547]: Security
+            - generic [ref=e548]: "6"
+          - button " Kubernetes 7" [ref=e549] [cursor=pointer]:
+            - generic [ref=e550]: 
+            - generic [ref=e551]: Kubernetes
+            - generic [ref=e552]: "7"
+          - button " IaC 3" [ref=e553] [cursor=pointer]:
+            - generic [ref=e554]: 
+            - generic [ref=e555]: IaC
+            - generic [ref=e556]: "3"
+          - button " Data 7" [ref=e557] [cursor=pointer]:
+            - generic [ref=e558]: 
+            - generic [ref=e559]: Data
+            - generic [ref=e560]: "7"
+          - button " AI / ML 7" [ref=e561] [cursor=pointer]:
+            - generic [ref=e562]: 
+            - generic [ref=e563]: AI / ML
+            - generic [ref=e564]: "7"
+          - button " FinOps 4" [ref=e565] [cursor=pointer]:
+            - generic [ref=e566]: 
+            - generic [ref=e567]: FinOps
+            - generic [ref=e568]: "4"
+          - button " Networking 3" [ref=e569] [cursor=pointer]:
+            - generic [ref=e570]: 
+            - generic [ref=e571]: Networking
+            - generic [ref=e572]: "3"
+          - button " Developer 6" [ref=e573] [cursor=pointer]:
+            - generic [ref=e574]: 
+            - generic [ref=e575]: Developer
+            - generic [ref=e576]: "6"
+          - button " AWS 13" [ref=e577] [cursor=pointer]:
+            - generic [ref=e578]: 
+            - generic [ref=e579]: AWS
+            - generic [ref=e580]: "13"
+          - button " Azure 7" [ref=e581] [cursor=pointer]:
+            - generic [ref=e582]: 
+            - generic [ref=e583]: Azure
+            - generic [ref=e584]: "7"
+          - button " GCP 8" [ref=e585] [cursor=pointer]:
+            - generic [ref=e586]: 
+            - generic [ref=e587]: GCP
+            - generic [ref=e588]: "8"
+          - button " GitHub 5" [ref=e589] [cursor=pointer]:
+            - generic [ref=e590]: 
+            - generic [ref=e591]: GitHub
+            - generic [ref=e592]: "5"
+          - button " HashiCorp 3" [ref=e593] [cursor=pointer]:
+            - generic [ref=e594]: 
+            - generic [ref=e595]: HashiCorp
+            - generic [ref=e596]: "3"
+      - generic [ref=e597]:
+        - button "AWS Certified Cloud Practitioner AWS Certified Cloud Practitioner AWS 50 PTS Add AWS Certified Cloud Practitioner to plan" [ref=e598] [cursor=pointer]:
+          - img "AWS Certified Cloud Practitioner" [ref=e600]
+          - generic [ref=e601]:
+            - heading "AWS Certified Cloud Practitioner" [level=3] [ref=e602]
+            - paragraph [ref=e603]: AWS
+          - generic [ref=e604]:
+            - generic [ref=e605]:
+              - img [ref=e607]
+              - generic [ref=e609]: "50"
+              - generic [ref=e610]: PTS
+            - button "Add AWS Certified Cloud Practitioner to plan" [ref=e611]:
+              - img [ref=e612]
+        - button "AWS Certified AI Practitioner AWS Certified AI Practitioner AWS 50 PTS Add AWS Certified AI Practitioner to plan" [ref=e613] [cursor=pointer]:
+          - img "AWS Certified AI Practitioner" [ref=e615]
+          - generic [ref=e616]:
+            - heading "AWS Certified AI Practitioner" [level=3] [ref=e617]
+            - paragraph [ref=e618]: AWS
+          - generic [ref=e619]:
+            - generic [ref=e620]:
+              - img [ref=e622]
+              - generic [ref=e624]: "50"
+              - generic [ref=e625]: PTS
+            - button "Add AWS Certified AI Practitioner to plan" [ref=e626]:
+              - img [ref=e627]
+        - button "AWS Certified CloudOps Engineer – Associate AWS Certified CloudOps Engineer – Associate AWS 250 PTS Add AWS Certified CloudOps Engineer – Associate to plan" [ref=e628] [cursor=pointer]:
+          - img "AWS Certified CloudOps Engineer – Associate" [ref=e630]
+          - generic [ref=e631]:
+            - heading "AWS Certified CloudOps Engineer – Associate" [level=3] [ref=e632]
+            - paragraph [ref=e633]: AWS
+          - generic [ref=e634]:
+            - generic [ref=e635]:
+              - img [ref=e637]
+              - generic [ref=e639]: "250"
+              - generic [ref=e640]: PTS
+            - button "Add AWS Certified CloudOps Engineer – Associate to plan" [ref=e641]:
+              - img [ref=e642]
+        - button "AWS Certified Developer – Associate AWS Certified Developer – Associate AWS 275 PTS Add AWS Certified Developer – Associate to plan" [ref=e643] [cursor=pointer]:
+          - img "AWS Certified Developer – Associate" [ref=e645]
+          - generic [ref=e646]:
+            - heading "AWS Certified Developer – Associate" [level=3] [ref=e647]
+            - paragraph [ref=e648]: AWS
+          - generic [ref=e649]:
+            - generic [ref=e650]:
+              - img [ref=e652]
+              - generic [ref=e654]: "275"
+              - generic [ref=e655]: PTS
+            - button "Add AWS Certified Developer – Associate to plan" [ref=e656]:
+              - img [ref=e657]
+        - button "AWS Certified Solutions Architect – Associate AWS Certified Solutions Architect – Associate AWS 200 PTS Add AWS Certified Solutions Architect – Associate to plan" [ref=e658] [cursor=pointer]:
+          - img "AWS Certified Solutions Architect – Associate" [ref=e660]
+          - generic [ref=e661]:
+            - heading "AWS Certified Solutions Architect – Associate" [level=3] [ref=e662]
+            - paragraph [ref=e663]: AWS
+          - generic [ref=e664]:
+            - generic [ref=e665]:
+              - img [ref=e667]
+              - generic [ref=e669]: "200"
+              - generic [ref=e670]: PTS
+            - button "Add AWS Certified Solutions Architect – Associate to plan" [ref=e671]:
+              - img [ref=e672]
+        - button "AWS Certified Data Engineer – Associate AWS Certified Data Engineer – Associate AWS 300 PTS Add AWS Certified Data Engineer – Associate to plan" [ref=e673] [cursor=pointer]:
+          - img "AWS Certified Data Engineer – Associate" [ref=e675]
+          - generic [ref=e676]:
+            - heading "AWS Certified Data Engineer – Associate" [level=3] [ref=e677]
+            - paragraph [ref=e678]: AWS
+          - generic [ref=e679]:
+            - generic [ref=e680]:
+              - img [ref=e682]
+              - generic [ref=e684]: "300"
+              - generic [ref=e685]: PTS
+            - button "Add AWS Certified Data Engineer – Associate to plan" [ref=e686]:
+              - img [ref=e687]
+        - button "AWS Certified Machine Learning Engineer – Associate AWS Certified Machine Learning Engineer – Associate AWS 300 PTS Add AWS Certified Machine Learning Engineer – Associate to plan" [ref=e688] [cursor=pointer]:
+          - img "AWS Certified Machine Learning Engineer – Associate" [ref=e690]
+          - generic [ref=e691]:
+            - heading "AWS Certified Machine Learning Engineer – Associate" [level=3] [ref=e692]
+            - paragraph [ref=e693]: AWS
+          - generic [ref=e694]:
+            - generic [ref=e695]:
+              - img [ref=e697]
+              - generic [ref=e699]: "300"
+              - generic [ref=e700]: PTS
+            - button "Add AWS Certified Machine Learning Engineer – Associate to plan" [ref=e701]:
+              - img [ref=e702]
+        - button "AWS Certified Solutions Architect – Professional AWS Certified Solutions Architect – Professional AWS 400 PTS Add AWS Certified Solutions Architect – Professional to plan" [ref=e703] [cursor=pointer]:
+          - img "AWS Certified Solutions Architect – Professional" [ref=e705]
+          - generic [ref=e706]:
+            - heading "AWS Certified Solutions Architect – Professional" [level=3] [ref=e707]
+            - paragraph [ref=e708]: AWS
+          - generic [ref=e709]:
+            - generic [ref=e710]:
+              - img [ref=e712]
+              - generic [ref=e714]: "400"
+              - generic [ref=e715]: PTS
+            - button "Add AWS Certified Solutions Architect – Professional to plan" [ref=e716]:
+              - img [ref=e717]
+        - button "AWS Certified DevOps Engineer – Professional AWS Certified DevOps Engineer – Professional AWS 400 PTS Add AWS Certified DevOps Engineer – Professional to plan" [ref=e718] [cursor=pointer]:
+          - img "AWS Certified DevOps Engineer – Professional" [ref=e720]
+          - generic [ref=e721]:
+            - heading "AWS Certified DevOps Engineer – Professional" [level=3] [ref=e722]
+            - paragraph [ref=e723]: AWS
+          - generic [ref=e724]:
+            - generic [ref=e725]:
+              - img [ref=e727]
+              - generic [ref=e729]: "400"
+              - generic [ref=e730]: PTS
+            - button "Add AWS Certified DevOps Engineer – Professional to plan" [ref=e731]:
+              - img [ref=e732]
+        - button "AWS Certified Generative AI Developer – Professional Promoted AWS Certified Generative AI Developer – Professional AWS 400 500 PTS Add AWS Certified Generative AI Developer – Professional to plan" [ref=e733] [cursor=pointer]:
+          - generic [ref=e734]:
+            - img "AWS Certified Generative AI Developer – Professional" [ref=e735]
+            - generic:
+              - generic: Promoted
+          - generic [ref=e736]:
+            - heading "AWS Certified Generative AI Developer – Professional" [level=3] [ref=e737]
+            - paragraph [ref=e738]: AWS
+          - generic [ref=e739]:
+            - generic [ref=e740]:
+              - img [ref=e742]
+              - generic [ref=e744]: "400"
+              - generic [ref=e745]: "500"
+              - generic [ref=e746]: PTS
+            - button "Add AWS Certified Generative AI Developer – Professional to plan" [ref=e747]:
+              - img [ref=e748]
+        - button "AWS Certified Advanced Networking – Specialty AWS Certified Advanced Networking – Specialty AWS 400 PTS Add AWS Certified Advanced Networking – Specialty to plan" [ref=e749] [cursor=pointer]:
+          - img "AWS Certified Advanced Networking – Specialty" [ref=e751]
+          - generic [ref=e752]:
+            - heading "AWS Certified Advanced Networking – Specialty" [level=3] [ref=e753]
+            - paragraph [ref=e754]: AWS
+          - generic [ref=e755]:
+            - generic [ref=e756]:
+              - img [ref=e758]
+              - generic [ref=e760]: "400"
+              - generic [ref=e761]: PTS
+            - button "Add AWS Certified Advanced Networking – Specialty to plan" [ref=e762]:
+              - img [ref=e763]
+        - button "AWS Certified Machine Learning – Specialty AWS Certified Machine Learning – Specialty AWS 400 PTS Add AWS Certified Machine Learning – Specialty to plan" [ref=e764] [cursor=pointer]:
+          - img "AWS Certified Machine Learning – Specialty" [ref=e766]
+          - generic [ref=e767]:
+            - heading "AWS Certified Machine Learning – Specialty" [level=3] [ref=e768]
+            - paragraph [ref=e769]: AWS
+          - generic [ref=e770]:
+            - generic [ref=e771]:
+              - img [ref=e773]
+              - generic [ref=e775]: "400"
+              - generic [ref=e776]: PTS
+            - button "Add AWS Certified Machine Learning – Specialty to plan" [ref=e777]:
+              - img [ref=e778]
+        - button "AWS Certified Security – Specialty AWS Certified Security – Specialty AWS 350 PTS Add AWS Certified Security – Specialty to plan" [ref=e779] [cursor=pointer]:
+          - img "AWS Certified Security – Specialty" [ref=e781]
+          - generic [ref=e782]:
+            - heading "AWS Certified Security – Specialty" [level=3] [ref=e783]
+            - paragraph [ref=e784]: AWS
+          - generic [ref=e785]:
+            - generic [ref=e786]:
+              - img [ref=e788]
+              - generic [ref=e790]: "350"
+              - generic [ref=e791]: PTS
+            - button "Add AWS Certified Security – Specialty to plan" [ref=e792]:
+              - img [ref=e793]
+        - button "Microsoft Azure Fundamentals Microsoft Azure Fundamentals Microsoft 50 PTS Add Microsoft Azure Fundamentals to plan" [ref=e794] [cursor=pointer]:
+          - img "Microsoft Azure Fundamentals" [ref=e796]
+          - generic [ref=e797]:
+            - heading "Microsoft Azure Fundamentals" [level=3] [ref=e798]
+            - paragraph [ref=e799]: Microsoft
+          - generic [ref=e800]:
+            - generic [ref=e801]:
+              - img [ref=e803]
+              - generic [ref=e805]: "50"
+              - generic [ref=e806]: PTS
+            - button "Add Microsoft Azure Fundamentals to plan" [ref=e807]:
+              - img [ref=e808]
+        - button "Microsoft Azure Administrator Microsoft Azure Administrator Microsoft 200 PTS Add Microsoft Azure Administrator to plan" [ref=e809] [cursor=pointer]:
+          - img "Microsoft Azure Administrator" [ref=e811]
+          - generic [ref=e812]:
+            - heading "Microsoft Azure Administrator" [level=3] [ref=e813]
+            - paragraph [ref=e814]: Microsoft
+          - generic [ref=e815]:
+            - generic [ref=e816]:
+              - img [ref=e818]
+              - generic [ref=e820]: "200"
+              - generic [ref=e821]: PTS
+            - button "Add Microsoft Azure Administrator to plan" [ref=e822]:
+              - img [ref=e823]
+        - button "Microsoft Azure Developer Associate Microsoft Azure Developer Associate Microsoft 200 PTS Add Microsoft Azure Developer Associate to plan" [ref=e824] [cursor=pointer]:
+          - img "Microsoft Azure Developer Associate" [ref=e826]
+          - generic [ref=e827]:
+            - heading "Microsoft Azure Developer Associate" [level=3] [ref=e828]
+            - paragraph [ref=e829]: Microsoft
+          - generic [ref=e830]:
+            - generic [ref=e831]:
+              - img [ref=e833]
+              - generic [ref=e835]: "200"
+              - generic [ref=e836]: PTS
+            - button "Add Microsoft Azure Developer Associate to plan" [ref=e837]:
+              - img [ref=e838]
+        - button "Microsoft Azure Data Scientist Associate Microsoft Azure Data Scientist Associate Microsoft 300 PTS Add Microsoft Azure Data Scientist Associate to plan" [ref=e839] [cursor=pointer]:
+          - img "Microsoft Azure Data Scientist Associate" [ref=e841]
+          - generic [ref=e842]:
+            - heading "Microsoft Azure Data Scientist Associate" [level=3] [ref=e843]
+            - paragraph [ref=e844]: Microsoft
+          - generic [ref=e845]:
+            - generic [ref=e846]:
+              - img [ref=e848]
+              - generic [ref=e850]: "300"
+              - generic [ref=e851]: PTS
+            - button "Add Microsoft Azure Data Scientist Associate to plan" [ref=e852]:
+              - img [ref=e853]
+        - button "Microsoft Azure Security Engineer Associate Microsoft Azure Security Engineer Associate Microsoft 300 PTS Add Microsoft Azure Security Engineer Associate to plan" [ref=e854] [cursor=pointer]:
+          - img "Microsoft Azure Security Engineer Associate" [ref=e856]
+          - generic [ref=e857]:
+            - heading "Microsoft Azure Security Engineer Associate" [level=3] [ref=e858]
+            - paragraph [ref=e859]: Microsoft
+          - generic [ref=e860]:
+            - generic [ref=e861]:
+              - img [ref=e863]
+              - generic [ref=e865]: "300"
+              - generic [ref=e866]: PTS
+            - button "Add Microsoft Azure Security Engineer Associate to plan" [ref=e867]:
+              - img [ref=e868]
+        - button "Microsoft Azure Solutions Architect Expert Microsoft Azure Solutions Architect Expert Microsoft 450 PTS Add Microsoft Azure Solutions Architect Expert to plan" [ref=e869] [cursor=pointer]:
+          - img "Microsoft Azure Solutions Architect Expert" [ref=e871]
+          - generic [ref=e872]:
+            - heading "Microsoft Azure Solutions Architect Expert" [level=3] [ref=e873]
+            - paragraph [ref=e874]: Microsoft
+          - generic [ref=e875]:
+            - generic [ref=e876]:
+              - img [ref=e878]
+              - generic [ref=e880]: "450"
+              - generic [ref=e881]: PTS
+            - button "Add Microsoft Azure Solutions Architect Expert to plan" [ref=e882]:
+              - img [ref=e883]
+        - button "Microsoft Azure DevOps Engineer Expert Microsoft Azure DevOps Engineer Expert Microsoft 450 PTS Add Microsoft Azure DevOps Engineer Expert to plan" [ref=e884] [cursor=pointer]:
+          - img "Microsoft Azure DevOps Engineer Expert" [ref=e886]
+          - generic [ref=e887]:
+            - heading "Microsoft Azure DevOps Engineer Expert" [level=3] [ref=e888]
+            - paragraph [ref=e889]: Microsoft
+          - generic [ref=e890]:
+            - generic [ref=e891]:
+              - img [ref=e893]
+              - generic [ref=e895]: "450"
+              - generic [ref=e896]: PTS
+            - button "Add Microsoft Azure DevOps Engineer Expert to plan" [ref=e897]:
+              - img [ref=e898]
+        - button "Google Associate Cloud Engineer Promoted Google Associate Cloud Engineer Google 250 275 PTS Add Google Associate Cloud Engineer to plan" [ref=e899] [cursor=pointer]:
+          - generic [ref=e900]:
+            - img "Google Associate Cloud Engineer" [ref=e901]
+            - generic:
+              - generic: Promoted
+          - generic [ref=e902]:
+            - heading "Google Associate Cloud Engineer" [level=3] [ref=e903]
+            - paragraph [ref=e904]: Google
+          - generic [ref=e905]:
+            - generic [ref=e906]:
+              - img [ref=e908]
+              - generic [ref=e910]: "250"
+              - generic [ref=e911]: "275"
+              - generic [ref=e912]: PTS
+            - button "Add Google Associate Cloud Engineer to plan" [ref=e913]:
+              - img [ref=e914]
+        - button "Google Professional Cloud Database Engineer Promoted Google Professional Cloud Database Engineer Google 400 440 PTS Add Google Professional Cloud Database Engineer to plan" [ref=e915] [cursor=pointer]:
+          - generic [ref=e916]:
+            - img "Google Professional Cloud Database Engineer" [ref=e917]
+            - generic:
+              - generic: Promoted
+          - generic [ref=e918]:
+            - heading "Google Professional Cloud Database Engineer" [level=3] [ref=e919]
+            - paragraph [ref=e920]: Google
+          - generic [ref=e921]:
+            - generic [ref=e922]:
+              - img [ref=e924]
+              - generic [ref=e926]: "400"
+              - generic [ref=e927]: "440"
+              - generic [ref=e928]: PTS
+            - button "Add Google Professional Cloud Database Engineer to plan" [ref=e929]:
+              - img [ref=e930]
+        - button "Google Professional Cloud DevOps Engineer Promoted Google Professional Cloud DevOps Engineer Google 400 440 PTS Add Google Professional Cloud DevOps Engineer to plan" [ref=e931] [cursor=pointer]:
+          - generic [ref=e932]:
+            - img "Google Professional Cloud DevOps Engineer" [ref=e933]
+            - generic:
+              - generic: Promoted
+          - generic [ref=e934]:
+            - heading "Google Professional Cloud DevOps Engineer" [level=3] [ref=e935]
+            - paragraph [ref=e936]: Google
+          - generic [ref=e937]:
+            - generic [ref=e938]:
+              - img [ref=e940]
+              - generic [ref=e942]: "400"
+              - generic [ref=e943]: "440"
+              - generic [ref=e944]: PTS
+            - button "Add Google Professional Cloud DevOps Engineer to plan" [ref=e945]:
+              - img [ref=e946]
+        - button "Google Professional Cloud Architect Promoted Google Professional Cloud Architect Google 400 440 PTS Add Google Professional Cloud Architect to plan" [ref=e947] [cursor=pointer]:
+          - generic [ref=e948]:
+            - img "Google Professional Cloud Architect" [ref=e949]
+            - generic:
+              - generic: Promoted
+          - generic [ref=e950]:
+            - heading "Google Professional Cloud Architect" [level=3] [ref=e951]
+            - paragraph [ref=e952]: Google
+          - generic [ref=e953]:
+            - generic [ref=e954]:
+              - img [ref=e956]
+              - generic [ref=e958]: "400"
+              - generic [ref=e959]: "440"
+              - generic [ref=e960]: PTS
+            - button "Add Google Professional Cloud Architect to plan" [ref=e961]:
+              - img [ref=e962]
+        - button "Google Professional Machine Learning Engineer Promoted Google Professional Machine Learning Engineer Google 400 440 PTS Add Google Professional Machine Learning Engineer to plan" [ref=e963] [cursor=pointer]:
+          - generic [ref=e964]:
+            - img "Google Professional Machine Learning Engineer" [ref=e965]
+            - generic:
+              - generic: Promoted
+          - generic [ref=e966]:
+            - heading "Google Professional Machine Learning Engineer" [level=3] [ref=e967]
+            - paragraph [ref=e968]: Google
+          - generic [ref=e969]:
+            - generic [ref=e970]:
+              - img [ref=e972]
+              - generic [ref=e974]: "400"
+              - generic [ref=e975]: "440"
+              - generic [ref=e976]: PTS
+            - button "Add Google Professional Machine Learning Engineer to plan" [ref=e977]:
+              - img [ref=e978]
+        - button "Google Professional Cloud Network Engineer Promoted Google Professional Cloud Network Engineer Google 400 440 PTS Add Google Professional Cloud Network Engineer to plan" [ref=e979] [cursor=pointer]:
+          - generic [ref=e980]:
+            - img "Google Professional Cloud Network Engineer" [ref=e981]
+            - generic:
+              - generic: Promoted
+          - generic [ref=e982]:
+            - heading "Google Professional Cloud Network Engineer" [level=3] [ref=e983]
+            - paragraph [ref=e984]: Google
+          - generic [ref=e985]:
+            - generic [ref=e986]:
+              - img [ref=e988]
+              - generic [ref=e990]: "400"
+              - generic [ref=e991]: "440"
+              - generic [ref=e992]: PTS
+            - button "Add Google Professional Cloud Network Engineer to plan" [ref=e993]:
+              - img [ref=e994]
+        - button "Google Professional Data Engineer Promoted Google Professional Data Engineer Google 400 440 PTS Add Google Professional Data Engineer to plan" [ref=e995] [cursor=pointer]:
+          - generic [ref=e996]:
+            - img "Google Professional Data Engineer" [ref=e997]
+            - generic:
+              - generic: Promoted
+          - generic [ref=e998]:
+            - heading "Google Professional Data Engineer" [level=3] [ref=e999]
+            - paragraph [ref=e1000]: Google
+          - generic [ref=e1001]:
+            - generic [ref=e1002]:
+              - img [ref=e1004]
+              - generic [ref=e1006]: "400"
+              - generic [ref=e1007]: "440"
+              - generic [ref=e1008]: PTS
+            - button "Add Google Professional Data Engineer to plan" [ref=e1009]:
+              - img [ref=e1010]
+        - button "Google Professional Cloud Security Engineer Promoted Google Professional Cloud Security Engineer Google 350 385 PTS Add Google Professional Cloud Security Engineer to plan" [ref=e1011] [cursor=pointer]:
+          - generic [ref=e1012]:
+            - img "Google Professional Cloud Security Engineer" [ref=e1013]
+            - generic:
+              - generic: Promoted
+          - generic [ref=e1014]:
+            - heading "Google Professional Cloud Security Engineer" [level=3] [ref=e1015]
+            - paragraph [ref=e1016]: Google
+          - generic [ref=e1017]:
+            - generic [ref=e1018]:
+              - img [ref=e1020]
+              - generic [ref=e1022]: "350"
+              - generic [ref=e1023]: "385"
+              - generic [ref=e1024]: PTS
+            - button "Add Google Professional Cloud Security Engineer to plan" [ref=e1025]:
+              - img [ref=e1026]
+        - button "Certified Kubernetes Administrator (CKA) Certified Kubernetes Administrator (CKA) CNCF 200 PTS Add Certified Kubernetes Administrator (CKA) to plan" [ref=e1027] [cursor=pointer]:
+          - img "Certified Kubernetes Administrator (CKA)" [ref=e1029]
+          - generic [ref=e1030]:
+            - heading "Certified Kubernetes Administrator (CKA)" [level=3] [ref=e1031]
+            - paragraph [ref=e1032]: CNCF
+          - generic [ref=e1033]:
+            - generic [ref=e1034]:
+              - img [ref=e1036]
+              - generic [ref=e1038]: "200"
+              - generic [ref=e1039]: PTS
+            - button "Add Certified Kubernetes Administrator (CKA) to plan" [ref=e1040]:
+              - img [ref=e1041]
+        - button "Certified Kubernetes Security Specialist (CKS) Certified Kubernetes Security Specialist (CKS) CNCF 400 PTS Add Certified Kubernetes Security Specialist (CKS) to plan" [ref=e1042] [cursor=pointer]:
+          - img "Certified Kubernetes Security Specialist (CKS)" [ref=e1044]
+          - generic [ref=e1045]:
+            - heading "Certified Kubernetes Security Specialist (CKS)" [level=3] [ref=e1046]
+            - paragraph [ref=e1047]: CNCF
+          - generic [ref=e1048]:
+            - generic [ref=e1049]:
+              - img [ref=e1051]
+              - generic [ref=e1053]: "400"
+              - generic [ref=e1054]: PTS
+            - button "Add Certified Kubernetes Security Specialist (CKS) to plan" [ref=e1055]:
+              - img [ref=e1056]
+        - 'button "HashiCorp Certified: Terraform Associate HashiCorp Certified: Terraform Associate HashiCorp 100 PTS Add HashiCorp Certified: Terraform Associate to plan" [ref=e1057] [cursor=pointer]':
+          - 'img "HashiCorp Certified: Terraform Associate" [ref=e1059]'
+          - generic [ref=e1060]:
+            - 'heading "HashiCorp Certified: Terraform Associate" [level=3] [ref=e1061]'
+            - paragraph [ref=e1062]: HashiCorp
+          - generic [ref=e1063]:
+            - generic [ref=e1064]:
+              - img [ref=e1066]
+              - generic [ref=e1068]: "100"
+              - generic [ref=e1069]: PTS
+            - 'button "Add HashiCorp Certified: Terraform Associate to plan" [ref=e1070]':
+              - img [ref=e1071]
+        - 'button "HashiCorp Certified: Terraform Authoring & Operations Professional HashiCorp Certified: Terraform Authoring & Operations Professional HashiCorp 250 PTS Add HashiCorp Certified: Terraform Authoring & Operations Professional to plan" [ref=e1072] [cursor=pointer]':
+          - 'img "HashiCorp Certified: Terraform Authoring & Operations Professional" [ref=e1074]'
+          - generic [ref=e1075]:
+            - 'heading "HashiCorp Certified: Terraform Authoring & Operations Professional" [level=3] [ref=e1076]'
+            - paragraph [ref=e1077]: HashiCorp
+          - generic [ref=e1078]:
+            - generic [ref=e1079]:
+              - img [ref=e1081]
+              - generic [ref=e1083]: "250"
+              - generic [ref=e1084]: PTS
+            - 'button "Add HashiCorp Certified: Terraform Authoring & Operations Professional to plan" [ref=e1085]':
+              - img [ref=e1086]
+        - 'button "HashiCorp Certified: Vault Associate HashiCorp Certified: Vault Associate HashiCorp 100 PTS Add HashiCorp Certified: Vault Associate to plan" [ref=e1087] [cursor=pointer]':
+          - 'img "HashiCorp Certified: Vault Associate" [ref=e1089]'
+          - generic [ref=e1090]:
+            - 'heading "HashiCorp Certified: Vault Associate" [level=3] [ref=e1091]'
+            - paragraph [ref=e1092]: HashiCorp
+          - generic [ref=e1093]:
+            - generic [ref=e1094]:
+              - img [ref=e1096]
+              - generic [ref=e1098]: "100"
+              - generic [ref=e1099]: PTS
+            - 'button "Add HashiCorp Certified: Vault Associate to plan" [ref=e1100]':
+              - img [ref=e1101]
+        - button "GitHub Foundations GitHub Foundations GitHub 50 PTS Add GitHub Foundations to plan" [ref=e1102] [cursor=pointer]:
+          - img "GitHub Foundations" [ref=e1104]
+          - generic [ref=e1105]:
+            - heading "GitHub Foundations" [level=3] [ref=e1106]
+            - paragraph [ref=e1107]: GitHub
+          - generic [ref=e1108]:
+            - generic [ref=e1109]:
+              - img [ref=e1111]
+              - generic [ref=e1113]: "50"
+              - generic [ref=e1114]: PTS
+            - button "Add GitHub Foundations to plan" [ref=e1115]:
+              - img [ref=e1116]
+        - button "GitHub Copilot GitHub Copilot GitHub 50 PTS Add GitHub Copilot to plan" [ref=e1117] [cursor=pointer]:
+          - img "GitHub Copilot" [ref=e1119]
+          - generic [ref=e1120]:
+            - heading "GitHub Copilot" [level=3] [ref=e1121]
+            - paragraph [ref=e1122]: GitHub
+          - generic [ref=e1123]:
+            - generic [ref=e1124]:
+              - img [ref=e1126]
+              - generic [ref=e1128]: "50"
+              - generic [ref=e1129]: PTS
+            - button "Add GitHub Copilot to plan" [ref=e1130]:
+              - img [ref=e1131]
+        - button "GitHub Advanced Security GitHub Advanced Security GitHub 100 PTS Add GitHub Advanced Security to plan" [ref=e1132] [cursor=pointer]:
+          - img "GitHub Advanced Security" [ref=e1134]
+          - generic [ref=e1135]:
+            - heading "GitHub Advanced Security" [level=3] [ref=e1136]
+            - paragraph [ref=e1137]: GitHub
+          - generic [ref=e1138]:
+            - generic [ref=e1139]:
+              - img [ref=e1141]
+              - generic [ref=e1143]: "100"
+              - generic [ref=e1144]: PTS
+            - button "Add GitHub Advanced Security to plan" [ref=e1145]:
+              - img [ref=e1146]
+        - button "GitHub Actions GitHub Actions GitHub 125 PTS Add GitHub Actions to plan" [ref=e1147] [cursor=pointer]:
+          - img "GitHub Actions" [ref=e1149]
+          - generic [ref=e1150]:
+            - heading "GitHub Actions" [level=3] [ref=e1151]
+            - paragraph [ref=e1152]: GitHub
+          - generic [ref=e1153]:
+            - generic [ref=e1154]:
+              - img [ref=e1156]
+              - generic [ref=e1158]: "125"
+              - generic [ref=e1159]: PTS
+            - button "Add GitHub Actions to plan" [ref=e1160]:
+              - img [ref=e1161]
+        - button "GitHub Administration GitHub Administration GitHub 125 PTS Add GitHub Administration to plan" [ref=e1162] [cursor=pointer]:
+          - img "GitHub Administration" [ref=e1164]
+          - generic [ref=e1165]:
+            - heading "GitHub Administration" [level=3] [ref=e1166]
+            - paragraph [ref=e1167]: GitHub
+          - generic [ref=e1168]:
+            - generic [ref=e1169]:
+              - img [ref=e1171]
+              - generic [ref=e1173]: "125"
+              - generic [ref=e1174]: PTS
+            - button "Add GitHub Administration to plan" [ref=e1175]:
+              - img [ref=e1176]
+        - button "GitLab Certified CI/CD Associate GitLab Certified CI/CD Associate GitLab 70 PTS Add GitLab Certified CI/CD Associate to plan" [ref=e1177] [cursor=pointer]:
+          - img "GitLab Certified CI/CD Associate" [ref=e1179]
+          - generic [ref=e1180]:
+            - heading "GitLab Certified CI/CD Associate" [level=3] [ref=e1181]
+            - paragraph [ref=e1182]: GitLab
+          - generic [ref=e1183]:
+            - generic [ref=e1184]:
+              - img [ref=e1186]
+              - generic [ref=e1188]: "70"
+              - generic [ref=e1189]: PTS
+            - button "Add GitLab Certified CI/CD Associate to plan" [ref=e1190]:
+              - img [ref=e1191]
+        - button "Prometheus Certified Associate (PCA) Prometheus Certified Associate (PCA) Linux Foundation 100 PTS Add Prometheus Certified Associate (PCA) to plan" [ref=e1192] [cursor=pointer]:
+          - img "Prometheus Certified Associate (PCA)" [ref=e1194]
+          - generic [ref=e1195]:
+            - heading "Prometheus Certified Associate (PCA)" [level=3] [ref=e1196]
+            - paragraph [ref=e1197]: Linux Foundation
+          - generic [ref=e1198]:
+            - generic [ref=e1199]:
+              - img [ref=e1201]
+              - generic [ref=e1203]: "100"
+              - generic [ref=e1204]: PTS
+            - button "Add Prometheus Certified Associate (PCA) to plan" [ref=e1205]:
+              - img [ref=e1206]
+        - button "GitOps Fundamentals GitOps Fundamentals Codefresh 50 PTS Add GitOps Fundamentals to plan" [ref=e1207] [cursor=pointer]:
+          - img "GitOps Fundamentals" [ref=e1209]
+          - generic [ref=e1210]:
+            - heading "GitOps Fundamentals" [level=3] [ref=e1211]
+            - paragraph [ref=e1212]: Codefresh
+          - generic [ref=e1213]:
+            - generic [ref=e1214]:
+              - img [ref=e1216]
+              - generic [ref=e1218]: "50"
+              - generic [ref=e1219]: PTS
+            - button "Add GitOps Fundamentals to plan" [ref=e1220]:
+              - img [ref=e1221]
+        - button "GitOps at Scale GitOps at Scale Codefresh 90 PTS Add GitOps at Scale to plan" [ref=e1222] [cursor=pointer]:
+          - img "GitOps at Scale" [ref=e1224]
+          - generic [ref=e1225]:
+            - heading "GitOps at Scale" [level=3] [ref=e1226]
+            - paragraph [ref=e1227]: Codefresh
+          - generic [ref=e1228]:
+            - generic [ref=e1229]:
+              - img [ref=e1231]
+              - generic [ref=e1233]: "90"
+              - generic [ref=e1234]: PTS
+            - button "Add GitOps at Scale to plan" [ref=e1235]:
+              - img [ref=e1236]
+        - button "GitOps for the Enterprise GitOps for the Enterprise Codefresh 120 PTS Add GitOps for the Enterprise to plan" [ref=e1237] [cursor=pointer]:
+          - img "GitOps for the Enterprise" [ref=e1239]
+          - generic [ref=e1240]:
+            - heading "GitOps for the Enterprise" [level=3] [ref=e1241]
+            - paragraph [ref=e1242]: Codefresh
+          - generic [ref=e1243]:
+            - generic [ref=e1244]:
+              - img [ref=e1246]
+              - generic [ref=e1248]: "120"
+              - generic [ref=e1249]: PTS
+            - button "Add GitOps for the Enterprise to plan" [ref=e1250]:
+              - img [ref=e1251]
+        - button "FinOps Certified Practitioner FinOps Certified Practitioner FinOps Foundation 100 PTS Add FinOps Certified Practitioner to plan" [ref=e1252] [cursor=pointer]:
+          - img "FinOps Certified Practitioner" [ref=e1254]
+          - generic [ref=e1255]:
+            - heading "FinOps Certified Practitioner" [level=3] [ref=e1256]
+            - paragraph [ref=e1257]: FinOps Foundation
+          - generic [ref=e1258]:
+            - generic [ref=e1259]:
+              - img [ref=e1261]
+              - generic [ref=e1263]: "100"
+              - generic [ref=e1264]: PTS
+            - button "Add FinOps Certified Practitioner to plan" [ref=e1265]:
+              - img [ref=e1266]
+        - button "FinOps Certified Engineer FinOps Certified Engineer FinOps Foundation 100 PTS Add FinOps Certified Engineer to plan" [ref=e1267] [cursor=pointer]:
+          - img "FinOps Certified Engineer" [ref=e1269]
+          - generic [ref=e1270]:
+            - heading "FinOps Certified Engineer" [level=3] [ref=e1271]
+            - paragraph [ref=e1272]: FinOps Foundation
+          - generic [ref=e1273]:
+            - generic [ref=e1274]:
+              - img [ref=e1276]
+              - generic [ref=e1278]: "100"
+              - generic [ref=e1279]: PTS
+            - button "Add FinOps Certified Engineer to plan" [ref=e1280]:
+              - img [ref=e1281]
+        - button "FinOps Certified Professional FinOps Certified Professional FinOps Foundation 400 PTS Add FinOps Certified Professional to plan" [ref=e1282] [cursor=pointer]:
+          - img "FinOps Certified Professional" [ref=e1284]
+          - generic [ref=e1285]:
+            - heading "FinOps Certified Professional" [level=3] [ref=e1286]
+            - paragraph [ref=e1287]: FinOps Foundation
+          - generic [ref=e1288]:
+            - generic [ref=e1289]:
+              - img [ref=e1291]
+              - generic [ref=e1293]: "400"
+              - generic [ref=e1294]: PTS
+            - button "Add FinOps Certified Professional to plan" [ref=e1295]:
+              - img [ref=e1296]
+        - button "Cast AI APA Hero Promoted Cast AI APA Hero Cast AI 60 80 PTS Add Cast AI APA Hero to plan" [ref=e1297] [cursor=pointer]:
+          - generic [ref=e1298]:
+            - img "Cast AI APA Hero" [ref=e1299]
+            - generic:
+              - generic: Promoted
+          - generic [ref=e1300]:
+            - heading "Cast AI APA Hero" [level=3] [ref=e1301]
+            - paragraph [ref=e1302]: Cast AI
+          - generic [ref=e1303]:
+            - generic [ref=e1304]:
+              - img [ref=e1306]
+              - generic [ref=e1308]: "60"
+              - generic [ref=e1309]: "80"
+              - generic [ref=e1310]: PTS
+            - button "Add Cast AI APA Hero to plan" [ref=e1311]:
+              - img [ref=e1312]
+        - button "CompTIA Network+ ce CompTIA Network+ ce CompTIA 150 PTS Add CompTIA Network+ ce to plan" [ref=e1313] [cursor=pointer]:
+          - img "CompTIA Network+ ce" [ref=e1315]
+          - generic [ref=e1316]:
+            - heading "CompTIA Network+ ce" [level=3] [ref=e1317]
+            - paragraph [ref=e1318]: CompTIA
+          - generic [ref=e1319]:
+            - generic [ref=e1320]:
+              - img [ref=e1322]
+              - generic [ref=e1324]: "150"
+              - generic [ref=e1325]: PTS
+            - button "Add CompTIA Network+ ce to plan" [ref=e1326]:
+              - img [ref=e1327]
+        - button "Professional Scrum Master I (PSM-I) Professional Scrum Master I (PSM-I) Scrum.org 100 PTS Add Professional Scrum Master I (PSM-I) to plan" [ref=e1328] [cursor=pointer]:
+          - img "Professional Scrum Master I (PSM-I)" [ref=e1330]
+          - generic [ref=e1331]:
+            - heading "Professional Scrum Master I (PSM-I)" [level=3] [ref=e1332]
+            - paragraph [ref=e1333]: Scrum.org
+          - generic [ref=e1334]:
+            - generic [ref=e1335]:
+              - img [ref=e1337]
+              - generic [ref=e1339]: "100"
+              - generic [ref=e1340]: PTS
+            - button "Add Professional Scrum Master I (PSM-I) to plan" [ref=e1341]:
+              - img [ref=e1342]
+  - region "Notifications alt+T"

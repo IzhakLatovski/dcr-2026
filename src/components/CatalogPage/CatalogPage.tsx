@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useCallback } from 'react';
-import { Award, ListChecks, GitBranch, ArrowRight, ExternalLink, Plus, ShieldCheck, RefreshCw } from 'lucide-react';
+import { Award, ListChecks, GitBranch, ArrowRight, ExternalLink, Plus, ShieldCheck, RefreshCw, ChevronDown } from 'lucide-react';
 import type { CatalogItem, CertificationItem, RoadmapItem, RoadmapCert } from '../../data/types';
 import type { AuthUser } from '../../hooks/useAuth';
 import { SKILL_TAGS, PROVIDER_TAGS, type CatalogTag } from '../../data/catalog/tags';
@@ -27,6 +27,7 @@ const ALL_TAGS_BY_ID = new Map<string, CatalogTag>(
 );
 
 interface CatalogPageProps {
+  title: string;
   items: CatalogItem[];
   onToggleItem: (item: CatalogItem) => void;
   isInCart: (itemId: string) => boolean;
@@ -45,6 +46,7 @@ interface CatalogPageProps {
 }
 
 export default function CatalogPage({
+  title,
   items,
   onToggleItem,
   isInCart,
@@ -150,53 +152,57 @@ export default function CatalogPage({
 
   return (
     <div className="flex flex-col gap-4 p-4 sm:p-6 h-full overflow-y-auto">
-      <CatalogToolbar
-        searchQuery={search}
-        onSearchChange={setSearch}
-        searchPlaceholder="Search items..."
-        sortValue={sort}
-        onSortChange={(v) => setSort(v as SortOption)}
-        sortOptions={SORT_OPTIONS}
-        view={view}
-        onViewChange={setView}
-        sticky
-      />
+      <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">{title}</h1>
 
-      {/* Add Required + Achieved row */}
-      {(achievedCount > 0 || (hasRequired && onAddAllRequired && !allRequiredInCart)) && (
-        <div className="flex items-center justify-between gap-3 flex-wrap">
-          {hasRequired && onAddAllRequired && !allRequiredInCart ? (
-            <Button variant="default" size="sm" onClick={onAddAllRequired}>
-              <Plus className="size-3.5" /> Add all required items
-            </Button>
-          ) : <span />}
-
-          {achievedCount > 0 && (
-            <button
-              type="button"
-              onClick={() => setHideAchieved((v) => !v)}
-              className={cn(
-                'inline-flex items-center gap-1.5 rounded-full border h-7 px-3 text-xs font-medium transition-all duration-200 outline-none focus-visible:ring-3 focus-visible:ring-ring/50',
-                hideAchieved
-                  ? 'border-primary bg-primary text-primary-foreground'
-                  : 'border-border bg-transparent text-muted-foreground hover:bg-muted hover:text-foreground',
-              )}
-            >
-              {hideAchieved ? `${achievedCount} hidden` : `${achievedCount} achieved`}
-            </button>
-          )}
-        </div>
-      )}
-
-      {/* Unified filter bar */}
-      {hasTags && filterTags.length > 0 && (
-        <FilterBar
-          tags={filterTags}
-          activeIds={selectedTags}
-          onToggle={toggleTag}
-          onClear={selectedTags.size > 0 ? () => setSelectedTags(new Set()) : undefined}
+      {/* Sticky toolbar + filters group */}
+      <div className="sticky -top-2 sm:-top-4 z-30 flex flex-col gap-2 -mx-4 sm:-mx-6 px-4 sm:px-6 pt-2 sm:pt-3 pb-2 bg-background/95 backdrop-blur-md">
+        <CatalogToolbar
+          searchQuery={search}
+          onSearchChange={setSearch}
+          searchPlaceholder="Search items..."
+          sortValue={sort}
+          onSortChange={(v) => setSort(v as SortOption)}
+          sortOptions={SORT_OPTIONS}
+          view={view}
+          onViewChange={setView}
         />
-      )}
+
+        {/* Add Required + Achieved row */}
+        {(achievedCount > 0 || (hasRequired && onAddAllRequired && !allRequiredInCart)) && (
+          <div className="flex items-center justify-between gap-3 flex-wrap">
+            {hasRequired && onAddAllRequired && !allRequiredInCart ? (
+              <Button variant="default" size="sm" onClick={onAddAllRequired}>
+                <Plus className="size-3.5" /> Add all required items
+              </Button>
+            ) : <span />}
+
+            {achievedCount > 0 && (
+              <button
+                type="button"
+                onClick={() => setHideAchieved((v) => !v)}
+                className={cn(
+                  'inline-flex items-center gap-1.5 rounded-full border h-7 px-3 text-xs font-medium transition-all duration-200 outline-none focus-visible:ring-3 focus-visible:ring-ring/50',
+                  hideAchieved
+                    ? 'border-primary bg-primary text-primary-foreground'
+                    : 'border-border bg-transparent text-muted-foreground hover:bg-muted hover:text-foreground',
+                )}
+              >
+                {hideAchieved ? `${achievedCount} hidden` : `${achievedCount} achieved`}
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* Unified filter bar */}
+        {hasTags && filterTags.length > 0 && (
+          <FilterBar
+            tags={filterTags}
+            activeIds={selectedTags}
+            onToggle={toggleTag}
+            onClear={selectedTags.size > 0 ? () => setSelectedTags(new Set()) : undefined}
+          />
+        )}
+      </div>
 
       {/* Results */}
       {sorted.length === 0 ? (
@@ -205,7 +211,7 @@ export default function CatalogPage({
           description={search ? undefined : 'Try clearing filters or selecting another category.'}
         />
       ) : view === 'grid' ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
           {sorted.map((item) => (
             <CatalogCardForItem
               key={item.id}
@@ -276,14 +282,28 @@ function FilterBar({
   onToggle: (id: string) => void;
   onClear?: () => void;
 }) {
+  const [expanded, setExpanded] = useState(true);
   const activeCount = activeIds.size;
   return (
-    <div className="flex flex-col gap-2 rounded-xl border border-border/60 bg-muted/20 px-3 py-2.5">
-      <div className="flex items-center justify-between gap-3">
-        <span className="text-[0.65rem] font-semibold uppercase tracking-wider text-muted-foreground">
-          Filters{activeCount > 0 && ` · ${activeCount} active`}
-        </span>
-        {onClear && (
+    <div className="flex flex-col rounded-xl border border-border/60 bg-background/85 backdrop-blur-md shadow-sm">
+      <div className="flex items-center gap-2 px-3 py-2">
+        <button
+          type="button"
+          onClick={() => setExpanded((v) => !v)}
+          aria-expanded={expanded}
+          className="flex-1 inline-flex items-center gap-2 text-left rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring -my-1 py-1"
+        >
+          <ChevronDown
+            className={cn(
+              'size-4 text-muted-foreground transition-transform duration-200',
+              !expanded && '-rotate-90',
+            )}
+          />
+          <span className="text-[0.65rem] font-semibold uppercase tracking-wider text-muted-foreground">
+            Filters{activeCount > 0 && ` · ${activeCount} active`}
+          </span>
+        </button>
+        {onClear && activeCount > 0 && (
           <button
             type="button"
             onClick={onClear}
@@ -293,39 +313,41 @@ function FilterBar({
           </button>
         )}
       </div>
-      <div role="group" aria-label="Catalog filters" className="flex flex-wrap items-center gap-1.5">
-        {tags.map((tag) => {
-          const active = activeIds.has(tag.id);
-          return (
-            <button
-              key={tag.id}
-              type="button"
-              aria-pressed={active}
-              onClick={() => onToggle(tag.id)}
-              className={cn(
-                'group/chip inline-flex shrink-0 items-center gap-1.5 rounded-full border h-7 pl-2.5 pr-1.5 text-xs font-medium transition-all duration-200 outline-none cursor-pointer',
-                'focus-visible:ring-3 focus-visible:ring-ring/50',
-                active
-                  ? 'border-primary bg-primary text-primary-foreground shadow-sm hover:bg-primary/90'
-                  : 'border-border bg-card text-muted-foreground hover:bg-muted hover:text-foreground',
-              )}
-            >
-              <i className={cn(tag.icon, 'text-[0.875rem]', !active && 'opacity-80')} />
-              <span>{tag.label}</span>
-              <span
+      {expanded && (
+        <div role="group" aria-label="Catalog filters" className="flex flex-wrap items-center gap-1.5 px-3 pb-2.5">
+          {tags.map((tag) => {
+            const active = activeIds.has(tag.id);
+            return (
+              <button
+                key={tag.id}
+                type="button"
+                aria-pressed={active}
+                onClick={() => onToggle(tag.id)}
                 className={cn(
-                  'inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1.5 rounded-full text-[0.625rem] font-semibold tabular-nums leading-none',
+                  'group/chip inline-flex shrink-0 items-center gap-1.5 rounded-full border h-7 pl-2.5 pr-1.5 text-xs font-medium transition-all duration-200 outline-none cursor-pointer',
+                  'focus-visible:ring-3 focus-visible:ring-ring/50',
                   active
-                    ? 'bg-primary-foreground/20 text-primary-foreground'
-                    : 'bg-muted text-muted-foreground group-hover/chip:bg-background',
+                    ? 'border-primary bg-primary text-primary-foreground shadow-sm hover:bg-primary/90'
+                    : 'border-border bg-card text-muted-foreground hover:bg-muted hover:text-foreground',
                 )}
               >
-                {tag.count}
-              </span>
-            </button>
-          );
-        })}
-      </div>
+                <i className={cn(tag.icon, 'text-[0.875rem]', !active && 'opacity-80')} />
+                <span>{tag.label}</span>
+                <span
+                  className={cn(
+                    'inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1.5 rounded-full text-[0.625rem] font-semibold tabular-nums leading-none',
+                    active
+                      ? 'bg-primary-foreground/20 text-primary-foreground'
+                      : 'bg-muted text-muted-foreground group-hover/chip:bg-background',
+                  )}
+                >
+                  {tag.count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

@@ -48,6 +48,7 @@ export default function FormsPage() {
 
   return (
     <div className="flex flex-col gap-4 p-4 sm:p-6 h-full overflow-y-auto">
+      <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">Forms</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {forms.map((form) => {
           const comingSoon = form.status === 'coming_soon';
