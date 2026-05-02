@@ -42,7 +42,6 @@ import { levels } from "../../data/levels";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Menu, Search, Sun, Moon, LogOut, UserStar, Clock as ClockIcon, XCircle } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 function HeaderUser({
   user,
@@ -188,7 +187,6 @@ export default function Layout() {
     return localStorage.getItem("dcr-sidebar-collapsed") === "true";
   });
   const [paletteOpen, setPaletteOpen] = useState(false);
-  const [pageTransition, setPageTransition] = useState(false);
   const [focusItemId, setFocusItemId] = useState<number | null>(null);
   const [focusCatalogItemId, setFocusCatalogItemId] = useState<string | null>(
     null,
@@ -266,14 +264,15 @@ export default function Layout() {
   })();
 
   const showToast = useCallback((text: string, type: "added" | "removed") => {
-    toast(text, {
-      icon:
-        type === "added" ? (
-          <Check className="size-4 text-green-600" />
-        ) : (
-          <X className="size-4 text-muted-foreground" />
-        ),
-    });
+    if (type === "added") {
+      toast.success(text, {
+        icon: <Check className="size-4" />,
+      });
+    } else {
+      toast.error(text, {
+        icon: <X className="size-4" />,
+      });
+    }
   }, []);
 
   // Show a toast whenever a new notification arrives
@@ -624,6 +623,37 @@ export default function Layout() {
     [cart, autoRemoveDependents],
   );
 
+  // Stepper add/remove for repeatable items in the catalog UI — wraps cart.addItem
+  // and handleRemoveItem with toast notifications so the user gets feedback for
+  // each +/− interaction (matches the binary toggle path's behavior).
+  const handleStepAdd = useCallback(
+    async (item: CatalogItem) => {
+      try {
+        await cart.addItem(item);
+        showToast(`Added ${item.name}`, "added");
+      } catch (err) {
+        console.error("Failed to add item:", err);
+        showToast("Failed to update cart", "removed");
+      }
+    },
+    [cart, showToast],
+  );
+
+  const handleStepRemove = useCallback(
+    async (itemId: string) => {
+      const itemName =
+        cart.items.find((i) => i.id === itemId)?.name ?? "item";
+      try {
+        await handleRemoveItem(itemId);
+        showToast(`Removed ${itemName}`, "removed");
+      } catch (err) {
+        console.error("Failed to remove item:", err);
+        showToast("Failed to update cart", "removed");
+      }
+    },
+    [cart.items, handleRemoveItem, showToast],
+  );
+
   // Per-item plan status — only relevant in real plan mode; drives purple/amber visual states
   const getPlanItemStatus = useRealPlan
     ? (itemId: string): "pending" | "approved" | undefined => {
@@ -678,12 +708,7 @@ export default function Layout() {
     setCertBackNav(null);
     setSimulatorBackNav(false);
 
-    // Scroll content area to top
     contentRef.current?.scrollTo({ top: 0, behavior: "smooth" });
-
-    // Trigger page transition animation
-    setPageTransition(true);
-    setTimeout(() => setPageTransition(false), 300);
   }, []);
 
   const handleNavigateToCert = useCallback(
@@ -743,7 +768,7 @@ export default function Layout() {
         onNotificationsClick={() => notifications.markAllAsRead()}
       />
       <main className="flex-1 flex flex-col min-w-0 h-screen">
-        <header className="shrink-0 border-b border-border bg-card/60 backdrop-blur-md">
+        <header className="relative z-40 shrink-0 border-b border-border bg-card/60 backdrop-blur-md">
           <div className="flex items-center gap-3 px-4 sm:px-6 h-16">
             <button
               type="button"
@@ -787,10 +812,7 @@ export default function Layout() {
           </div>
         </header>
         <div
-          className={cn(
-            "flex-1 min-h-0 overflow-hidden transition-opacity duration-200",
-            pageTransition && "opacity-0",
-          )}
+          className="flex-1 min-h-0 overflow-hidden"
           ref={contentRef}
         >
           {activeId === "home" && (
@@ -833,8 +855,8 @@ export default function Layout() {
                 onToggleItem={handleToggleItem}
                 isInCart={cart.isInCart}
                 getQuantity={cart.getQuantity}
-                onAddItem={cart.addItem}
-                onRemoveItem={handleRemoveItem}
+                onAddItem={handleStepAdd}
+                onRemoveItem={handleStepRemove}
                 isAchieved={activeId === "tech" ? isAchieved : undefined}
                 getPlanItemStatus={getPlanItemStatus}
                 onAddAllRequired={
@@ -1080,7 +1102,17 @@ export default function Layout() {
           setPaletteOpen(false);
         }}
       />
-      <Toaster position="bottom-right" />
+      <Toaster
+        position="bottom-right"
+        toastOptions={{
+          classNames: {
+            success:
+              "!bg-green-600/10 !border-green-600/30 !text-green-700 dark:!bg-green-500/15 dark:!border-green-500/30 dark:!text-green-300 [&_[data-icon]]:!text-green-600 dark:[&_[data-icon]]:!text-green-400",
+            error:
+              "!bg-destructive/10 !border-destructive/30 !text-destructive dark:!bg-destructive/15 dark:!border-destructive/40 [&_[data-icon]]:!text-destructive",
+          },
+        }}
+      />
       {showProfileSetup && (
         <ProfileSetupModal
           onComplete={handleProfileSetupComplete}

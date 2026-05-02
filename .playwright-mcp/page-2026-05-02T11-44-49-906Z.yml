@@ -1,0 +1,185 @@
+- generic [ref=e3]:
+  - complementary [ref=e4]:
+    - generic [ref=e5]:
+      - button "Develeap Career Roadmap DCR — Develeap Career Roadmap" [ref=e492]:
+        - generic [ref=e9]: DCR
+        - generic [ref=e493]:
+          - generic [ref=e494]: Develeap
+          - generic [ref=e495]: Career Roadmap
+        - generic [ref=e10]: DCR — Develeap Career Roadmap
+      - separator [ref=e11]
+      - generic [ref=e12]:
+        - paragraph [ref=e496]: Personal Zone
+        - button " Home" [ref=e497]:
+          - generic [ref=e499]: 
+          - generic [ref=e500]: Home
+        - button " My Plan 4" [ref=e710]:
+          - generic [ref=e503]: 
+          - generic [ref=e504]: My Plan
+          - generic [ref=e711]: "4"
+        - button " My Profile" [ref=e505]:
+          - generic [ref=e507]: 
+          - generic [ref=e508]: My Profile
+        - separator [ref=e28]
+        - paragraph [ref=e509]: Catalog
+        - paragraph [ref=e510]: Pillars
+        - button " Professionalism" [ref=e511]:
+          - generic [ref=e513]: 
+          - generic [ref=e514]: Professionalism
+        - button " Tech" [ref=e515]:
+          - generic [ref=e517]: 
+          - generic [ref=e518]: Tech
+        - button " Knowledge Unlock" [ref=e519]:
+          - generic [ref=e521]: 
+          - generic [ref=e522]: Knowledge Unlock
+        - button " Collaboration" [ref=e523]:
+          - generic [ref=e525]: 
+          - generic [ref=e526]: Collaboration
+        - paragraph [ref=e527]: Badges
+        - button " Roadmaps" [ref=e528]:
+          - generic [ref=e530]: 
+          - generic [ref=e531]: Roadmaps
+        - paragraph [ref=e532]: Extra
+        - button " Extra" [ref=e533]:
+          - generic [ref=e535]: 
+          - generic [ref=e536]: Extra
+        - separator [ref=e61]
+        - paragraph [ref=e537]: Resources
+        - button " Guidelines" [ref=e538]:
+          - generic [ref=e540]: 
+          - generic [ref=e541]: Guidelines
+        - button " FAQ" [ref=e542]:
+          - generic [ref=e544]: 
+          - generic [ref=e545]: FAQ
+        - button " Forms" [ref=e546]:
+          - generic [ref=e548]: 
+          - generic [ref=e549]: Forms
+      - separator [ref=e77]
+      - button "Collapse sidebar" [ref=e550]:
+        - img [ref=e551]
+  - main [ref=e84]:
+    - generic [ref=e86]:
+      - heading "Professionalism" [level=2] [ref=e553]
+      - generic [ref=e88]:
+        - button "Search ⌘K" [ref=e89]:
+          - img [ref=e90]
+          - generic [ref=e93]: Search
+          - generic [ref=e94]: ⌘K
+        - button "Switch to dark mode" [ref=e707]:
+          - img [ref=e708]
+        - button " Sign in" [ref=e102]:
+          - generic [ref=e103]: 
+          - generic [ref=e104]: Sign in
+    - generic [ref=e554]:
+      - generic [ref=e556]:
+        - generic [ref=e558]:
+          - img [ref=e559]
+          - textbox "Search items..." [ref=e562]
+        - button "Category Order" [ref=e565]:
+          - generic [ref=e566]: Category Order
+          - img [ref=e567]
+        - radiogroup "View mode" [ref=e569]:
+          - radio "Grid view" [checked] [ref=e570] [cursor=pointer]:
+            - img [ref=e571]
+          - radio "List view" [ref=e576] [cursor=pointer]:
+            - img [ref=e577]
+      - generic [ref=e580]:
+        - button "Billable hours In plan Required Billable hours Professional Standards 515 PTS Remove Billable hours from plan" [ref=e712] [cursor=pointer]:
+          - generic [ref=e582]:
+            - img "Billable hours" [ref=e583]
+            - generic:
+              - generic: In plan
+            - generic:
+              - generic: Required
+          - generic [ref=e584]:
+            - heading "Billable hours" [level=3] [ref=e585]
+            - paragraph [ref=e586]: Professional Standards
+          - generic [ref=e587]:
+            - generic [ref=e588]:
+              - img [ref=e590]
+              - generic [ref=e592]: "515"
+              - generic [ref=e593]: PTS
+            - button "Remove Billable hours from plan" [pressed] [ref=e713]:
+              - img [ref=e714]
+              - img [ref=e716]
+        - button "Weekly reports In plan Required Weekly reports Professional Standards 0 PTS Remove Weekly reports from plan" [ref=e719] [cursor=pointer]:
+          - generic [ref=e597]:
+            - img "Weekly reports" [ref=e598]
+            - generic:
+              - generic: In plan
+            - generic:
+              - generic: Required
+          - generic [ref=e599]:
+            - heading "Weekly reports" [level=3] [ref=e600]
+            - paragraph [ref=e601]: Professional Standards
+          - generic [ref=e602]:
+            - generic [ref=e603]:
+              - img [ref=e605]
+              - generic [ref=e607]: "0"
+              - generic [ref=e608]: PTS
+            - button "Remove Weekly reports from plan" [pressed] [ref=e720]:
+              - img [ref=e721]
+              - img [ref=e723]
+        - button "Weekly performance forms In plan Required Weekly performance forms Professional Standards 0 PTS Remove Weekly performance forms from plan" [ref=e726] [cursor=pointer]:
+          - generic [ref=e612]:
+            - img "Weekly performance forms" [ref=e613]
+            - generic:
+              - generic: In plan
+            - generic:
+              - generic: Required
+          - generic [ref=e614]:
+            - heading "Weekly performance forms" [level=3] [ref=e615]
+            - paragraph [ref=e616]: Professional Standards
+          - generic [ref=e617]:
+            - generic [ref=e618]:
+              - img [ref=e620]
+              - generic [ref=e622]: "0"
+              - generic [ref=e623]: PTS
+            - button "Remove Weekly performance forms from plan" [pressed] [ref=e727]:
+              - img [ref=e728]
+              - img [ref=e730]
+        - button "Toggle regular filling In plan Required Toggle regular filling Professional Standards 0 PTS Remove Toggle regular filling from plan" [ref=e733] [cursor=pointer]:
+          - generic [ref=e627]:
+            - img "Toggle regular filling" [ref=e628]
+            - generic:
+              - generic: In plan
+            - generic:
+              - generic: Required
+          - generic [ref=e629]:
+            - heading "Toggle regular filling" [level=3] [ref=e630]
+            - paragraph [ref=e631]: Professional Standards
+          - generic [ref=e632]:
+            - generic [ref=e633]:
+              - img [ref=e635]
+              - generic [ref=e637]: "0"
+              - generic [ref=e638]: PTS
+            - button "Remove Toggle regular filling from plan" [pressed] [ref=e734]:
+              - img [ref=e735]
+              - img [ref=e737]
+      - dialog [ref=e747]:
+        - button "Close" [active] [ref=e748]:
+          - img [ref=e749]
+        - generic [ref=e752]:
+          - generic [ref=e753]:
+            - generic [ref=e754]:
+              - img "Billable hours" [ref=e756]
+              - generic [ref=e757]:
+                - generic [ref=e758]: In plan
+                - generic [ref=e759]: Required
+            - generic [ref=e760]:
+              - paragraph [ref=e761]: Professional Standards
+              - heading "Billable hours" [level=1] [ref=e762]
+              - generic [ref=e763]:
+                - generic [ref=e764]:
+                  - img [ref=e766]
+                  - generic [ref=e768]: "515"
+                  - generic [ref=e769]: PTS
+                - generic [ref=e770]:
+                  - button "Remove Billable hours from plan" [pressed] [ref=e771] [cursor=pointer]:
+                    - img [ref=e772]
+                    - img [ref=e774]
+                  - paragraph [ref=e777]: +515 pts added to your plan
+          - generic [ref=e778]:
+            - heading "About" [level=2] [ref=e779]
+            - paragraph [ref=e781]: Customer hours that are billable. Mandatory for leveling up. Need to have at least 515 billable hours during the quarter. Points are capped at 515 but carry over to the next quarter if you didn't level up. For reservists (miluim), see the Guidelines section.
+  - region "Notifications alt+T"

@@ -68,7 +68,7 @@ const Select = forwardRef<HTMLButtonElement, SelectProps>(
           <div
             role="listbox"
             className={cn(
-              "absolute z-50 mt-1 w-full rounded-xl border border-border bg-popover p-1 shadow-lg",
+              "absolute z-50 mt-1 w-full max-h-60 overflow-y-auto overscroll-contain rounded-xl border border-border bg-popover p-1 shadow-lg",
               "animate-in fade-in-0 zoom-in-95 duration-150"
             )}
           >
@@ -79,7 +79,7 @@ const Select = forwardRef<HTMLButtonElement, SelectProps>(
                 role="option"
                 aria-selected={option.value === value}
                 className={cn(
-                  "flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-sm transition-colors duration-150 outline-none",
+                  "flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left text-sm transition-colors duration-150 outline-none",
                   "hover:bg-accent hover:text-accent-foreground",
                   option.value === value && "text-primary font-medium"
                 )}

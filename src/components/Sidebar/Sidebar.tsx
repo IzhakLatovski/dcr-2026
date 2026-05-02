@@ -105,16 +105,31 @@ export default function Sidebar({
       <button
         type="button"
         onClick={() => {
-          onNavigate('home', 'Welcome to DCR 2.0');
+          onNavigate('home', 'Welcome to DCR');
           onClose();
         }}
         className={cn(
-          'inline-flex items-center text-lg font-bold tracking-tight text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring rounded',
+          'group/logo inline-flex items-center gap-2.5 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-ring',
           collapsed && 'justify-center w-full',
         )}
       >
-        <span>DCR</span>
-        {!collapsed && <span className="text-muted-foreground"> 2.0</span>}
+        <span
+          aria-hidden
+          className="grid size-8 shrink-0 place-items-center rounded-lg bg-gradient-to-br from-primary to-primary/70 text-primary-foreground text-[0.65rem] font-bold tracking-tight shadow-sm ring-1 ring-primary/30 transition-transform duration-200 group-hover/logo:scale-[1.04]"
+        >
+          DCR
+        </span>
+        {!collapsed && (
+          <span className="flex flex-col items-start leading-none">
+            <span className="text-[0.95rem] font-semibold tracking-tight text-foreground">
+              Develeap
+            </span>
+            <span className="mt-1 text-[0.6rem] font-medium uppercase tracking-[0.18em] text-muted-foreground">
+              Career Roadmap
+            </span>
+          </span>
+        )}
+        <span className="sr-only">DCR — Develeap Career Roadmap</span>
       </button>
 
       {/* Mode toggle */}
@@ -178,15 +193,22 @@ export default function Sidebar({
           )}
         </button>
       )}
-      <button
-        type="button"
-        onClick={onToggleCollapse}
-        title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-        aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-        className="inline-flex items-center justify-center rounded-lg size-9 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors duration-150 outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      <div
+        className={cn(
+          'flex justify-center w-full',
+          user && onNotificationsClick && 'mt-1 pt-2 border-t border-border/60',
+        )}
       >
-        {collapsed ? <ChevronRight className="size-5" /> : <ChevronLeft className="size-5" />}
-      </button>
+        <button
+          type="button"
+          onClick={onToggleCollapse}
+          title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          className="inline-flex items-center justify-center rounded-full size-7 text-muted-foreground/70 bg-muted/40 hover:bg-muted hover:text-foreground transition-colors duration-150 outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          {collapsed ? <ChevronRight className="size-4" /> : <ChevronLeft className="size-4" />}
+        </button>
+      </div>
     </div>
   );
 

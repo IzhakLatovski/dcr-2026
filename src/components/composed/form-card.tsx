@@ -47,7 +47,7 @@ const FormCard = forwardRef<HTMLDivElement, FormCardProps>(
         ref={ref}
         data-slot="form-card"
         className={cn(
-          "flex flex-col rounded-2xl border border-border bg-card text-card-foreground shadow-sm overflow-hidden",
+          "flex flex-col rounded-2xl border border-border bg-card text-card-foreground shadow-sm",
           className,
         )}
         {...props}
@@ -84,7 +84,7 @@ const FormCard = forwardRef<HTMLDivElement, FormCardProps>(
 
         {/* Footer */}
         {footer && (
-          <div className="border-t border-border bg-muted/20 px-5 py-3 flex items-center justify-end">
+          <div className="border-t border-border bg-muted/20 px-5 py-3 flex items-center justify-end rounded-b-2xl">
             {footer}
           </div>
         )}

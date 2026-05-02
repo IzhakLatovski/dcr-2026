@@ -1,0 +1,312 @@
+- generic [ref=e3]:
+  - complementary [ref=e4]:
+    - generic [ref=e5]:
+      - button "Develeap Career Roadmap DCR — Develeap Career Roadmap" [ref=e8]:
+        - generic [ref=e9]: DCR
+        - generic [ref=e10]:
+          - generic [ref=e11]: Develeap
+          - generic [ref=e12]: Career Roadmap
+        - generic [ref=e13]: DCR — Develeap Career Roadmap
+      - separator [ref=e14]
+      - generic [ref=e15]:
+        - paragraph [ref=e16]: Personal Zone
+        - button " Home" [ref=e18]:
+          - generic [ref=e20]: 
+          - generic [ref=e21]: Home
+        - button " My Plan" [ref=e23]:
+          - generic [ref=e25]: 
+          - generic [ref=e26]: My Plan
+        - button " My Profile" [ref=e28]:
+          - generic [ref=e30]: 
+          - generic [ref=e31]: My Profile
+        - separator [ref=e32]
+        - paragraph [ref=e33]: Catalog
+        - paragraph [ref=e34]: Pillars
+        - button " Professionalism" [ref=e36]:
+          - generic [ref=e38]: 
+          - generic [ref=e39]: Professionalism
+        - button " Tech" [ref=e41]:
+          - generic [ref=e43]: 
+          - generic [ref=e44]: Tech
+        - button " Knowledge Unlock" [ref=e46]:
+          - generic [ref=e48]: 
+          - generic [ref=e49]: Knowledge Unlock
+        - button " Collaboration" [ref=e51]:
+          - generic [ref=e53]: 
+          - generic [ref=e54]: Collaboration
+        - paragraph [ref=e55]: Badges
+        - button " Roadmaps" [ref=e57]:
+          - generic [ref=e59]: 
+          - generic [ref=e60]: Roadmaps
+        - paragraph [ref=e61]: Extra
+        - button " Extra" [ref=e63]:
+          - generic [ref=e65]: 
+          - generic [ref=e66]: Extra
+        - separator [ref=e67]
+        - paragraph [ref=e68]: Resources
+        - button " Guidelines" [ref=e70]:
+          - generic [ref=e72]: 
+          - generic [ref=e73]: Guidelines
+        - button " FAQ" [ref=e75]:
+          - generic [ref=e77]: 
+          - generic [ref=e78]: FAQ
+        - button " Forms" [ref=e80]:
+          - generic [ref=e82]: 
+          - generic [ref=e83]: Forms
+      - separator [ref=e84]
+      - button "Collapse sidebar" [ref=e88]:
+        - img [ref=e89]
+  - main [ref=e91]:
+    - generic [ref=e93]:
+      - heading "Home" [level=2] [ref=e94]
+      - generic [ref=e95]:
+        - button "Search ⌘K" [ref=e96]:
+          - img [ref=e97]
+          - generic [ref=e100]: Search
+          - generic [ref=e101]: ⌘K
+        - button "Switch to light mode" [ref=e102]:
+          - img [ref=e103]
+        - button " Sign in" [ref=e109]:
+          - generic [ref=e110]: 
+          - generic [ref=e111]: Sign in
+    - generic [ref=e113]:
+      - generic [ref=e114]:
+        - generic [ref=e115]:
+          - generic [ref=e118]: "?"
+          - generic [ref=e119]:
+            - paragraph [ref=e120]: Welcome to DCR 2.0
+            - heading "Development Career Roadmap" [level=1] [ref=e121]
+        - generic [ref=e122]:
+          - generic [ref=e123]:
+            - paragraph [ref=e124]: Current Quarter
+            - paragraph [ref=e125]: Q2-2026
+            - paragraph [ref=e126]:
+              - img [ref=e127]
+              - text: 59d remaining
+          - generic [ref=e130]:
+            - img [ref=e131]
+            - text: Simulator
+      - generic [ref=e133]:
+        - button "0 Points in plan 0 items added" [ref=e134] [cursor=pointer]:
+          - img [ref=e136]
+          - generic [ref=e140]:
+            - generic [ref=e141]: "0"
+            - generic [ref=e142]: Points in plan
+            - generic [ref=e143]: 0 items added
+          - img [ref=e144]
+        - button "— Current level 0 / 850 pts → L1" [ref=e146] [cursor=pointer]:
+          - img [ref=e148]
+          - generic [ref=e149]:
+            - generic [ref=e150]: —
+            - generic [ref=e151]: Current level
+            - generic [ref=e152]: 0 / 850 pts → L1
+          - img [ref=e154]
+        - button "Simulator Plan status Switch to Real Plan to submit" [ref=e156] [cursor=pointer]:
+          - img [ref=e158]
+          - generic [ref=e162]:
+            - generic [ref=e163]: Simulator
+            - generic [ref=e164]: Plan status
+            - generic [ref=e165]: Switch to Real Plan to submit
+          - img [ref=e166]
+      - generic [ref=e168]:
+        - generic [ref=e169]:
+          - heading "Program Updates" [level=2] [ref=e171]:
+            - img [ref=e172]
+            - text: Program Updates
+          - button "Full guidelines" [ref=e176]:
+            - text: Full guidelines
+            - img
+        - generic [ref=e177]:
+          - generic [ref=e179]:
+            - generic [ref=e180]:
+              - img [ref=e182]
+              - generic [ref=e186]: Reminder
+            - generic [ref=e187]:
+              - heading "Weekly Reports Are Mandatory" [level=3] [ref=e188]
+              - paragraph [ref=e189]: Team leaders verify consistent weekly report submission at quarter end as a condition for level-up approval. Don't let them pile up.
+          - generic [ref=e191]:
+            - generic [ref=e192]:
+              - img [ref=e194]
+              - generic [ref=e198]: Reminder
+            - generic [ref=e199]:
+              - heading "Excess Points Never Expire" [level=3] [ref=e200]
+              - paragraph [ref=e201]: "Any points above your current level threshold carry forward automatically. For example: earn 1100 pts toward a 1000 pt level and 100 pts roll into the next."
+            - button "Points system" [ref=e202]:
+              - text: Points system
+              - img [ref=e203]
+          - generic [ref=e206]:
+            - generic [ref=e207]:
+              - img [ref=e209]
+              - generic [ref=e213]: Reminder
+            - generic [ref=e214]:
+              - 'heading "Billable Hours: 515 pts Max, No Rollover" [level=3] [ref=e215]'
+              - paragraph [ref=e216]: Billable hours count from your level start date (not quarterly) and are capped at 515 points. Unlike other points, excess billable hours do not carry over.
+            - button "Read guidelines" [ref=e217]:
+              - text: Read guidelines
+              - img [ref=e218]
+          - generic [ref=e221]:
+            - generic [ref=e222]:
+              - img [ref=e224]
+              - generic [ref=e228]: Reminder
+            - generic [ref=e229]:
+              - heading "Miluim? You Get Extra Time" [level=3] [ref=e230]
+              - paragraph [ref=e231]: Reservists receive at least one additional month to hit their point and billable-hour targets. Raise occurs in the last month of the extension. Joining a circle also adds 5% bonus to all members.
+            - button "Read guidelines" [ref=e232]:
+              - text: Read guidelines
+              - img [ref=e233]
+          - generic [ref=e236]:
+            - generic [ref=e237]:
+              - img [ref=e239]
+              - generic [ref=e242]:
+                - generic [ref=e243]: What's New
+                - generic [ref=e244]: NEW
+            - generic [ref=e245]:
+              - heading "DCR 2.0 Is Live" [level=3] [ref=e246]
+              - paragraph [ref=e247]: Plan submission, achievement tracking, team leader approvals, and quarterly history are now fully online. No more spreadsheets — submit your plan directly from the Plan page.
+            - button "Go to Plan" [ref=e248]:
+              - text: Go to Plan
+              - img [ref=e249]
+          - generic [ref=e252]:
+            - generic [ref=e253]:
+              - img [ref=e255]
+              - generic [ref=e259]: What's New
+            - generic [ref=e260]:
+              - heading "Roadmap Badges Are Trackable" [level=3] [ref=e261]
+              - paragraph [ref=e262]: Add certifications to your plan and roadmap badges unlock automatically when all requirements are met. Check the Roadmaps section to see which badges you're close to.
+            - button "View Roadmaps" [ref=e263]:
+              - text: View Roadmaps
+              - img [ref=e264]
+      - generic [ref=e266]:
+        - generic [ref=e267]:
+          - generic [ref=e268]:
+            - heading "Featured This Quarter" [level=2] [ref=e269]:
+              - img [ref=e270]
+              - text: Featured This Quarter
+            - paragraph [ref=e273]: These items carry bonus points this quarter — great choices for your plan.
+          - generic [ref=e275]:
+            - img [ref=e276]
+            - text: Bonus Points
+        - generic [ref=e280]:
+          - button "AWS Certified Generative AI Developer – Professional AWS Certified Generative AI Developer – Professional AWS 400 500 pts" [ref=e281]:
+            - img "AWS Certified Generative AI Developer – Professional" [ref=e283]
+            - generic [ref=e284]:
+              - generic [ref=e285]: AWS Certified Generative AI Developer – Professional
+              - generic [ref=e286]: AWS
+            - generic [ref=e287]:
+              - generic [ref=e288]:
+                - generic [ref=e289]: "400"
+                - generic [ref=e290]: "500"
+                - generic [ref=e291]: pts
+              - img [ref=e292]
+          - button "Google Associate Cloud Engineer Google Associate Cloud Engineer GCP 250 275 pts" [ref=e294]:
+            - img "Google Associate Cloud Engineer" [ref=e296]
+            - generic [ref=e297]:
+              - generic [ref=e298]: Google Associate Cloud Engineer
+              - generic [ref=e299]: GCP
+            - generic [ref=e300]:
+              - generic [ref=e301]:
+                - generic [ref=e302]: "250"
+                - generic [ref=e303]: "275"
+                - generic [ref=e304]: pts
+              - img [ref=e305]
+          - button "Google Professional Cloud Database Engineer Google Professional Cloud Database Engineer GCP 400 440 pts" [ref=e307]:
+            - img "Google Professional Cloud Database Engineer" [ref=e309]
+            - generic [ref=e310]:
+              - generic [ref=e311]: Google Professional Cloud Database Engineer
+              - generic [ref=e312]: GCP
+            - generic [ref=e313]:
+              - generic [ref=e314]:
+                - generic [ref=e315]: "400"
+                - generic [ref=e316]: "440"
+                - generic [ref=e317]: pts
+              - img [ref=e318]
+          - button "Google Professional Cloud DevOps Engineer Google Professional Cloud DevOps Engineer GCP 400 440 pts" [ref=e320]:
+            - img "Google Professional Cloud DevOps Engineer" [ref=e322]
+            - generic [ref=e323]:
+              - generic [ref=e324]: Google Professional Cloud DevOps Engineer
+              - generic [ref=e325]: GCP
+            - generic [ref=e326]:
+              - generic [ref=e327]:
+                - generic [ref=e328]: "400"
+                - generic [ref=e329]: "440"
+                - generic [ref=e330]: pts
+              - img [ref=e331]
+          - button "Google Professional Cloud Architect Google Professional Cloud Architect GCP 400 440 pts" [ref=e333]:
+            - img "Google Professional Cloud Architect" [ref=e335]
+            - generic [ref=e336]:
+              - generic [ref=e337]: Google Professional Cloud Architect
+              - generic [ref=e338]: GCP
+            - generic [ref=e339]:
+              - generic [ref=e340]:
+                - generic [ref=e341]: "400"
+                - generic [ref=e342]: "440"
+                - generic [ref=e343]: pts
+              - img [ref=e344]
+          - button "Google Professional Machine Learning Engineer Google Professional Machine Learning Engineer GCP 400 440 pts" [ref=e346]:
+            - img "Google Professional Machine Learning Engineer" [ref=e348]
+            - generic [ref=e349]:
+              - generic [ref=e350]: Google Professional Machine Learning Engineer
+              - generic [ref=e351]: GCP
+            - generic [ref=e352]:
+              - generic [ref=e353]:
+                - generic [ref=e354]: "400"
+                - generic [ref=e355]: "440"
+                - generic [ref=e356]: pts
+              - img [ref=e357]
+          - button "Google Professional Cloud Network Engineer Google Professional Cloud Network Engineer GCP 400 440 pts" [ref=e359]:
+            - img "Google Professional Cloud Network Engineer" [ref=e361]
+            - generic [ref=e362]:
+              - generic [ref=e363]: Google Professional Cloud Network Engineer
+              - generic [ref=e364]: GCP
+            - generic [ref=e365]:
+              - generic [ref=e366]:
+                - generic [ref=e367]: "400"
+                - generic [ref=e368]: "440"
+                - generic [ref=e369]: pts
+              - img [ref=e370]
+          - button "Google Professional Data Engineer Google Professional Data Engineer GCP 400 440 pts" [ref=e372]:
+            - img "Google Professional Data Engineer" [ref=e374]
+            - generic [ref=e375]:
+              - generic [ref=e376]: Google Professional Data Engineer
+              - generic [ref=e377]: GCP
+            - generic [ref=e378]:
+              - generic [ref=e379]:
+                - generic [ref=e380]: "400"
+                - generic [ref=e381]: "440"
+                - generic [ref=e382]: pts
+              - img [ref=e383]
+          - button "Google Professional Cloud Security Engineer Google Professional Cloud Security Engineer GCP 350 385 pts" [ref=e385]:
+            - img "Google Professional Cloud Security Engineer" [ref=e387]
+            - generic [ref=e388]:
+              - generic [ref=e389]: Google Professional Cloud Security Engineer
+              - generic [ref=e390]: GCP
+            - generic [ref=e391]:
+              - generic [ref=e392]:
+                - generic [ref=e393]: "350"
+                - generic [ref=e394]: "385"
+                - generic [ref=e395]: pts
+              - img [ref=e396]
+          - button "Cast AI APA Hero Cast AI APA Hero Cast AI 60 80 pts" [ref=e398]:
+            - img "Cast AI APA Hero" [ref=e400]
+            - generic [ref=e401]:
+              - generic [ref=e402]: Cast AI APA Hero
+              - generic [ref=e403]: Cast AI
+            - generic [ref=e404]:
+              - generic [ref=e405]:
+                - generic [ref=e406]: "60"
+                - generic [ref=e407]: "80"
+                - generic [ref=e408]: pts
+              - img [ref=e409]
+      - generic [ref=e411]:
+        - heading "Recent Achievements" [level=2] [ref=e414]:
+          - img [ref=e415]
+          - text: Recent Achievements
+        - generic [ref=e421]:
+          - heading "Sign in to see your achievements" [level=3] [ref=e422]
+          - paragraph [ref=e423]: Your personal zone will show progress, plan, and earned items.
+      - generic [ref=e424]:
+        - img [ref=e426]
+        - generic [ref=e431]:
+          - heading "Ready to accelerate your career?" [level=3] [ref=e432]
+          - paragraph [ref=e433]: Sign in with your Develeap account to track your quarterly progress, build a real plan, and earn certifications.
+  - region "Notifications alt+T"

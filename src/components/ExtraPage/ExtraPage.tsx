@@ -38,10 +38,13 @@ export default function ExtraPage({ onAddItem, onToggleItem, isInCart, certItems
 
   const eligibleCerts = certItems.filter((c) => c.points >= 130);
   const circleCert = eligibleCerts.find((c) => c.id === circleCertId) ?? null;
+  const circleBasePoints = circleCert
+    ? (circleCert.promotedPoints ?? circleCert.points)
+    : 0;
   const circleBonus =
     circleCert && groupSize
       ? Math.round(
-          circleCert.points *
+          circleBasePoints *
             ((SIZE_BONUS[groupSize] ?? 0) + (RESERVIST_BONUS[reservists] ?? 0)),
         )
       : 0;
@@ -176,7 +179,7 @@ export default function ExtraPage({ onAddItem, onToggleItem, isInCart, certItems
                 <span className="text-sm text-muted-foreground">
                   pts · +
                   {Math.round(((SIZE_BONUS[groupSize] ?? 0) + (RESERVIST_BONUS[reservists] ?? 0)) * 100)}
-                  % of {circleCert.points}
+                  % of {circleBasePoints}
                 </span>
               </div>
             </div>
