@@ -211,7 +211,7 @@ export default function CatalogPage({
           description={search ? undefined : 'Try clearing filters or selecting another category.'}
         />
       ) : view === 'grid' ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-4">
           {sorted.map((item) => (
             <CatalogCardForItem
               key={item.id}
@@ -537,7 +537,7 @@ function CatalogListRow({
           ) : (
             <button
               type="button"
-              className="inline-flex size-9 items-center justify-center rounded-full bg-primary text-primary-foreground hover:bg-primary/90"
+              className="inline-flex size-9 items-center justify-center rounded-full bg-primary/10 text-primary hover:bg-primary/20"
               onClick={() => onAddItem(item)}
               title="Add to plan"
             >
@@ -551,7 +551,7 @@ function CatalogListRow({
               'inline-flex size-9 items-center justify-center rounded-full transition-colors',
               inCart
                 ? 'bg-green-600/15 text-green-600 hover:bg-destructive/15 hover:text-destructive'
-                : 'bg-primary text-primary-foreground hover:bg-primary/90',
+                : 'bg-primary/10 text-primary hover:bg-primary/20',
             )}
             onClick={() => onToggleItem(item)}
             title={inCart ? 'Remove from plan' : 'Add to plan'}

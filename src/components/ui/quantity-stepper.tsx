@@ -74,7 +74,7 @@ const QuantityStepper = forwardRef<HTMLDivElement, QuantityStepperProps>(
         role="group"
         aria-label={label}
         className={cn(
-          "inline-flex items-center rounded-full bg-primary text-primary-foreground shadow-sm transition-all duration-300 select-none",
+          "inline-flex items-center rounded-full bg-primary/30 text-primary border border-primary/30 transition-all duration-300 select-none",
           s.container,
           className
         )}
@@ -88,7 +88,7 @@ const QuantityStepper = forwardRef<HTMLDivElement, QuantityStepperProps>(
           aria-hidden={!expanded}
           tabIndex={expanded ? 0 : -1}
           className={cn(
-            "flex shrink-0 items-center justify-center rounded-full transition-all duration-300 cursor-pointer outline-none hover:bg-white/20 active:translate-y-px focus-visible:bg-white/20",
+            "flex shrink-0 items-center justify-center rounded-full transition-all duration-300 cursor-pointer outline-none hover:bg-primary/20 active:translate-y-px focus-visible:bg-primary/20",
             expanded ? s.button : "size-0 overflow-hidden pointer-events-none"
           )}
         >
@@ -114,11 +114,11 @@ const QuantityStepper = forwardRef<HTMLDivElement, QuantityStepperProps>(
           aria-label={expanded ? "Increase quantity" : "Add"}
           disabled={!canIncrement}
           className={cn(
-            "flex shrink-0 items-center justify-center rounded-full outline-none cursor-pointer transition-all duration-200 active:translate-y-px focus-visible:bg-white/20 disabled:opacity-50 disabled:cursor-not-allowed [&_svg]:transition-transform [&_svg]:duration-200",
+            "flex shrink-0 items-center justify-center rounded-full outline-none cursor-pointer transition-all duration-200 active:translate-y-px focus-visible:bg-primary/20 disabled:opacity-50 disabled:cursor-not-allowed [&_svg]:transition-transform [&_svg]:duration-200",
             s.button,
             expanded
-              ? "hover:bg-white/20"
-              : "hover:scale-110 hover:shadow-md hover:[&_svg]:rotate-90"
+              ? "hover:bg-primary/20"
+              : "hover:scale-110 hover:[&_svg]:rotate-90"
           )}
         >
           <Plus />

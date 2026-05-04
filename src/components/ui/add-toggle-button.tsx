@@ -45,7 +45,7 @@ const AddToggleButton = forwardRef<HTMLButtonElement, AddToggleButtonProps>(
           addToggleButtonVariants({ size }),
           added
             ? "bg-green-600/15 text-green-600 hover:bg-destructive/15 hover:text-destructive dark:bg-green-500/20 dark:text-green-400 dark:hover:bg-destructive/20 dark:hover:text-destructive"
-            : "bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 hover:shadow-md hover:scale-110",
+            : "bg-primary/30 text-primary border-primary/30 hover:bg-primary/40 hover:scale-110",
           className
         )}
         {...props}
